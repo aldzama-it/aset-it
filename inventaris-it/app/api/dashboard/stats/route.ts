@@ -7,12 +7,17 @@ export async function GET() {
       prisma.printer.count(),
       prisma.cctv.count(),
       prisma.laptop.count(),
-      prisma.laptopAccessory.count(),
+      prisma.generalInventory.count(),
       prisma.ht.count(),
       prisma.tablet.count(),
       prisma.camera.count(),
       prisma.starlink.count(),
-      prisma.dashcam.count(),
+      prisma.dashcam.count({
+        where: {
+          install_status: 'Terpasang',
+          install_date: { not: null }
+        }
+      }),
     ])
     return Response.json({ success: true, data: { network, printers, cctv, laptops, accessories, ht, tablets, cameras, starlinks, dashcams } })
   } catch (e: any) {

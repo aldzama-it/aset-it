@@ -25,8 +25,11 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const last = await prisma.camera.findFirst({ orderBy: { id: 'desc' } })
-    const asset_code = generateAssetCode('CAM', last?.asset_code)
+    let asset_code = body.asset_code
+    if (!asset_code) {
+      const last = await prisma.camera.findFirst({ orderBy: { id: 'desc' } })
+      asset_code = generateAssetCode('CAM', last?.asset_code)
+    }
     const data = await prisma.camera.create({
       data: { ...body, asset_code , updated_at: new Date() }
     })

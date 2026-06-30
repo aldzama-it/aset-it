@@ -10,8 +10,10 @@ export async function GET(req: Request) {
       where: search ? {
         OR: [
           { asset_code: { contains: search } },
-          
-          { vehicle_name: { contains: search } }
+          { vehicle_name: { contains: search } },
+          { plate_number: { contains: search } },
+          { project: { contains: search } },
+          { location: { contains: search } }
         ]
       } : undefined,
       orderBy: { created_at: 'desc' }
@@ -25,14 +27,17 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const last = await prisma.dashcam.findFirst({ orderBy: { id: 'desc' } })
-    const asset_code = generateAssetCode('DCM', last?.asset_code)
+    let asset_code = body.asset_code
+    if (!asset_code) {
+      const last = await prisma.dashcam.findFirst({ orderBy: { id: 'desc' } })
+      asset_code = generateAssetCode('DCM', last?.asset_code)
+    }
     const data = await prisma.dashcam.create({
-      data: { ...body, asset_code , updated_at: new Date() }
+      data: { ...body, asset_code, updated_at: new Date() }
     })
     await recordHistory({
       table_name: 'dashcams', asset_id: data.id, asset_code,
-      action: 'Dibuat', new_condition: data.condition,
+      action: 'Dibuat', new_condition: 'Baik',
       to_location: data.location
     })
     return Response.json({ success: true, data }, { status: 201 })
