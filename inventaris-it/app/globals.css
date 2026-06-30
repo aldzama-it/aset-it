@@ -50,38 +50,38 @@
 }
 
 :root {
-  --background: hsl(210, 33%, 98%);
-  --foreground: hsl(222.2, 84%, 4.9%);
-  --card: hsl(0, 0%, 100%);
-  --card-foreground: hsl(222.2, 84%, 4.9%);
-  --popover: hsl(0, 0%, 100%);
-  --popover-foreground: hsl(222.2, 84%, 4.9%);
-  --primary: hsl(227, 45%, 36%);
-  --primary-foreground: hsl(210, 40%, 98%);
-  --secondary: hsl(210, 40%, 96.1%);
-  --secondary-foreground: hsl(222.2, 47.4%, 11.2%);
-  --muted: hsl(210, 40%, 96.1%);
-  --muted-foreground: hsl(215.4, 16.3%, 46.9%);
-  --accent: hsl(210, 40%, 96.1%);
-  --accent-foreground: hsl(222.2, 47.4%, 11.2%);
-  --destructive: hsl(0, 84.2%, 60.2%);
-  --destructive-foreground: hsl(210, 40%, 98%);
-  --border: hsl(214.3, 31.8%, 91.4%);
-  --input: hsl(214.3, 31.8%, 91.4%);
-  --ring: hsl(227, 45%, 36%);
+  --background: #F5F8FD;
+  --foreground: #1E293B;
+  --card: #FFFFFF;
+  --card-foreground: #1E293B;
+  --popover: #FFFFFF;
+  --popover-foreground: #1E293B;
+  --primary: #1E4FA3;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F1F5F9;
+  --secondary-foreground: #0F172A;
+  --muted: #F1F5F9;
+  --muted-foreground: #64748B;
+  --accent: #F1F5F9;
+  --accent-foreground: #0F172A;
+  --destructive: #D6262D;
+  --destructive-foreground: #FFFFFF;
+  --border: #E2E8F0;
+  --input: #E2E8F0;
+  --ring: #1E4FA3;
   --chart-1: hsl(244.4, 100%, 65.3%);
   --chart-2: hsl(157, 70.6%, 68%);
   --chart-3: hsl(199.9, 100%, 71%);
   --chart-4: hsl(47.1, 100%, 50%);
   --chart-5: hsl(0, 81.4%, 60%);
-  --sidebar: hsl(0, 0%, 100%);
-  --sidebar-foreground: hsl(225, 5.4%, 29%);
-  --sidebar-primary: hsl(227, 45%, 36%);
-  --sidebar-primary-foreground: hsl(0, 0%, 100%);
-  --sidebar-accent: hsl(210, 40%, 96.1%);
-  --sidebar-accent-foreground: hsl(222.2, 47.4%, 11.2%);
-  --sidebar-border: hsl(214.3, 31.8%, 91.4%);
-  --sidebar-ring: hsl(227, 45%, 36%);
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #1E293B;
+  --sidebar-primary: #1E4FA3;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #DCE7F8;
+  --sidebar-accent-foreground: #1E4FA3;
+  --sidebar-border: #E2E8F0;
+  --sidebar-ring: #1E4FA3;
   --radius: 0.75rem;
 }
 
@@ -131,4 +131,12 @@
   html {
     @apply font-sans;
   }
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
