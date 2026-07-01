@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { recordHistory } from '@/lib/history'
-import { generateAssetCode } from '@/lib/utils'
+import { generateAssetCode, getErrorMessage } from '@/lib/utils'
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
@@ -20,8 +20,9 @@ export async function GET(req: Request) {
       orderBy: { created_at: 'desc' }
     })
     return Response.json({ success: true, data })
-  } catch (e: any) { console.error(e);
-    return Response.json({ success: false, error: e.message || e.toString() }, { status: 500 })
+  } catch (e) {
+    console.error(e)
+    return Response.json({ success: false, error: getErrorMessage(e, 'Gagal mengambil data') }, { status: 500 })
   }
 }
 
@@ -43,6 +44,6 @@ export async function POST(req: Request) {
     })
     return Response.json({ success: true, data }, { status: 201 })
   } catch (e) {
-    return Response.json({ success: false, error: e.message || e.toString() }, { status: 500 })
+    return Response.json({ success: false, error: getErrorMessage(e, 'Gagal menyimpan data') }, { status: 500 })
   }
 }

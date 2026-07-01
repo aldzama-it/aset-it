@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma'
-import { generateAssetCode } from '@/lib/utils'
+import { generateAssetCode, getErrorMessage } from '@/lib/utils'
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
@@ -21,8 +21,8 @@ export async function GET(req: Request) {
       include: { category: true }
     })
     return Response.json({ success: true, data })
-  } catch (e: any) {
-    return Response.json({ success: false, error: e.message }, { status: 500 })
+  } catch (e) {
+    return Response.json({ success: false, error: getErrorMessage(e, 'Gagal mengambil data') }, { status: 500 })
   }
 }
 
@@ -46,7 +46,7 @@ export async function POST(req: Request) {
       data: { ...body, asset_code, updated_at: new Date() }
     })
     return Response.json({ success: true, data }, { status: 201 })
-  } catch (e: any) {
-    return Response.json({ success: false, error: e.message }, { status: 500 })
+  } catch (e) {
+    return Response.json({ success: false, error: getErrorMessage(e, 'Gagal menyimpan data') }, { status: 500 })
   }
 }

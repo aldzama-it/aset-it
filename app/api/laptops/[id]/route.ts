@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { recordHistory } from '@/lib/history'
+import { getErrorMessage } from '@/lib/utils'
 
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
@@ -19,8 +20,8 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
       from_employee: before?.pic, to_employee: data.pic
     })
     return Response.json({ success: true, data })
-  } catch (e: any) {
-    return Response.json({ success: false, error: e.message || 'Gagal mengupdate data' }, { status: 500 })
+  } catch (e) {
+    return Response.json({ success: false, error: getErrorMessage(e, 'Gagal mengupdate data') }, { status: 500 })
   }
 }
 
@@ -34,7 +35,7 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
     })
     await prisma.laptop.delete({ where: { id: +resolvedParams.id } })
     return Response.json({ success: true })
-  } catch (e: any) {
-    return Response.json({ success: false, error: e.message || 'Gagal menghapus data' }, { status: 500 })
+  } catch (e) {
+    return Response.json({ success: false, error: getErrorMessage(e, 'Gagal menghapus data') }, { status: 500 })
   }
 }
