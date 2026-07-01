@@ -68,7 +68,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-8 pb-10">
-      <Card className="bg-gradient-to-br from-[#334585] to-[#334585]/90 text-white border-transparent shadow-md overflow-hidden relative mb-6">
+      <Card className="bg-gradient-to-br from-primary/90 via-primary to-blue-900 text-white border-transparent shadow-md overflow-hidden relative mb-6">
         <div className="absolute right-0 top-0 w-48 h-48 bg-white/10 rounded-full blur-2xl translate-x-1/4 -translate-y-1/4 pointer-events-none"></div>
         <CardContent className="p-5 md:p-6 h-full flex flex-col justify-end relative z-10">
           <p className="absolute top-5 left-5 md:top-6 md:left-6 text-white/80 text-sm md:text-base font-medium tracking-wide flex items-center gap-2" suppressHydrationWarning>

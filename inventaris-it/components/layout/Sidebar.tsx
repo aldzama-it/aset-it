@@ -67,7 +67,7 @@ export function Sidebar() {
   return (
     <aside 
       className={cn(
-        "bg-[#334585] text-white border-r-0 flex-shrink-0 min-h-screen font-sans transition-all duration-300 ease-in-out relative z-20",
+        "bg-gradient-to-br from-primary/90 via-primary to-blue-900 text-white border-r-0 flex-shrink-0 min-h-screen font-sans transition-all duration-300 ease-in-out relative z-20",
         isCollapsed ? "w-20" : "w-64"
       )}
     >
@@ -136,7 +136,7 @@ export function Sidebar() {
       </nav>
 
       {/* Logout Button at bottom */}
-      <div className="absolute bottom-0 left-0 w-full px-3 bg-[#334585] border-t border-white/10 pt-3 pb-4">
+      <div className="absolute bottom-0 left-0 w-full px-3 bg-transparent border-t border-white/10 pt-3 pb-4">
         <form action={logout}>
           <Tooltip delayDuration={0}>
             <TooltipTrigger asChild>

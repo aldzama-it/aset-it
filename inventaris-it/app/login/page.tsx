@@ -1,5 +1,7 @@
 'use client'
 
+import Image from 'next/image'
+
 import { useActionState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { login } from './actions'
@@ -35,7 +37,7 @@ export default function LoginPage() {
           
           <div className="relative z-10">
             <div className="text-white">
-              <Asterisk className="h-12 w-12" />
+              <Image src="/logo-white.png" alt="Logo" width={160} height={48} className="h-12 w-auto object-contain" priority />
             </div>
           </div>
           
