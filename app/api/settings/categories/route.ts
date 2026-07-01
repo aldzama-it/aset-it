@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma'
+import { getErrorMessage } from '@/lib/utils'
 
 export async function GET() {
   try {
@@ -6,8 +7,8 @@ export async function GET() {
       orderBy: { name: 'asc' }
     })
     return Response.json({ success: true, data })
-  } catch (e: any) {
-    return Response.json({ success: false, error: e.message }, { status: 500 })
+  } catch (e) {
+    return Response.json({ success: false, error: getErrorMessage(e, 'Gagal mengambil data kategori') }, { status: 500 })
   }
 }
 
@@ -18,7 +19,7 @@ export async function POST(req: Request) {
       data: { ...body }
     })
     return Response.json({ success: true, data }, { status: 201 })
-  } catch (e: any) {
-    return Response.json({ success: false, error: e.message }, { status: 500 })
+  } catch (e) {
+    return Response.json({ success: false, error: getErrorMessage(e, 'Gagal menyimpan kategori') }, { status: 500 })
   }
 }

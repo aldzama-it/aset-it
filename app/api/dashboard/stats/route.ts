@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma'
+import { getErrorMessage } from '@/lib/utils'
 
 export async function GET() {
   try {
@@ -20,8 +21,8 @@ export async function GET() {
       }),
     ])
     return Response.json({ success: true, data: { network, printers, cctv, laptops, accessories, ht, tablets, cameras, starlinks, dashcams } })
-  } catch (e: any) {
+  } catch (e) {
     console.error("STATS API ERROR:", e)
-    return Response.json({ success: false, error: 'Gagal mengambil stats', details: e.message }, { status: 500 })
+    return Response.json({ success: false, error: 'Gagal mengambil stats', details: getErrorMessage(e) }, { status: 500 })
   }
 }

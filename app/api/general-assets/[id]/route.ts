@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma'
+import { getErrorMessage } from '@/lib/utils'
 
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -9,8 +10,8 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
       data: { ...data, updated_at: new Date() }
     })
     return Response.json({ success: true, data: res })
-  } catch (e: any) {
-    return Response.json({ success: false, error: e.message }, { status: 500 })
+  } catch (e) {
+    return Response.json({ success: false, error: getErrorMessage(e, 'Gagal mengupdate data') }, { status: 500 })
   }
 }
 
@@ -20,7 +21,7 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
       where: { id: parseInt((await params).id) }
     })
     return Response.json({ success: true, data: res })
-  } catch (e: any) {
-    return Response.json({ success: false, error: e.message }, { status: 500 })
+  } catch (e) {
+    return Response.json({ success: false, error: getErrorMessage(e, 'Gagal menghapus data') }, { status: 500 })
   }
 }

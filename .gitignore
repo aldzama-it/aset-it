@@ -29,8 +29,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+*.log
 
-# env files (can opt-in for committing if needed)
+# env files
 .env*
 
 # vercel
@@ -41,6 +42,23 @@ yarn-error.log*
 next-env.d.ts
 
 /app/generated/prisma
- 
-# Custom 
-private-uploads/ 
+
+# local storage
+private-uploads/
+mysql_data/
+uploads_data/
+tmp/
+*.sqlite
+*.sqlite3
+
+# local Docker-only overrides
+Dockerfile
+docker-compose.yml
+docker-compose.override.yml
+docker-compose.local.yml
+docker-compose.dev.yml
+Dockerfile.local
+
+# local editor
+.vscode/
+.idea/
