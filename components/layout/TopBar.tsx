@@ -13,7 +13,7 @@ export function TopBar() {
     if (pathname === '/printers') return 'Printer'
     if (pathname === '/cctv') return 'CCTV'
     if (pathname === '/laptops') return 'Laptop'
-    if (pathname === '/laptop-accessories') return 'Aksesoris Laptop'
+    if (pathname === '/general-inventory') return 'Inventaris Umum'
     if (pathname === '/ht') return 'Handy Talky (HT)'
     if (pathname === '/tablets') return 'Tablet'
     if (pathname === '/cameras') return 'Kamera'

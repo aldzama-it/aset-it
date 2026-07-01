@@ -1,14 +1,20 @@
 'use client'
-import { useState } from 'react'
+import { useTableLogic } from '@/hooks/useTableLogic'
+import { SortableTableHead } from '@/components/shared/SortableTableHead'
+import React, { useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
-import { Edit, Trash, Paperclip, XCircle } from 'lucide-react'
+import { Edit, Trash, ChevronDown, ChevronRight } from 'lucide-react'
 import { ConditionBadge } from '@/components/shared/ConditionBadge'
 import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
 import { toast } from 'sonner'
+import { ViewField } from '@/components/shared/ViewDetailsDialog'
+import { ExpandableDetails } from '@/components/shared/ExpandableDetails'
 
 export function HtTable({ data, onEdit, onRefresh }: { data: any[], onEdit: (item: any) => void, onRefresh: () => void }) {
+  const { processedData, requestSort, sortConfig , columnFilters, setColumnFilter } = useTableLogic(data, 'id')
   const [delItem, setDelItem] = useState<any>(null)
+  const [expandedRow, setExpandedRow] = useState<number | null>(null)
 
   const handleDelete = async () => {
     if (!delItem) return
@@ -27,45 +33,87 @@ export function HtTable({ data, onEdit, onRefresh }: { data: any[], onEdit: (ite
     setDelItem(null)
   }
 
+  const formatDate = (d: string) => {
+    if (!d) return '-'
+    return new Date(d).toLocaleDateString('id-ID')
+  }
+
+  const viewFields: ViewField[] = [
+    { label: 'Kode Aset', key: 'asset_code' },
+    { label: 'Nama PIC', key: 'pic_name' },
+    { label: 'Departemen', key: 'department' },
+    { label: 'Divisi', key: 'division' },
+    { label: 'Job Level', key: 'job_level' },
+    { label: 'Branch / Lokasi', key: 'branch' },
+    { label: 'Brand', key: 'brand' },
+    { label: 'Tipe / Model', key: 'type' },
+    { label: 'Kelengkapan', key: 'accessories' },
+    { label: 'Kondisi', key: 'condition', isBadge: true },
+    { label: 'Tanggal Serah Terima', key: 'handover_date', isDate: true },
+    { label: 'Tanggal Pengembalian', key: 'return_date', isDate: true },
+    { label: 'IT Penyerah', key: 'it_handover' },
+    { label: 'IT Penerima', key: 'it_receiver' },
+    { label: 'Form Serah Terima', key: 'form_path', isUrl: true },
+    { label: 'Keterangan', key: 'notes' }
+  ]
+
   return (
-    <div className="border rounded-md bg-white">
+    <div className="border rounded-md bg-white overflow-x-auto">
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Kode Aset</TableHead>
-            <TableHead>Pemegang</TableHead>
-            <TableHead>Kondisi</TableHead>
-            <TableHead>Lokasi</TableHead>
-            
-            <TableHead className="w-24">Aksi</TableHead>
+            <SortableTableHead label="Nama PIC" sortKey="pic" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['pic']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Departemen" sortKey="department" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['department']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Branch" sortKey="branch" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['branch']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Brand & Tipe" sortKey="brand,model" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['brand,model']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Kondisi" sortKey="condition" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['condition']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Tgl Serah Terima" sortKey="handover_date" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['handover_date']} onFilterChange={setColumnFilter}  data={data} />
+            <TableHead className="whitespace-nowrap sticky right-0 bg-white/90 backdrop-blur z-10">Aksi</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.map(item => (
-            <TableRow key={item.id}>
-              <TableCell className="font-medium">{item.asset_code || item.vehicle_name || '-'}</TableCell>
-              <TableCell>{item.pic || "-"}</TableCell>
-              <TableCell><ConditionBadge condition={item.condition} /></TableCell>
-              <TableCell>{item.location || '-'}</TableCell>
+          {processedData.map((item: any) => (
+            <React.Fragment key={item.id}>
+              <TableRow className="cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => setExpandedRow(expandedRow === item.id ? null : item.id)}>
+                <TableCell className="font-medium whitespace-nowrap">
+                  <div className="flex items-center gap-2">
+                    {expandedRow === item.id ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
+                    <span>{item.pic_name || "-"}</span>
+                  </div>
+                </TableCell>
+              <TableCell className="whitespace-nowrap">{item.department || "-"}</TableCell>
+              <TableCell className="whitespace-nowrap">{item.branch || "-"}</TableCell>
+              <TableCell className="whitespace-nowrap">{item.brand || "-"} {item.type || ""}</TableCell>
+              <TableCell className="whitespace-nowrap"><ConditionBadge condition={item.condition} /></TableCell>
+              <TableCell className="whitespace-nowrap">{formatDate(item.handover_date)}</TableCell>
               
-              <TableCell>
-                <div className="flex gap-2">
-                  <Button variant="ghost" size="icon" onClick={() => onEdit(item)}>
+              <TableCell className="sticky right-0 bg-white/90 backdrop-blur shadow-[-4px_0_12px_rgba(0,0,0,0.02)] z-10">
+                <div className="flex gap-1 justify-center">
+                  <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); onEdit(item); }} title="Edit Data">
                     <Edit className="w-4 h-4 text-blue-600" />
                   </Button>
-                  <Button variant="ghost" size="icon" onClick={() => setDelItem(item)}>
+                  <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); setDelItem(item); }} title="Hapus Data">
                     <Trash className="w-4 h-4 text-red-600" />
                   </Button>
                 </div>
               </TableCell>
             </TableRow>
+            {expandedRow === item.id && (
+              <TableRow className="bg-slate-50/50 hover:bg-slate-50/50">
+                <TableCell colSpan={7} className="p-0 border-b">
+                  <ExpandableDetails data={item} fields={viewFields} />
+                </TableCell>
+              </TableRow>
+            )}
+          </React.Fragment>
           ))}
           {data.length === 0 && (
-            <TableRow><TableCell colSpan={10} className="text-center">Tidak ada data</TableCell></TableRow>
+            <TableRow><TableCell colSpan={7} className="text-center py-6 text-muted-foreground">Tidak ada data</TableCell></TableRow>
           )}
         </TableBody>
       </Table>
+
       <DeleteConfirmDialog open={!!delItem} onOpenChange={(o) => !o && setDelItem(null)} onConfirm={handleDelete} itemName={delItem?.asset_code || 'data ini'} />
-    </div>
+      </div>
   )
 }

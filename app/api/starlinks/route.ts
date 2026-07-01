@@ -10,8 +10,9 @@ export async function GET(req: Request) {
       where: search ? {
         OR: [
           { asset_code: { contains: search } },
-          
-          { brand: { contains: search } }, { model: { contains: search } }
+          { serial_number: { contains: search } },
+          { location: { contains: search } },
+          { account_email: { contains: search } }
         ]
       } : undefined,
       orderBy: { created_at: 'desc' }
@@ -25,14 +26,17 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const last = await prisma.starlink.findFirst({ orderBy: { id: 'desc' } })
-    const asset_code = generateAssetCode('STL', last?.asset_code)
+    let asset_code = body.asset_code
+    if (!asset_code) {
+      const last = await prisma.starlink.findFirst({ orderBy: { id: 'desc' } })
+      asset_code = generateAssetCode('STL', last?.asset_code)
+    }
     const data = await prisma.starlink.create({
       data: { ...body, asset_code , updated_at: new Date() }
     })
     await recordHistory({
       table_name: 'starlinks', asset_id: data.id, asset_code,
-      action: 'Dibuat', new_condition: data.condition,
+      action: 'Dibuat', new_condition: 'Baik',
       to_location: data.location
     })
     return Response.json({ success: true, data }, { status: 201 })

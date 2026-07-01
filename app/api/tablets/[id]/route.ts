@@ -11,16 +11,17 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     })
     await recordHistory({
       table_name: 'tablets', asset_id: data.id, asset_code: data.asset_code,
-      action: before?.location !== data.location ? 'Dipindah_Lokasi'
-            : before?.pic !== data.pic ? 'Diserahkan'
+      action: before?.branch !== data.branch ? 'Dipindah_Lokasi'
+            : before?.pic_name !== data.pic_name ? 'Diserahkan'
             : before?.condition !== data.condition ? 'Kondisi_Berubah'
             : 'Diperbarui',
       old_condition: before?.condition, new_condition: data.condition,
-      from_location: before?.location, to_location: data.location,
-      from_employee: before?.pic, to_employee: data.pic
+      from_location: before?.branch, to_location: data.branch,
+      from_employee: before?.pic_name, to_employee: data.pic_name
     })
     return Response.json({ success: true, data })
   } catch (e) {
+    console.error(e)
     return Response.json({ success: false, error: 'Gagal mengupdate data' }, { status: 500 })
   }
 }

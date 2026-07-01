@@ -58,44 +58,55 @@ model Cctv {
 }
 
 model Dashcam {
-  id            Int               @id @default(autoincrement())
-  vehicle_name  String            @db.VarChar(100)
-  plate_number  String?           @db.VarChar(20)
-  location      String?           @db.VarChar(100)
-  project       String?           @db.VarChar(100)
-  dashcam_brand String?           @db.VarChar(50)
-  dashcam_model String?           @db.VarChar(50)
-  install_date  DateTime?
-  is_installed  Boolean           @default(false)
-  condition     dashcam_condition @default(Baik)
-  notes         String?           @db.Text
-  created_at    DateTime          @default(now())
-  updated_at    DateTime
+  id              Int               @id @default(autoincrement())
+  asset_code      String?           @unique(map: "Dashcam_asset_code_key") @db.VarChar(20)
+  vehicle_name    String            @db.VarChar(100)
+  plate_number    String?           @db.VarChar(20)
+  location        String?           @db.VarChar(100)
+  project         String?           @db.VarChar(100)
+  install_status  String            @default("Belum Terpasang") @db.VarChar(50)
+  install_date    DateTime?
+  notes           String?           @db.Text
+  created_at      DateTime          @default(now())
+  updated_at      DateTime          @updatedAt
 }
 
 model Ht {
-  id            Int          @id @default(autoincrement())
-  asset_code    String?      @unique(map: "Ht_asset_code_key") @db.VarChar(20)
-  pic           String?      @db.VarChar(100)
-  brand         String?      @db.VarChar(50)
-  model         String?      @db.VarChar(100)
-  accessories   Json?
-  location      String?      @db.VarChar(100)
-  handover_date DateTime?
-  return_date   DateTime?
-  condition     ht_condition @default(Baik)
-  notes         String?      @db.Text
-  created_at    DateTime     @default(now())
-  updated_at    DateTime
+  id              Int          @id @default(autoincrement())
+  asset_code      String?      @unique(map: "Ht_asset_code_key") @db.VarChar(20)
+  pic_name        String?      @db.VarChar(100)
+  department      String?      @db.VarChar(100)
+  division        String?      @db.VarChar(100)
+  job_level       String?      @db.VarChar(100)
+  branch          String?      @db.VarChar(100)
+  handover_date   DateTime?
+  return_date     DateTime?
+  brand           String?      @db.VarChar(50)
+  type            String?      @db.VarChar(100)
+  accessories     String?      @db.VarChar(255)
+  condition       ht_condition @default(Baik)
+  notes           String?      @db.Text
+  form_path       String?      @db.VarChar(255)
+  it_handover     String?      @db.VarChar(100)
+  it_receiver     String?      @db.VarChar(100)
+  created_at      DateTime     @default(now())
+  updated_at      DateTime     @updatedAt
 }
 
 model Laptop {
   id              Int              @id @default(autoincrement())
   asset_code      String?          @unique(map: "Laptop_asset_code_key") @db.VarChar(20)
   pic             String?          @db.VarChar(100)
-  location        String?          @db.VarChar(100)
+  department      String?          @db.VarChar(100)
+  division        String?          @db.VarChar(100)
+  job_level       String?          @db.VarChar(50)
+  branch          String?          @db.VarChar(100)
   brand           String?          @db.VarChar(50)
   model           String?          @db.VarChar(100)
+  ram             String?          @db.VarChar(50)
+  storage         String?          @db.VarChar(50)
+  processor       String?          @db.VarChar(100)
+  screen_size     String?          @db.VarChar(50)
   mac_address     String?          @db.VarChar(17)
   handover_date   DateTime?
   return_date     DateTime?
@@ -103,24 +114,39 @@ model Laptop {
   attachment_name String?          @db.VarChar(255)
   attachment_path String?          @db.VarChar(500)
   notes           String?          @db.Text
+  it_handover     String?          @db.VarChar(100)
+  it_receiver     String?          @db.VarChar(100)
   created_at      DateTime         @default(now())
   updated_at      DateTime
 }
 
-model LaptopAccessory {
-  id            Int                       @id @default(autoincrement())
-  asset_code    String?                   @unique(map: "LaptopAccessory_asset_code_key") @db.VarChar(20)
-  pic           String?                   @db.VarChar(100)
-  item_name     String                    @db.VarChar(100)
-  model         String?                   @db.VarChar(100)
-  quantity      Int                       @default(1)
-  location      String?                   @db.VarChar(100)
-  handover_date DateTime?
-  return_date   DateTime?
-  condition     laptopaccessory_condition @default(Baik)
-  notes         String?                   @db.Text
-  created_at    DateTime                  @default(now())
-  updated_at    DateTime
+enum generalinventory_condition {
+  Baik
+  Rusak
+  Hilang
+}
+
+model GeneralInventory {
+  id              Int                       @id @default(autoincrement())
+  asset_code      String?                   @unique(map: "GeneralInventory_asset_code_key") @db.VarChar(20)
+  pic_name        String                    @db.VarChar(100)
+  department      String?                   @db.VarChar(100)
+  division        String?                   @db.VarChar(100)
+  job_level       String?                   @db.VarChar(100)
+  branch          String?                   @db.VarChar(100)
+  asset_type      String?                   @db.VarChar(100)
+  brand           String?                   @db.VarChar(100)
+  quantity        Int                       @default(1)
+  handover_date   DateTime?
+  return_date     DateTime?
+  condition       generalinventory_condition @default(Baik)
+  notes           String?                   @db.Text
+  handover_form   String?                   @db.VarChar(255)
+  return_form     String?                   @db.VarChar(255)
+  it_handover     String?                   @db.VarChar(100)
+  it_receiver     String?                   @db.VarChar(100)
+  created_at      DateTime                  @default(now())
+  updated_at      DateTime                  @updatedAt
 }
 
 model NetworkDevice {
@@ -128,16 +154,12 @@ model NetworkDevice {
   asset_code    String?                 @unique(map: "NetworkDevice_asset_code_key") @db.VarChar(20)
   name          String                  @db.VarChar(100)
   device_type   String?                 @db.VarChar(50)
-  brand         String?                 @db.VarChar(50)
-  model         String?                 @db.VarChar(100)
   mac_address   String?                 @db.VarChar(17)
-  ip_address    String?                 @db.VarChar(45)
   location      String?                 @db.VarChar(100)
   purchase_date DateTime?
-  condition     networkdevice_condition @default(Baik)
   notes         String?                 @db.Text
   created_at    DateTime                @default(now())
-  updated_at    DateTime
+  updated_at    DateTime                @updatedAt
 }
 
 model Printer {
@@ -160,34 +182,37 @@ model Printer {
 model Starlink {
   id                Int                @id @default(autoincrement())
   asset_code        String?            @unique(map: "Starlink_asset_code_key") @db.VarChar(20)
-  serial_number     String?            @unique(map: "Starlink_serial_number_key") @db.VarChar(50)
   location          String?            @db.VarChar(100)
+  serial_number     String?            @unique(map: "Starlink_serial_number_key") @db.VarChar(50)
   account_email     String?            @db.VarChar(150)
-  active_since      DateTime?
-  subscription_plan String?            @db.VarChar(50)
-  ip_address        String?            @db.VarChar(45)
-  condition         starlink_condition @default(Baik)
+  install_date      DateTime?
   notes             String?            @db.Text
   created_at        DateTime           @default(now())
-  updated_at        DateTime
+  updated_at        DateTime           @updatedAt
 }
 
 model Tablet {
-  id            Int              @id @default(autoincrement())
-  asset_code    String?          @unique(map: "Tablet_asset_code_key") @db.VarChar(20)
-  pic           String?          @db.VarChar(100)
-  brand         String?          @db.VarChar(50)
-  model         String?          @db.VarChar(100)
-  storage_gb    Int?
-  ram_gb        Int?
-  accessories   Json?
-  location      String?          @db.VarChar(100)
-  handover_date DateTime?
-  return_date   DateTime?
-  condition     tablet_condition @default(Baik)
-  notes         String?          @db.Text
-  created_at    DateTime         @default(now())
-  updated_at    DateTime
+  id              Int              @id @default(autoincrement())
+  asset_code      String?          @unique(map: "Tablet_asset_code_key") @db.VarChar(20)
+  pic_name        String?          @db.VarChar(100)
+  department      String?          @db.VarChar(100)
+  division        String?          @db.VarChar(100)
+  job_level       String?          @db.VarChar(100)
+  branch          String?          @db.VarChar(100)
+  handover_date   DateTime?
+  return_date     DateTime?
+  asset_type      String?          @db.VarChar(100)
+  brand           String?          @db.VarChar(50)
+  type            String?          @db.VarChar(100)
+  ram             String?          @db.VarChar(50)
+  storage         String?          @db.VarChar(50)
+  condition       tablet_condition @default(Baik)
+  notes           String?          @db.Text
+  form_path       String?          @db.VarChar(255)
+  it_handover     String?          @db.VarChar(100)
+  it_receiver     String?          @db.VarChar(100)
+  created_at      DateTime         @default(now())
+  updated_at      DateTime         @updatedAt
 }
 
 enum assethistory_action {
@@ -314,4 +339,50 @@ enum tablet_condition {
   Rusak
   Hilang
   Tidak_Aktif
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  name       String   @db.VarChar(100)
+  email      String   @unique @db.VarChar(150)
+  password   String   @db.VarChar(255)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+enum general_asset_condition {
+  Baru
+  Baik
+  Perlu_Servis
+  Rusak
+  Hilang
+  Tidak_Aktif
+}
+
+model AssetCategory {
+  id         Int            @id @default(autoincrement())
+  name       String         @db.VarChar(100)
+  prefix     String         @db.VarChar(10)
+  icon       String?        @db.VarChar(50)
+  created_at DateTime       @default(now())
+  updated_at DateTime       @updatedAt
+  assets     GeneralAsset[]
+}
+
+model GeneralAsset {
+  id            Int                     @id @default(autoincrement())
+  category_id   Int
+  asset_code    String?                 @unique(map: "GeneralAsset_asset_code_key") @db.VarChar(50)
+  pic           String?                 @db.VarChar(100)
+  location      String?                 @db.VarChar(100)
+  brand         String?                 @db.VarChar(50)
+  model         String?                 @db.VarChar(100)
+  handover_date DateTime?
+  purchase_date DateTime?
+  condition     general_asset_condition @default(Baik)
+  notes         String?                 @db.Text
+  created_at    DateTime                @default(now())
+  updated_at    DateTime                @updatedAt
+
+  category      AssetCategory           @relation(fields: [category_id], references: [id])
 }

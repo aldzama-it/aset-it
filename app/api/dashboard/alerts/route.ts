@@ -8,7 +8,6 @@ export async function GET() {
       { name: 'Printer', model: prisma.printer, labelField: 'model' },
       { name: 'CCTV', model: prisma.cctv, labelField: 'model' },
       { name: 'Laptop', model: prisma.laptop, labelField: 'model' },
-      { name: 'Aksesoris', model: prisma.laptopAccessory, labelField: 'item_name' },
       { name: 'HT', model: prisma.ht, labelField: 'model' },
       { name: 'Tablet', model: prisma.tablet, labelField: 'model' },
       { name: 'Kamera', model: prisma.camera, labelField: 'model' },

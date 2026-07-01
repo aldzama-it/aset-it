@@ -11,13 +11,8 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     })
     await recordHistory({
       table_name: 'dashcams', asset_id: data.id, asset_code: data.asset_code,
-      action: before?.location !== data.location ? 'Dipindah_Lokasi'
-            
-            : before?.condition !== data.condition ? 'Kondisi_Berubah'
-            : 'Diperbarui',
-      old_condition: before?.condition, new_condition: data.condition,
+      action: before?.location !== data.location ? 'Dipindah_Lokasi' : 'Diperbarui',
       from_location: before?.location, to_location: data.location,
-      
     })
     return Response.json({ success: true, data })
   } catch (e) {
@@ -31,7 +26,7 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
     const before = await prisma.dashcam.findUnique({ where: { id: +resolvedParams.id } })
     await recordHistory({
       table_name: 'dashcams', asset_id: +resolvedParams.id, asset_code: before?.asset_code,
-      action: 'Dihapus', old_condition: before?.condition
+      action: 'Dihapus'
     })
     await prisma.dashcam.delete({ where: { id: +resolvedParams.id } })
     return Response.json({ success: true })

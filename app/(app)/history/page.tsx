@@ -15,7 +15,6 @@ export default function HistoryPage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-bold">Riwayat Aset</h1>
       <div className="border rounded-md bg-white">
         <Table>
           <TableHeader>

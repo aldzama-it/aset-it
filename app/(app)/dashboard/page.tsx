@@ -5,8 +5,30 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { ConditionBadge } from '@/components/shared/ConditionBadge'
-import { Network, Printer, Camera, Laptop, Package, Radio, Tablet, Satellite, Car, Database } from 'lucide-react'
+import { Network, Printer, Camera, Laptop, Package, Radio, Tablet, Satellite, Car, Database, Calendar } from 'lucide-react'
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts'
+
+const AnimatedIcon = () => {
+  const [frame, setFrame] = useState(1)
+  
+  useEffect(() => {
+    // Ambil frame terakhir dari sessionStorage (default ke 1 jika belum ada)
+    const currentFrame = parseInt(sessionStorage.getItem('dashboard-icon-frame') || '1')
+    setFrame(currentFrame)
+    
+    // Siapkan frame berikutnya untuk kunjungan dashboard selanjutnya
+    const nextFrame = currentFrame < 4 ? currentFrame + 1 : 1
+    sessionStorage.setItem('dashboard-icon-frame', nextFrame.toString())
+  }, [])
+
+  return (
+    <img 
+      src={`/animated-icon/frame-${frame}.png`} 
+      alt="Animated Icon" 
+      className="w-[350px] h-[350px] object-contain drop-shadow-2xl" 
+    />
+  )
+}
 
 export default function DashboardPage() {
   const [stats, setStats] = useState<any>(null)
@@ -22,7 +44,7 @@ export default function DashboardPage() {
     fetch('/api/dashboard/condition-summary').then(r => r.json()).then(res => {
       if (res.success) {
         const data = Object.entries(res.data).map(([name, value]) => ({ name: name.replace('_', ' '), value }))
-        setConditionData(data.filter(d => d.value > 0))
+        setConditionData(data.filter(d => (d as any).value > 0))
       }
     })
   }, [])
@@ -46,23 +68,24 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-8 pb-10">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight font-poppins text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground mt-1 text-sm">Ringkasan inventaris aset IT dan status operasional saat ini.</p>
-      </div>
-
-      <Card className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground border-transparent shadow-md overflow-hidden relative mb-6">
+      <Card className="bg-gradient-to-br from-primary/90 via-primary to-blue-900 text-white border-transparent shadow-md overflow-hidden relative mb-6">
         <div className="absolute right-0 top-0 w-48 h-48 bg-white/10 rounded-full blur-2xl translate-x-1/4 -translate-y-1/4 pointer-events-none"></div>
-        <CardContent className="p-6 md:p-8 flex items-center justify-between relative z-10">
-          <div>
-            <p className="text-primary-foreground/90 text-base md:text-lg font-medium mb-1">Total Aset Terdaftar</p>
+        <CardContent className="p-5 md:p-6 h-full flex flex-col justify-end relative z-10">
+          <p className="absolute top-5 left-5 md:top-6 md:left-6 text-white/80 text-sm md:text-base font-medium tracking-wide flex items-center gap-2" suppressHydrationWarning>
+            <Calendar className="w-4 h-4" />
+            {new Date().toLocaleDateString('id-ID', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+          </p>
+          
+          <div className="relative z-10 mt-6 md:mt-8 w-2/3">
+            <p className="text-white/90 text-lg md:text-xl font-medium mb-1">Total Aset Terdaftar</p>
             <div className="flex items-baseline gap-2">
               <p className="text-5xl md:text-6xl font-bold font-poppins tracking-tight">{total}</p>
-              <p className="text-sm text-primary-foreground/70 font-medium">Unit</p>
+              <p className="text-base text-white/80 font-medium">Unit</p>
             </div>
           </div>
-          <div className="p-4 bg-white/10 rounded-2xl backdrop-blur-sm hidden sm:block border border-white/10 shadow-sm">
-            <Database className="w-10 h-10 text-white" />
+
+          <div className="hidden sm:block pointer-events-none absolute right-[-40px] md:right-[-20px] top-1/2 -translate-y-1/2 z-0 opacity-100">
+            <AnimatedIcon />
           </div>
         </CardContent>
       </Card>
