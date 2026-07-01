@@ -5,7 +5,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     const body = await req.json()
     const { id, ...data } = body
     const res = await prisma.assetCategory.update({
-      where: { id: parseInt(params.id) },
+      where: { id: parseInt((await params).id) },
       data
     })
     return Response.json({ success: true, data: res })
@@ -17,7 +17,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const res = await prisma.assetCategory.delete({
-      where: { id: parseInt(params.id) }
+      where: { id: parseInt((await params).id) }
     })
     return Response.json({ success: true, data: res })
   } catch (e: any) {
