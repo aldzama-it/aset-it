@@ -1,4 +1,6 @@
 'use client'
+import { useTableLogic } from '@/hooks/useTableLogic'
+import { SortableTableHead } from '@/components/shared/SortableTableHead'
 import React, { useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
@@ -10,6 +12,7 @@ import { ViewField } from '@/components/shared/ViewDetailsDialog'
 import { ExpandableDetails } from '@/components/shared/ExpandableDetails'
 
 export function GeneralInventoryTable({ data, onEdit, onRefresh }: { data: any[], onEdit: (item: any) => void, onRefresh: () => void }) {
+  const { processedData, requestSort, sortConfig , columnFilters, setColumnFilter } = useTableLogic(data, 'id')
   const [delItem, setDelItem] = useState<any>(null)
   const [expandedRow, setExpandedRow] = useState<number | null>(null)
 
@@ -57,19 +60,19 @@ export function GeneralInventoryTable({ data, onEdit, onRefresh }: { data: any[]
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="whitespace-nowrap">Kode Aset</TableHead>
-            <TableHead className="whitespace-nowrap">Nama PIC</TableHead>
-            <TableHead className="whitespace-nowrap">Departemen</TableHead>
-            <TableHead className="whitespace-nowrap">Jenis Aset</TableHead>
-            <TableHead className="whitespace-nowrap">Brand</TableHead>
-            <TableHead className="whitespace-nowrap text-center">Qty</TableHead>
-            <TableHead className="whitespace-nowrap">Kondisi</TableHead>
+            <SortableTableHead label="Kode Aset" sortKey="asset_code" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['asset_code']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Nama PIC" sortKey="pic" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['pic']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Departemen" sortKey="department" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['department']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Jenis Aset" sortKey="asset_type" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['asset_type']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Brand" sortKey="brand" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['brand']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Qty" sortKey="quantity" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['quantity']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Kondisi" sortKey="condition" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['condition']} onFilterChange={setColumnFilter}  data={data} />
             <TableHead className="whitespace-nowrap">Serah Terima</TableHead>
             <TableHead className="whitespace-nowrap sticky right-0 bg-white/90 backdrop-blur z-10">Aksi</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.map(item => (
+          {processedData.map((item: any) => (
             <React.Fragment key={item.id}>
               <TableRow className="cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => setExpandedRow(expandedRow === item.id ? null : item.id)}>
                 <TableCell className="font-medium whitespace-nowrap">

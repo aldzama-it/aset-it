@@ -1,3 +1,5 @@
+import { useTableLogic } from '@/hooks/useTableLogic'
+import { SortableTableHead } from '@/components/shared/SortableTableHead'
 import React, { useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
@@ -8,6 +10,7 @@ import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
 import { ConditionBadge } from '@/components/shared/ConditionBadge'
 
 export function GeneralAssetTable({ data, onEdit, onRefresh }: { data: any[], onEdit: (item: any) => void, onRefresh: () => void,  }) {
+  const { processedData, requestSort, sortConfig , columnFilters, setColumnFilter } = useTableLogic(data, 'id')
   const [delItem, setDelItem] = useState<any>(null)
 
   const handleDelete = async () => {
@@ -32,16 +35,16 @@ export function GeneralAssetTable({ data, onEdit, onRefresh }: { data: any[], on
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Kode Aset</TableHead>
-            <TableHead>Brand & Model</TableHead>
-            <TableHead>PIC / Lokasi</TableHead>
-            <TableHead>Kondisi</TableHead>
-            <TableHead>Tanggal Beli / Serah Terima</TableHead>
+            <SortableTableHead label="Kode Aset" sortKey="asset_code" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['asset_code']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Brand & Model" sortKey="brand,model" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['brand,model']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="PIC / Lokasi" sortKey="pic,location" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['pic,location']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Kondisi" sortKey="condition" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['condition']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Tanggal Beli / Serah Terima" sortKey="purchase_date,handover_date" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['purchase_date,handover_date']} onFilterChange={setColumnFilter}  data={data} />
             <TableHead className="w-24">Aksi</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.map(item => (
+          {processedData.map((item: any) => (
             <TableRow key={item.id}>
               <TableCell className="font-medium">{item.asset_code}</TableCell>
               <TableCell>{item.brand} {item.model}</TableCell>

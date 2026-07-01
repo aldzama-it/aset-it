@@ -1,4 +1,6 @@
 'use client'
+import { useTableLogic } from '@/hooks/useTableLogic'
+import { SortableTableHead } from '@/components/shared/SortableTableHead'
 import React, { useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
@@ -10,6 +12,7 @@ import { ViewField } from '@/components/shared/ViewDetailsDialog'
 import { ExpandableDetails } from '@/components/shared/ExpandableDetails'
 
 export function LaptopTable({ data, onEdit, onRefresh }: { data: any[], onEdit: (item: any) => void, onRefresh: () => void }) {
+  const { processedData, requestSort, sortConfig , columnFilters, setColumnFilter } = useTableLogic(data, 'id')
   const [delItem, setDelItem] = useState<any>(null)
   const [expandedRow, setExpandedRow] = useState<number | null>(null)
 
@@ -97,20 +100,20 @@ Tim IT`)
       <Table className="whitespace-nowrap">
         <TableHeader>
           <TableRow>
-            <TableHead>Kode Aset</TableHead>
-            <TableHead>Nama Pegawai</TableHead>
-            <TableHead>Departemen</TableHead>
-            <TableHead>Branch</TableHead>
-            <TableHead>Brand & Type</TableHead>
-            <TableHead>Spesifikasi</TableHead>
-            <TableHead>Kondisi</TableHead>
-            <TableHead>Tgl Serah Terima</TableHead>
+            <SortableTableHead label="Kode Aset" sortKey="asset_code" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['asset_code']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Nama Pegawai" sortKey="pic" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['pic']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Departemen" sortKey="department" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['department']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Branch" sortKey="branch" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['branch']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Brand & Type" sortKey="brand,model" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['brand,model']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Spesifikasi" sortKey="processor,ram,storage" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['processor,ram,storage']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Kondisi" sortKey="condition" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['condition']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Tgl Serah Terima" sortKey="handover_date" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['handover_date']} onFilterChange={setColumnFilter}  data={data} />
             <TableHead>Form ST</TableHead>
             <TableHead className="w-32">Aksi</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.map(item => (
+          {processedData.map((item: any) => (
             <React.Fragment key={item.id}>
               <TableRow className="cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => setExpandedRow(expandedRow === item.id ? null : item.id)}>
                 <TableCell className="font-medium">

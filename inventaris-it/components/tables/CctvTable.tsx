@@ -1,4 +1,6 @@
 'use client'
+import { useTableLogic } from '@/hooks/useTableLogic'
+import { SortableTableHead } from '@/components/shared/SortableTableHead'
 import React, { useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
@@ -10,6 +12,7 @@ import { ViewField } from '@/components/shared/ViewDetailsDialog'
 import { ExpandableDetails } from '@/components/shared/ExpandableDetails'
 
 export function CctvTable({ data, onEdit, onRefresh }: { data: any[], onEdit: (item: any) => void, onRefresh: () => void }) {
+  const { processedData, requestSort, sortConfig , columnFilters, setColumnFilter } = useTableLogic(data, 'id')
   const [delItem, setDelItem] = useState<any>(null)
   const [expandedRow, setExpandedRow] = useState<number | null>(null)
 
@@ -48,16 +51,16 @@ export function CctvTable({ data, onEdit, onRefresh }: { data: any[], onEdit: (i
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Kode Aset</TableHead>
-            <TableHead>Brand & Tipe</TableHead>
-            <TableHead>Lokasi</TableHead>
-            <TableHead>Label Posisi</TableHead>
-            <TableHead>Kondisi</TableHead>
+            <SortableTableHead label="Kode Aset" sortKey="asset_code" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['asset_code']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Brand & Tipe" sortKey="brand,model" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['brand,model']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Lokasi" sortKey="location" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['location']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Label Posisi" sortKey="location" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['location']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Kondisi" sortKey="condition" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['condition']} onFilterChange={setColumnFilter}  data={data} />
             <TableHead className="w-24">Aksi</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.map(item => (
+          {processedData.map((item: any) => (
             <React.Fragment key={item.id}>
               <TableRow className="cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => setExpandedRow(expandedRow === item.id ? null : item.id)}>
                 <TableCell className="font-medium">

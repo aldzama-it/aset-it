@@ -1,3 +1,5 @@
+import { useTableLogic } from '@/hooks/useTableLogic'
+import { SortableTableHead } from '@/components/shared/SortableTableHead'
 import React, { useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
@@ -6,6 +8,7 @@ import { toast } from 'sonner'
 import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
 
 export function AssetCategoryTable({ data, onEdit, onRefresh }: { data: any[], onEdit: (item: any) => void, onRefresh: () => void }) {
+  const { processedData, requestSort, sortConfig , columnFilters, setColumnFilter } = useTableLogic(data, 'id')
   const [delItem, setDelItem] = useState<any>(null)
 
   const handleDelete = async () => {
@@ -30,13 +33,13 @@ export function AssetCategoryTable({ data, onEdit, onRefresh }: { data: any[], o
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Nama Kategori</TableHead>
-            <TableHead>Slug</TableHead>
+            <SortableTableHead label="Nama Kategori" sortKey="name" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['name']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Slug" sortKey="slug" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['slug']} onFilterChange={setColumnFilter}  data={data} />
             <TableHead className="w-24">Aksi</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.map(item => (
+          {processedData.map((item: any) => (
             <TableRow key={item.id}>
               <TableCell className="font-medium">{item.name}</TableCell>
               <TableCell>{item.slug}</TableCell>

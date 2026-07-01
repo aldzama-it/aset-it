@@ -1,4 +1,6 @@
 'use client'
+import { useTableLogic } from '@/hooks/useTableLogic'
+import { SortableTableHead } from '@/components/shared/SortableTableHead'
 import React, { useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
@@ -10,6 +12,7 @@ import { ViewField } from '@/components/shared/ViewDetailsDialog'
 import { ExpandableDetails } from '@/components/shared/ExpandableDetails'
 
 export function DashcamTable({ data, onEdit, onRefresh }: { data: any[], onEdit: (item: any) => void, onRefresh: () => void }) {
+  const { processedData, requestSort, sortConfig , columnFilters, setColumnFilter } = useTableLogic(data, 'id')
   const [delItem, setDelItem] = useState<any>(null)
   const [expandedRow, setExpandedRow] = useState<number | null>(null)
 
@@ -51,18 +54,18 @@ export function DashcamTable({ data, onEdit, onRefresh }: { data: any[], onEdit:
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="whitespace-nowrap">Kode Aset</TableHead>
-            <TableHead className="whitespace-nowrap">Nama Kendaraan</TableHead>
-            <TableHead className="whitespace-nowrap">Nopol</TableHead>
-            <TableHead className="whitespace-nowrap">Lokasi</TableHead>
-            <TableHead className="whitespace-nowrap">Project</TableHead>
-            <TableHead className="whitespace-nowrap text-center">Status Pemasangan</TableHead>
-            <TableHead className="whitespace-nowrap">Tgl Pemasangan</TableHead>
+            <SortableTableHead label="Kode Aset" sortKey="asset_code" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['asset_code']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Nama Kendaraan" sortKey="vehicle_name" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['vehicle_name']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Nopol" sortKey="vehicle_number" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['vehicle_number']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Lokasi" sortKey="location" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['location']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Project" sortKey="project_name" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['project_name']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Status Pemasangan" sortKey="status" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['status']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Tgl Pemasangan" sortKey="installation_date" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['installation_date']} onFilterChange={setColumnFilter}  data={data} />
             <TableHead className="whitespace-nowrap w-24">Aksi</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.map(item => (
+          {processedData.map((item: any) => (
             <React.Fragment key={item.id}>
               <TableRow className="cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => setExpandedRow(expandedRow === item.id ? null : item.id)}>
                 <TableCell className="font-medium whitespace-nowrap">

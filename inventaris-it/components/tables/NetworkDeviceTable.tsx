@@ -1,4 +1,6 @@
 'use client'
+import { useTableLogic } from '@/hooks/useTableLogic'
+import { SortableTableHead } from '@/components/shared/SortableTableHead'
 import React, { useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
@@ -9,6 +11,7 @@ import { ViewField } from '@/components/shared/ViewDetailsDialog'
 import { ExpandableDetails } from '@/components/shared/ExpandableDetails'
 
 export function NetworkDeviceTable({ data, onEdit, onRefresh }: { data: any[], onEdit: (item: any) => void, onRefresh: () => void }) {
+  const { processedData, requestSort, sortConfig , columnFilters, setColumnFilter } = useTableLogic(data, 'id')
   const [delItem, setDelItem] = useState<any>(null)
   const [expandedRow, setExpandedRow] = useState<number | null>(null)
 
@@ -49,17 +52,17 @@ export function NetworkDeviceTable({ data, onEdit, onRefresh }: { data: any[], o
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="whitespace-nowrap">Kode Aset</TableHead>
-            <TableHead className="whitespace-nowrap">Nama Aset</TableHead>
-            <TableHead className="whitespace-nowrap">Tipe</TableHead>
-            <TableHead className="whitespace-nowrap">MacAddr</TableHead>
-            <TableHead className="whitespace-nowrap">Lokasi</TableHead>
-            <TableHead className="whitespace-nowrap">Tgl Pembelian</TableHead>
+            <SortableTableHead label="Kode Aset" sortKey="asset_code" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['asset_code']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Nama Aset" sortKey="name" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['name']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Tipe" sortKey="type" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['type']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="MacAddr" sortKey="mac_address" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['mac_address']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Lokasi" sortKey="location" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['location']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Tgl Pembelian" sortKey="purchase_date" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['purchase_date']} onFilterChange={setColumnFilter}  data={data} />
             <TableHead className="whitespace-nowrap w-24">Aksi</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.map(item => (
+          {processedData.map((item: any) => (
             <React.Fragment key={item.id}>
               <TableRow className="cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => setExpandedRow(expandedRow === item.id ? null : item.id)}>
                 <TableCell className="font-medium whitespace-nowrap">
