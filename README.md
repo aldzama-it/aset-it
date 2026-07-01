@@ -1,5 +1,30 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Run with Docker
+
+1. Copy `.env.example` to `.env`.
+2. Make sure Docker Desktop / Docker daemon is running.
+3. Start the stack:
+
+```bash
+docker compose up --build
+```
+
+The stack includes:
+
+- `db`: MySQL 8.4 on `localhost:${DB_PORT}`
+- `migrate`: one-off Prisma migration runner
+- `app`: Next.js production server on `http://localhost:${APP_PORT}`
+
+Useful commands:
+
+```bash
+docker compose up --build -d
+docker compose logs -f app
+docker compose down
+docker compose down -v
+```
+
 ## Getting Started
 
 First, run the development server:
