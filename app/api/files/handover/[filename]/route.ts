@@ -4,7 +4,6 @@ import { NextRequest } from 'next/server'
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ filename: string }> }) {
   const resolvedParams = await params;
-  // Removed x-admin-key check to allow direct viewing via <a> tags
   try {
     const filePath = path.join(process.cwd(), 'private-uploads', 'handover', resolvedParams.filename)
     const file = await readFile(filePath)

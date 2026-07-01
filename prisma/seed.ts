@@ -1,38 +1,30 @@
 import { PrismaClient } from '@prisma/client'
+
 const prisma = new PrismaClient()
 
 async function main() {
-  const locations = await prisma.location.createMany({ data: [
-    { name: 'Head Office', type: 'Head_Office' },
-    { name: 'Ruang Server', type: 'Server_Room' },
-    { name: 'Ruang Finance', type: 'Head_Office' },
-    { name: 'Ruang Pak AJ', type: 'Head_Office' },
-    { name: 'Ruang Pak Hendar', type: 'Head_Office' },
-    { name: 'Cubical Electrical', type: 'Head_Office' },
-    { name: 'Lime Package', type: 'Head_Office' },
-    { name: 'Ruang Warehouse', type: 'Gudang' },
-    { name: 'Dascoland 7D', type: 'Site' },
-    { name: 'Dascoland 8I', type: 'Site' },
-    { name: 'Refractory', type: 'Site' },
-    { name: 'Papua', type: 'Site' },
-  ]})
+  const existingCategoryCount = await prisma.assetCategory.count()
 
-  await prisma.employee.createMany({ data: [
-    { name: 'Samuel Frando' },
-    { name: 'Mas Diva' },
-    { name: 'Aiva' },
-    { name: 'Fesy' },
-    { name: 'Salma Maulida', division: 'HR' },
-    { name: 'M. Ridho', division: 'IT' },
-    { name: 'Benny Antares', division: 'Engineering', position: 'Supervisor' },
-  ]})
+  if (existingCategoryCount > 0) {
+    console.log('Seed dilewati: kategori aset sudah tersedia')
+    return
+  }
 
-  console.log('Seed berhasil')
+  await prisma.assetCategory.createMany({
+    data: [
+      { name: 'Monitor', prefix: 'MNT', icon: 'Monitor' },
+      { name: 'Mouse', prefix: 'MSE', icon: 'Mouse' },
+      { name: 'Keyboard', prefix: 'KBD', icon: 'Keyboard' },
+      { name: 'UPS', prefix: 'UPS', icon: 'BatteryCharging' },
+    ],
+  })
+
+  console.log('Seed berhasil: kategori aset default ditambahkan')
 }
 
 main()
-  .catch((e) => {
-    console.error(e)
+  .catch((error) => {
+    console.error(error)
     process.exit(1)
   })
   .finally(async () => {

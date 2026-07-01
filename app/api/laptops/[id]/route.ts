@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { recordHistory } from '@/lib/history'
+import { getErrorMessage } from '@/lib/utils'
 
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
@@ -11,16 +12,16 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     })
     await recordHistory({
       table_name: 'laptops', asset_id: data.id, asset_code: data.asset_code,
-      action: before?.location !== data.location ? 'Dipindah_Lokasi'
+      action: before?.branch !== data.branch ? 'Dipindah_Lokasi'
             : before?.condition !== data.condition ? 'Kondisi_Berubah'
             : 'Diperbarui',
       old_condition: before?.condition, new_condition: data.condition,
-      from_location: before?.location, to_location: data.location,
+      from_location: before?.branch, to_location: data.branch,
       from_employee: before?.pic, to_employee: data.pic
     })
     return Response.json({ success: true, data })
-  } catch (e: any) {
-    return Response.json({ success: false, error: e.message || 'Gagal mengupdate data' }, { status: 500 })
+  } catch (e) {
+    return Response.json({ success: false, error: getErrorMessage(e, 'Gagal mengupdate data') }, { status: 500 })
   }
 }
 
@@ -34,7 +35,7 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
     })
     await prisma.laptop.delete({ where: { id: +resolvedParams.id } })
     return Response.json({ success: true })
-  } catch (e: any) {
-    return Response.json({ success: false, error: e.message || 'Gagal menghapus data' }, { status: 500 })
+  } catch (e) {
+    return Response.json({ success: false, error: getErrorMessage(e, 'Gagal menghapus data') }, { status: 500 })
   }
 }

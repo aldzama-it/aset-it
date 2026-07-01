@@ -1,7 +1,7 @@
 'use client'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -10,42 +10,38 @@ import { toast } from 'sonner'
 
 import { AttachmentField } from '@/components/shared/AttachmentField'
 
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
+import { CheckCircle2, XCircle } from 'lucide-react'
+
 const conditions = ['Baru', 'Baik', 'Perlu_Servis', 'Rusak', 'Hilang', 'Tidak_Aktif']
 
 export function LaptopForm({ open, onOpenChange, item, onSuccess }: { open: boolean, onOpenChange: (o: boolean) => void, item: any, onSuccess: () => void }) {
-  const { register, handleSubmit, reset, setValue, watch } = useForm({ defaultValues: { condition: 'Baik' } })
+  const { register, handleSubmit, reset, setValue, watch } = useForm<any>({ defaultValues: { condition: 'Baik' } })
+  const [confirmData, setConfirmData] = useState<any>(null)
+  const [resultState, setResultState] = useState<{show: boolean, success: boolean, message: string}>({ show: false, success: false, message: '' })
 
   useEffect(() => {
     if (open) {
       if (item) {
-        reset(item)
+        reset({
+          ...item,
+          handover_date: item.handover_date ? item.handover_date.split('T')[0] : '',
+          return_date: item.return_date ? item.return_date.split('T')[0] : ''
+        })
       } else {
         reset({ condition: 'Baik' })
       }
     }
   }, [open, item, reset])
 
-  const onSubmit = async (data: any) => {
-    const dateFields = ['handover_date', 'return_date', 'purchase_date', 'install_date', 'active_since']
-    for (const field of dateFields) {
-      if (data[field] !== undefined) {
-        if (data[field]) {
-          data[field] = new Date(data[field]).toISOString()
-        } else {
-          data[field] = null
-        }
-      }
-    }
-    if (data.quantity) data.quantity = parseInt(data.quantity)
-    if (data.ram_gb) data.ram_gb = parseInt(data.ram_gb)
-    if (data.storage_gb) data.storage_gb = parseInt(data.storage_gb)
-    delete data.accessories; // prevent Prisma invalid argument errors
+  const onFormSubmit = (data: any) => {
+    setConfirmData(data)
+  }
 
-    // Remove extra fields that are not in schema
-    delete data.quantity
-    delete data.storage_gb
-    delete data.ram_gb
-    delete data.accessories
+  const executeSave = async () => {
+    if (!confirmData) return
+    const data = { ...confirmData }
+    setConfirmData(null)
 
     // Format dates to ISO String or null
     data.handover_date = data.handover_date ? new Date(data.handover_date).toISOString() : null
@@ -60,58 +56,108 @@ export function LaptopForm({ open, onOpenChange, item, onSuccess }: { open: bool
       })
       const json = await res.json()
       if (json.success) {
-        toast.success(item ? 'Data diupdate' : 'Data ditambahkan')
+        setResultState({ show: true, success: true, message: item ? 'Data berhasil diupdate!' : 'Data berhasil ditambahkan!' })
         onSuccess()
-        onOpenChange(false)
       } else {
-        toast.error(json.error)
+        setResultState({ show: true, success: false, message: json.error || 'Terjadi kesalahan pada server.' })
       }
     } catch {
-      toast.error('Gagal menyimpan data')
+      setResultState({ show: true, success: false, message: 'Gagal menghubungi server. Periksa koneksi Anda.' })
     }
   }
 
+  const closeResult = () => {
+    if (resultState.success) {
+      onOpenChange(false)
+    }
+    setResultState({ show: false, success: false, message: '' })
+  }
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{item ? 'Edit' : 'Tambah'} Laptop</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            
+    <>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent side="right" className="w-full !max-w-[50vw] sm:max-w-[50vw] p-6 md:p-8 overflow-y-auto">
+        <SheetHeader className="mb-6">
+          <SheetTitle className="text-2xl font-bold">{item ? 'Edit' : 'Tambah'} Laptop</SheetTitle>
+        </SheetHeader>
+        <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6">
+          <div className="space-y-2">
+            <Label>Kode Aset</Label>
+            <Input type="text" {...register('asset_code')} placeholder="Kosongkan untuk otomatis" />
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* User Info */}
             <div className="space-y-2">
-              <Label className="capitalize">brand</Label>
-              <Input type="text" {...register('brand')} />
+              <Label>Nama Pegawai</Label>
+              <Input type="text" {...register('pic')} />
             </div>
             <div className="space-y-2">
-              <Label className="capitalize">model</Label>
-              <Input type="text" {...register('model')} />
+              <Label>Departmen</Label>
+              <Input type="text" {...register('department')} />
             </div>
             <div className="space-y-2">
-              <Label className="capitalize">mac address</Label>
-              <Input type="text" {...register('mac_address')} />
+              <Label>Divisi</Label>
+              <Input type="text" {...register('division')} />
             </div>
             <div className="space-y-2">
-              <Label className="capitalize">handover date</Label>
+              <Label>Job Level</Label>
+              <Input type="text" {...register('job_level')} />
+            </div>
+            <div className="space-y-2">
+              <Label>Branch</Label>
+              <Input type="text" {...register('branch')} />
+            </div>
+
+            {/* Handover Info */}
+            <div className="space-y-2">
+              <Label>Tgl Serah Terima</Label>
               <Input type="date" {...register('handover_date')} />
             </div>
             <div className="space-y-2">
-              <Label className="capitalize">return date</Label>
+              <Label>Tgl Pengembalian</Label>
               <Input type="date" {...register('return_date')} />
             </div>
-
             <div className="space-y-2">
-              <Label>Lokasi</Label>
-              <Input {...register('location')} />
+              <Label>IT Penyerah</Label>
+              <Input type="text" {...register('it_handover')} />
             </div>
-
+            <div className="space-y-2">
+              <Label>IT Penerima</Label>
+              <Input type="text" {...register('it_receiver')} />
+            </div>
             
+            {/* Spec Info */}
             <div className="space-y-2">
-              <Label>Pemegang</Label>
-              <Input {...register('pic')} />
+              <Label>Brand</Label>
+              <Input type="text" {...register('brand')} />
+            </div>
+            <div className="space-y-2">
+              <Label>Type/Model</Label>
+              <Input type="text" {...register('model')} />
+            </div>
+            <div className="space-y-2">
+              <Label>RAM</Label>
+              <Input type="text" {...register('ram')} placeholder="e.g. 16GB" />
+            </div>
+            <div className="space-y-2">
+              <Label>Storage</Label>
+              <Input type="text" {...register('storage')} placeholder="e.g. 512GB SSD" />
+            </div>
+            <div className="space-y-2">
+              <Label>Processor</Label>
+              <Input type="text" {...register('processor')} />
+            </div>
+            <div className="space-y-2">
+              <Label>Layar</Label>
+              <Input type="text" {...register('screen_size')} placeholder="e.g. 14 inch" />
+            </div>
+            <div className="space-y-2">
+              <Label>MAC Address</Label>
+              <Input type="text" {...register('mac_address')} />
             </div>
 
+            {/* Status */}
             <div className="space-y-2">
               <Label>Kondisi</Label>
               <Select value={watch('condition')} onValueChange={v => setValue('condition', v)}>
@@ -121,18 +167,15 @@ export function LaptopForm({ open, onOpenChange, item, onSuccess }: { open: bool
                 </SelectContent>
               </Select>
             </div>
-            
-            
           </div>
 
           <div className="space-y-2">
-            <Label>Catatan</Label>
+            <Label>Keterangan</Label>
             <Input {...register('notes')} />
           </div>
 
-          
           <div className="space-y-2">
-            <Label>File Serah Terima (PDF/Word/Gambar)</Label>
+            <Label>Form (PDF Bukti Serah Terima)</Label>
             <AttachmentField 
               assetCode={item?.asset_code || ''}
               attachmentName={watch('attachment_name')}
@@ -140,9 +183,6 @@ export function LaptopForm({ open, onOpenChange, item, onSuccess }: { open: bool
               onUploadSuccess={(name, path) => {
                 setValue('attachment_name', name)
                 setValue('attachment_path', path)
-                // If editing, also save immediately? No, we can just let onSubmit handle it, but wait:
-                // Previous code did onSubmit. We'll leave it out if we don't want to auto-save on upload.
-                // Wait, if it auto-saves, it's bad for creation! Let's NOT auto-save.
               }}
               onRemove={() => {
                 setValue('attachment_name', null)
@@ -150,13 +190,52 @@ export function LaptopForm({ open, onOpenChange, item, onSuccess }: { open: bool
               }}
             />
           </div>
-          
 
-          <div className="flex justify-end pt-4">
-            <Button type="submit">Simpan</Button>
+          <div className="flex justify-end pt-4 pb-12">
+            <Button type="submit" size="lg" className="w-full md:w-auto px-12">Simpan Data</Button>
           </div>
         </form>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
+
+    {/* Confirmation Dialog */}
+    <AlertDialog open={!!confirmData} onOpenChange={(o) => !o && setConfirmData(null)}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Konfirmasi Simpan</AlertDialogTitle>
+          <AlertDialogDescription>
+            Apakah Anda yakin semua data yang diisi sudah benar? 
+            {item ? ' Data lama akan diperbarui dengan data baru ini.' : ' Data baru akan ditambahkan ke sistem.'}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Batal</AlertDialogCancel>
+          <AlertDialogAction onClick={executeSave}>Ya, Simpan</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+
+    {/* Result Status Dialog */}
+    <AlertDialog open={resultState.show} onOpenChange={closeResult}>
+      <AlertDialogContent className="flex flex-col items-center justify-center p-8 text-center sm:max-w-md">
+        {resultState.success ? (
+          <CheckCircle2 className="w-20 h-20 text-green-500 mb-4" />
+        ) : (
+          <XCircle className="w-20 h-20 text-red-500 mb-4" />
+        )}
+        <AlertDialogHeader>
+          <AlertDialogTitle className="text-2xl text-center">
+            {resultState.success ? 'Berhasil!' : 'Gagal!'}
+          </AlertDialogTitle>
+          <AlertDialogDescription className="text-center text-lg mt-2">
+            {resultState.message}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter className="mt-6 w-full sm:justify-center">
+          <AlertDialogAction onClick={closeResult} className="w-full sm:w-auto px-8">OK</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+    </>
   )
 }

@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { recordHistory } from '@/lib/history'
-import { generateAssetCode } from '@/lib/utils'
+import { generateAssetCode, getErrorMessage } from '@/lib/utils'
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
@@ -13,31 +13,37 @@ export async function GET(req: Request) {
           { pic: { contains: search } },
           { brand: { contains: search } },
           { model: { contains: search } },
+          { department: { contains: search } },
+          { branch: { contains: search } },
         ]
       } : undefined,
       orderBy: { created_at: 'desc' }
     })
     return Response.json({ success: true, data })
-  } catch (e) { console.error(e);
-    return Response.json({ success: false, error: e.message || e.toString() }, { status: 500 })
+  } catch (e) {
+    console.error(e)
+    return Response.json({ success: false, error: getErrorMessage(e, 'Gagal mengambil data') }, { status: 500 })
   }
 }
 
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const last = await prisma.laptop.findFirst({ orderBy: { id: 'desc' } })
-    const asset_code = generateAssetCode('LPT', last?.asset_code)
+    let asset_code = body.asset_code
+    if (!asset_code) {
+      const last = await prisma.laptop.findFirst({ orderBy: { id: 'desc' } })
+      asset_code = generateAssetCode('LPT', last?.asset_code)
+    }
     const data = await prisma.laptop.create({
       data: { ...body, asset_code , updated_at: new Date() }
     })
     await recordHistory({
       table_name: 'laptops', asset_id: data.id, asset_code,
       action: 'Dibuat', new_condition: data.condition,
-      to_employee: data.pic, to_location: data.location
+      to_employee: data.pic, to_location: data.branch
     })
     return Response.json({ success: true, data }, { status: 201 })
   } catch (e) {
-    return Response.json({ success: false, error: e.message || e.toString() }, { status: 500 })
+    return Response.json({ success: false, error: getErrorMessage(e, 'Gagal menyimpan data') }, { status: 500 })
   }
 }

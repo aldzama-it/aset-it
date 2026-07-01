@@ -13,7 +13,7 @@ export async function GET() {
 
     const tables = [
       prisma.networkDevice, prisma.printer, prisma.cctv,
-      prisma.laptop, prisma.laptopAccessory, prisma.ht,
+      prisma.laptop, prisma.ht,
       prisma.tablet, prisma.camera, prisma.starlink, prisma.dashcam
     ]
 
