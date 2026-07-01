@@ -131,7 +131,7 @@ Tim IT`)
               <TableCell>{item.handover_date ? new Date(item.handover_date).toLocaleDateString('id-ID') : '-'}</TableCell>
               <TableCell>{item.attachment_path ? <a href="#" onClick={(e) => {
                 e.preventDefault();
-                fetch('/api/files/handover/' + item.attachment_path.split('/').pop(), { headers: { 'x-admin-key': process.env.NEXT_PUBLIC_ADMIN_KEY || 'aldzama-it-secret-2024' }})
+                fetch('/api/files/handover/' + item.attachment_path.split('/').pop())
                 .then(r => r.blob()).then(blob => window.open(URL.createObjectURL(blob), '_blank'))
               }} className="flex items-center text-blue-600 hover:underline"><Paperclip className="w-4 h-4 mr-1"/> File</a> : <XCircle className="w-4 h-4 text-red-500" />}</TableCell>
               <TableCell>
