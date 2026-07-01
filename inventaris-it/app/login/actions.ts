@@ -1,40 +1,28 @@
 'use server'
 
 import { createSession, deleteSession } from '@/lib/session'
-import { PrismaClient } from '@prisma/client'
-import bcrypt from 'bcryptjs'
-
-const prisma = new PrismaClient()
 
 export async function login(prevState: any, formData: FormData) {
-  const email = formData.get('email') as string
+  const username = formData.get('username') as string
   const password = formData.get('password') as string
 
-  if (!email || !password) {
+  if (!username || !password) {
     return {
-      message: 'Email and password are required',
+      message: 'Username and password are required',
     }
   }
 
-  const user = await prisma.user.findUnique({
-    where: { email },
-  })
+  const validUsername = process.env.ADMIN_USERNAME || 'admin'
+  const validPassword = process.env.ADMIN_PASSWORD || 'password123'
 
-  if (!user) {
+  if (username !== validUsername || password !== validPassword) {
     return {
-      message: 'Invalid email or password',
+      message: 'Invalid username or password',
     }
   }
 
-  const isPasswordValid = await bcrypt.compare(password, user.password)
-
-  if (!isPasswordValid) {
-    return {
-      message: 'Invalid email or password',
-    }
-  }
-
-  await createSession(user.id.toString())
+  // Use a static ID for the env-based admin user
+  await createSession('admin_env_user_id')
 
   return {
     success: true,

@@ -61,12 +61,12 @@ export default function LoginPage() {
 
             <form action={formAction} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-gray-700 font-semibold">Your email</Label>
+                <Label htmlFor="username" className="text-gray-700 font-semibold">Username</Label>
                 <Input 
-                  id="email" 
-                  name="email" 
-                  type="email" 
-                  placeholder="admin@admin.com" 
+                  id="username" 
+                  name="username" 
+                  type="text" 
+                  placeholder="admin" 
                   required 
                   className="h-12 rounded-xl border-gray-200 bg-gray-50 focus:bg-white transition-colors"
                 />
