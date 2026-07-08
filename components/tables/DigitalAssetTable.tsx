@@ -102,8 +102,7 @@ export function DigitalAssetTable({ config, data, onEdit, onRefresh }: { config:
         open={!!delItem} 
         onOpenChange={(o) => !o && setDelItem(null)} 
         onConfirm={handleDelete}
-        title="Hapus Aset"
-        description={`Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.`}
+        itemName={delItem ? (delItem.nama || delItem.nama_akun || delItem.app_name || delItem.email || 'Aset ini') : 'Aset ini'}
       />
     </div>
   )
