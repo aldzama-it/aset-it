@@ -105,6 +105,23 @@ export function DashcamForm({ open, onOpenChange, item, onSuccess }: { open: boo
             </div>
 
             <div className="space-y-2">
+              <Label>Email Azdome</Label>
+              <Input type="email" {...register('azdome_email')} />
+            </div>
+            <div className="space-y-2">
+              <Label>Password Azdome</Label>
+              <Input type="text" {...register('azdome_password')} />
+            </div>
+            <div className="space-y-2">
+              <Label>Gmail</Label>
+              <Input type="email" {...register('gmail')} />
+            </div>
+            <div className="space-y-2">
+              <Label>Password Gmail</Label>
+              <Input type="text" {...register('gmail_password')} />
+            </div>
+
+            <div className="space-y-2">
               <Label>Keterangan Tambahan</Label>
               <Textarea {...register('notes')} rows={3} />
             </div>
