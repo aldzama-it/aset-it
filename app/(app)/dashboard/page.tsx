@@ -148,7 +148,7 @@ export default async function ExecutiveDashboardPage() {
   })
 
   return (
-    <div className="flex-1 w-full p-2 md:p-6 pb-20 space-y-6 bg-slate-50/30">
+    <div className="flex-1 w-full p-4 md:p-6 pb-20 space-y-6 bg-slate-50/30">
       <HeroCard total={totalPhysical + totalDigital} />
       <DashboardCards data={kpiData} />
       <DetailedPhysicalCards stats={detailedStats} />
