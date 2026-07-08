@@ -115,9 +115,14 @@ export function Sidebar() {
   return (
     <aside 
       className={cn(
-        "bg-gradient-to-br from-primary/90 via-primary to-blue-900 text-white border-r-0 flex-shrink-0 min-h-screen font-sans transition-all duration-300 ease-in-out relative z-20",
-        isCollapsed ? "w-20" : "w-64"
+        "bg-gradient-to-br from-primary/90 via-primary to-blue-900 text-white border-r-0 flex-shrink-0 min-h-screen font-sans transition-all duration-300 ease-in-out z-50",
+        isCollapsed 
+          ? "fixed left-0 top-0 bottom-0 w-20 -translate-x-[64px] opacity-0 hover:translate-x-0 hover:opacity-80 cursor-pointer" 
+          : "relative w-64 translate-x-0 opacity-100"
       )}
+      onClick={(e) => {
+        if (isCollapsed) setIsCollapsed(false)
+      }}
     >
       <div className="px-4 font-bold text-xl border-b border-white/10 h-16 flex items-center justify-between overflow-hidden">
         <div className={cn(
