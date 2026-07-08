@@ -423,17 +423,37 @@ model VpnAccount {
 }
 
 model SynologyAccount {
-  id              Int       @id @default(autoincrement())
-  nama            String    @db.VarChar(100)
-  divisi          String?   @db.VarChar(100)
-  department      String?   @db.VarChar(100)
-  job_level       String?   @db.VarChar(100)
-  branch          String?   @db.VarChar(100)
-  email           String?   @db.VarChar(150)
-  password        String?   @db.VarChar(255)
-  status          String    @default("Aktif") @db.VarChar(50)
-  created_at      DateTime  @default(now())
-  updated_at      DateTime  @updatedAt
+  id                        Int       @id @default(autoincrement())
+  nama                      String?   @db.VarChar(100)
+  divisi                    String?   @db.VarChar(100)
+  department                String?   @db.VarChar(100)
+  job_level                 String?   @db.VarChar(100)
+  branch                    String?   @db.VarChar(100)
+  email                     String?   @db.VarChar(150)
+  name_synology             String?   @db.VarChar(100)
+  password                  String?   @db.VarChar(255)
+  description               String?   @db.Text
+  user_groups               String?   @db.Text
+  quota_mb                  String?   @db.VarChar(50)
+  app_priv_afp              String?   @db.VarChar(50)
+  app_priv_dsm              String?   @db.VarChar(50)
+  app_priv_ftp              String?   @db.VarChar(50)
+  app_priv_rsync            String?   @db.VarChar(50)
+  app_priv_sftp             String?   @db.VarChar(50)
+  app_priv_smb              String?   @db.VarChar(50)
+  app_priv_mail_server      String?   @db.VarChar(50)
+  app_priv_cloud_sync       String?   @db.VarChar(50)
+  app_priv_vmm              String?   @db.VarChar(50)
+  app_priv_active_backup    String?   @db.VarChar(50)
+  app_priv_universal_search String?   @db.VarChar(50)
+  app_priv_file_station     String?   @db.VarChar(50)
+  app_priv_drive            String?   @db.VarChar(50)
+  app_priv_notification     String?   @db.VarChar(50)
+  app_priv_cms              String?   @db.VarChar(50)
+  two_fa_status             String?   @db.VarChar(50)
+  status                    String    @default("Aktif") @db.VarChar(50)
+  created_at                DateTime  @default(now())
+  updated_at                DateTime  @updatedAt
 }
 
 model ExternalAppAccount {
