@@ -61,6 +61,7 @@ docker-compose.override.yml
 docker-compose.local.yml
 docker-compose.dev.yml
 Dockerfile.local
+docker/
 
 # local editor
 .vscode/
