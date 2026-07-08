@@ -67,6 +67,10 @@ model Dashcam {
   install_status  String            @default("Belum Terpasang") @db.VarChar(50)
   install_date    DateTime?
   notes           String?           @db.Text
+  azdome_email    String?           @db.VarChar(150)
+  azdome_password String?           @db.VarChar(255)
+  gmail           String?           @db.VarChar(150)
+  gmail_password  String?           @db.VarChar(255)
   created_at      DateTime          @default(now())
   updated_at      DateTime          @updatedAt
 }
@@ -385,4 +389,96 @@ model GeneralAsset {
   updated_at    DateTime                @updatedAt
 
   category      AssetCategory           @relation(fields: [category_id], references: [id])
+}
+
+model EmailAccount {
+  id              Int       @id @default(autoincrement())
+  nama            String?   @db.VarChar(100)
+  divisi          String?   @db.VarChar(100)
+  department      String?   @db.VarChar(100)
+  job_level       String?   @db.VarChar(100)
+  branch          String?   @db.VarChar(100)
+  email           String    @unique @db.VarChar(150)
+  domain          String?   @db.VarChar(100)
+  password        String?   @db.VarChar(255)
+  status          String    @default("Aktif") @db.VarChar(50)
+  deleted_at      DateTime?
+  deleted_reason  String?   @db.Text
+  keterangan      String?   @db.Text
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+}
+
+model VpnAccount {
+  id              Int       @id @default(autoincrement())
+  nama            String    @db.VarChar(100)
+  divisi          String?   @db.VarChar(100)
+  department      String?   @db.VarChar(100)
+  job_level       String?   @db.VarChar(100)
+  branch          String?   @db.VarChar(100)
+  ip_address      String?   @db.VarChar(45)
+  status          String    @default("Aktif") @db.VarChar(50)
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+}
+
+model SynologyAccount {
+  id              Int       @id @default(autoincrement())
+  nama            String    @db.VarChar(100)
+  divisi          String?   @db.VarChar(100)
+  department      String?   @db.VarChar(100)
+  job_level       String?   @db.VarChar(100)
+  branch          String?   @db.VarChar(100)
+  email           String?   @db.VarChar(150)
+  password        String?   @db.VarChar(255)
+  status          String    @default("Aktif") @db.VarChar(50)
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+}
+
+model ExternalAppAccount {
+  id              Int       @id @default(autoincrement())
+  app_name        String    @db.VarChar(150)
+  app_link        String?   @db.VarChar(255)
+  email_username  String?   @db.VarChar(150)
+  password        String?   @db.VarChar(255)
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+}
+
+model AdminSoftwareAccount {
+  id              Int       @id @default(autoincrement())
+  app_name        String    @db.VarChar(150)
+  app_link        String?   @db.VarChar(255)
+  email_username  String?   @db.VarChar(150)
+  password        String?   @db.VarChar(255)
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+}
+
+model InfrastructureAccount {
+  id              Int       @id @default(autoincrement())
+  nama_akun       String    @db.VarChar(100)
+  email_username  String?   @db.VarChar(150)
+  password        String?   @db.VarChar(255)
+  from_ip         String?   @db.VarChar(45)
+  to_ip           String?   @db.VarChar(45)
+  mac_address     String?   @db.VarChar(17)
+  keterangan      String?   @db.Text
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+}
+
+model OfficePhoneAccount {
+  id              Int       @id @default(autoincrement())
+  nama_akun       String    @db.VarChar(100)
+  username        String?   @db.VarChar(100)
+  password        String?   @db.VarChar(255)
+  reg_sip_account String?   @db.VarChar(100)
+  reg_sip_password String?  @db.VarChar(255)
+  ip_address      String?   @db.VarChar(45)
+  mac_address     String?   @db.VarChar(17)
+  keterangan      String?   @db.Text
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
 }
