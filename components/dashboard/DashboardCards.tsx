@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Server, MonitorSmartphone, AlertTriangle, Mail, ShieldAlert, Users } from 'lucide-react'
+import { Server, MonitorSmartphone, AlertTriangle, Mail, ShieldAlert, AppWindow } from 'lucide-react'
 
 export interface DashboardKPIs {
   totalPhysical: number
@@ -7,7 +7,7 @@ export interface DashboardKPIs {
   totalDamaged: number
   totalActiveEmail: number
   totalVpn: number
-  totalUsers: number
+  totalSoftware: number
 }
 
 export function DashboardCards({ data }: { data: DashboardKPIs }) {
@@ -17,7 +17,7 @@ export function DashboardCards({ data }: { data: DashboardKPIs }) {
     { label: 'Damaged Asset', value: data.totalDamaged, icon: AlertTriangle, color: 'text-red-500' },
     { label: 'Active Emails', value: data.totalActiveEmail, icon: Mail, color: 'text-green-500' },
     { label: 'VPN Users', value: data.totalVpn, icon: ShieldAlert, color: 'text-purple-500' },
-    { label: 'Admin Users', value: data.totalUsers, icon: Users, color: 'text-orange-500' },
+    { label: 'Admin Software', value: data.totalSoftware, icon: AppWindow, color: 'text-orange-500' },
   ]
 
   return (

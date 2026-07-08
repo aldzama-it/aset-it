@@ -73,7 +73,7 @@ export default async function ExecutiveDashboardPage() {
     totalDamaged,
     totalActiveEmail: emails,
     totalVpn: vpns,
-    totalUsers: users
+    totalSoftware: adminSoftwares
   }
 
   // 3. Asset Composition
