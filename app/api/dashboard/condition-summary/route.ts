@@ -12,9 +12,9 @@ export async function GET() {
     }
 
     const tables = [
-      prisma.networkDevice, prisma.printer, prisma.cctv,
+      prisma.printer, prisma.cctv,
       prisma.laptop, prisma.ht,
-      prisma.tablet, prisma.camera, prisma.starlink, prisma.dashcam
+      prisma.tablet, prisma.camera, prisma.generalInventory
     ]
 
     for (const table of tables) {
