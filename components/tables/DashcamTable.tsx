@@ -45,6 +45,10 @@ export function DashcamTable({ data, onEdit, onRefresh }: { data: any[], onEdit:
     { label: 'Lokasi', key: 'location' },
     { label: 'Project', key: 'project' },
     { label: 'Status Pemasangan', key: 'install_status', isBadge: true },
+    { label: 'Email Azdome', key: 'azdome_email' },
+    { label: 'Password Azdome', key: 'azdome_password' },
+    { label: 'Gmail', key: 'gmail' },
+    { label: 'Password Gmail', key: 'gmail_password' },
     { label: 'Tanggal Pemasangan', key: 'install_date', isDate: true },
     { label: 'Keterangan', key: 'notes' }
   ]

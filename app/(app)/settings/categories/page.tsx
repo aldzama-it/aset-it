@@ -21,9 +21,7 @@ export default function AssetCategoryPage() {
   return (
     <div className="space-y-4">
       <div className="flex justify-end items-center">
-        <div>
-          <p className="text-muted-foreground mt-1">Tambahkan jenis aset kustom yang belum ada di sistem (Opsi 1).</p>
-        </div>
+
         <Button onClick={() => { setEditItem(null); setFormOpen(true) }}>
           <Plus className="w-4 h-4 mr-2" /> Kategori Baru
         </Button>
