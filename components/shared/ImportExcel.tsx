@@ -28,12 +28,14 @@ export function ImportExcel({
   apiUrl, 
   assetType, 
   onSuccess,
-  categoryId 
+  categoryId,
+  customHeaders
 }: { 
   apiUrl: string, 
   assetType: string, 
   onSuccess: () => void,
-  categoryId?: number 
+  categoryId?: number,
+  customHeaders?: string[]
 }) {
   const [loading, setLoading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -41,7 +43,7 @@ export function ImportExcel({
   const [pendingFile, setPendingFile] = useState<File | null>(null)
   const [resultState, setResultState] = useState<{show: boolean, success: boolean, message: string, errors?: string[]}>({ show: false, success: false, message: '' })
 
-  const headers = HEADER_MAP[assetType] || DEFAULT_HEADERS
+  const headers = customHeaders || HEADER_MAP[assetType] || DEFAULT_HEADERS
 
   const handleDownloadTemplate = () => {
     downloadTemplate(headers, assetType)
@@ -107,7 +109,8 @@ export function ImportExcel({
             successCount++
           } else {
             errorCount++
-            errorDetails.push(`Baris ${i + 1}: ${json.error || 'Gagal menyimpan data'}`)
+            const detailMsg = json.details ? ` (${json.details.split('\\n').pop()})` : ''
+            errorDetails.push(`Baris ${i + 1}: ${json.error || 'Gagal menyimpan data'}${detailMsg}`)
           }
         } catch (e: any) {
           errorCount++
