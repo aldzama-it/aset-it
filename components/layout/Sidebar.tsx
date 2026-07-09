@@ -279,8 +279,7 @@ export function Sidebar() {
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction 
-                onClick={(e) => {
-                  e.preventDefault() // prevent default to handle custom animation first
+                onClick={() => {
                   setIsLoggingOut(true)
                   setTimeout(() => {
                     formRef.current?.requestSubmit()

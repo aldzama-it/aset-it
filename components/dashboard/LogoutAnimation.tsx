@@ -14,7 +14,7 @@ export function LogoutAnimation() {
 
   return (
     <div 
-      className={`fixed inset-0 z-[100] bg-gradient-to-br from-blue-900 via-primary to-primary/90 flex items-center justify-center pointer-events-auto transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] ${isAnimating ? 'translate-y-0' : '-translate-y-full'}`}
+      className={`fixed inset-0 z-[999] bg-gradient-to-br from-blue-900 via-primary to-primary/90 flex items-center justify-center pointer-events-auto transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] ${isAnimating ? 'translate-y-0' : '-translate-y-full'}`}
     >
        <div className={`transition-opacity duration-700 delay-300 flex flex-col items-center gap-4 ${isAnimating ? 'opacity-100' : 'opacity-0'}`}>
           <Image 
