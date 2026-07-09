@@ -18,6 +18,13 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "Inventaris IT",
   description: "Sistem Manajemen Inventaris Aset IT",
+  icons: [
+    {
+      url: "/Symbol.png",
+      href: "/Symbol.png",
+      sizes: "any",
+    }
+  ],
 };
 
 export default function RootLayout({
