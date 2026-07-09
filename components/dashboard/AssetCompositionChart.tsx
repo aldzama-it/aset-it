@@ -18,7 +18,7 @@ export function AssetCompositionChart({ data }: { data: { name: string; value: n
         {filteredData.length === 0 ? (
           <div className="flex h-full items-center justify-center text-muted-foreground text-sm">No data available</div>
         ) : (
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
             <PieChart>
               <Pie
                 data={filteredData}

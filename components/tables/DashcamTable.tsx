@@ -4,7 +4,7 @@ import { SortableTableHead } from '@/components/shared/SortableTableHead'
 import React, { useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
-import { Edit, Trash, ChevronDown, ChevronRight } from 'lucide-react'
+import { Edit, Trash } from 'lucide-react'
 import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
@@ -55,48 +55,41 @@ export function DashcamTable({ data, onEdit, onRefresh }: { data: any[], onEdit:
 
   return (
     <div className="border rounded-md bg-white overflow-x-auto">
-      <Table>
+      <Table className="whitespace-nowrap">
         <TableHeader>
           <TableRow>
-            <SortableTableHead label="Kode Aset" sortKey="asset_code" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['asset_code']} onFilterChange={setColumnFilter}  data={data} />
-            <SortableTableHead label="Nama Kendaraan" sortKey="vehicle_name" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['vehicle_name']} onFilterChange={setColumnFilter}  data={data} />
-            <SortableTableHead label="Nopol" sortKey="vehicle_number" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['vehicle_number']} onFilterChange={setColumnFilter}  data={data} />
-            <SortableTableHead label="Lokasi" sortKey="location" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['location']} onFilterChange={setColumnFilter}  data={data} />
-            <SortableTableHead label="Project" sortKey="project_name" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['project_name']} onFilterChange={setColumnFilter}  data={data} />
-            <SortableTableHead label="Status Pemasangan" sortKey="status" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['status']} onFilterChange={setColumnFilter}  data={data} />
-            <SortableTableHead label="Tgl Pemasangan" sortKey="installation_date" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['installation_date']} onFilterChange={setColumnFilter}  data={data} />
-            <SortableTableHead label="Email Azdome" sortKey="azdome_email" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['azdome_email']} onFilterChange={setColumnFilter}  data={data} />
-            <SortableTableHead label="Password Azdome" sortKey="azdome_password" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['azdome_password']} onFilterChange={setColumnFilter}  data={data} />
-            <SortableTableHead label="Gmail" sortKey="gmail" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['gmail']} onFilterChange={setColumnFilter}  data={data} />
-            <SortableTableHead label="Password Gmail" sortKey="gmail_password" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['gmail_password']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Kode Aset" sortKey="asset_code" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['asset_code']} onFilterChange={setColumnFilter} data={data} />
+            <SortableTableHead label="Nama Kendaraan" sortKey="vehicle_name" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['vehicle_name']} onFilterChange={setColumnFilter} data={data} />
+            <SortableTableHead label="Nomor Polisi (Nopol)" sortKey="plate_number" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['plate_number']} onFilterChange={setColumnFilter} data={data} />
+            <SortableTableHead label="Lokasi" sortKey="location" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['location']} onFilterChange={setColumnFilter} data={data} />
+            <SortableTableHead label="Project" sortKey="project" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['project']} onFilterChange={setColumnFilter} data={data} />
+            <SortableTableHead label="Status Pemasangan" sortKey="install_status" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['install_status']} onFilterChange={setColumnFilter} data={data} />
+            <SortableTableHead label="Email Azdome" sortKey="azdome_email" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['azdome_email']} onFilterChange={setColumnFilter} data={data} />
+            <SortableTableHead label="Password Azdome" sortKey="azdome_password" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['azdome_password']} onFilterChange={setColumnFilter} data={data} />
+            <SortableTableHead label="Gmail" sortKey="gmail" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['gmail']} onFilterChange={setColumnFilter} data={data} />
+            <SortableTableHead label="Password Gmail" sortKey="gmail_password" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['gmail_password']} onFilterChange={setColumnFilter} data={data} />
+            <SortableTableHead label="Tanggal Pemasangan" sortKey="install_date" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['install_date']} onFilterChange={setColumnFilter} data={data} />
+            <SortableTableHead label="Keterangan" sortKey="notes" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['notes']} onFilterChange={setColumnFilter} data={data} />
             <TableHead className="whitespace-nowrap w-24">Aksi</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {processedData.map((item: any) => (
             <React.Fragment key={item.id}>
-              <TableRow className="cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => setExpandedRow(expandedRow === item.id ? null : item.id)}>
-                <TableCell className="font-medium whitespace-nowrap">
-                  <div className="flex items-center gap-2">
-                    {expandedRow === item.id ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
-                    <span>{item.asset_code || '-'}</span>
-                  </div>
-                </TableCell>
+              <TableRow className="hover:bg-slate-50 transition-colors">
+              <TableCell className="whitespace-nowrap">{item.asset_code || "-"}</TableCell>
               <TableCell className="whitespace-nowrap">{item.vehicle_name || "-"}</TableCell>
               <TableCell className="whitespace-nowrap">{item.plate_number || "-"}</TableCell>
               <TableCell className="whitespace-nowrap">{item.location || "-"}</TableCell>
               <TableCell className="whitespace-nowrap">{item.project || "-"}</TableCell>
-              <TableCell className="whitespace-nowrap text-center">
-                <Badge variant={item.install_status === 'Terpasang' ? 'default' : 'secondary'} className={item.install_status === 'Terpasang' ? 'bg-green-600 hover:bg-green-700' : ''}>
-                  {item.install_status}
-                </Badge>
-              </TableCell>
-              <TableCell className="whitespace-nowrap">{formatDate(item.install_date)}</TableCell>
+              <TableCell className="whitespace-nowrap"><Badge variant={item.install_status === 'Baik' || item.install_status === 'Terpasang' || item.install_status === 'Active' ? 'default' : 'secondary'} className={item.install_status === 'Baik' || item.install_status === 'Terpasang' ? 'bg-green-600 hover:bg-green-700' : ''}>{item.install_status}</Badge></TableCell>
               <TableCell className="whitespace-nowrap">{item.azdome_email || "-"}</TableCell>
               <TableCell className="whitespace-nowrap">{item.azdome_password || "-"}</TableCell>
               <TableCell className="whitespace-nowrap">{item.gmail || "-"}</TableCell>
               <TableCell className="whitespace-nowrap">{item.gmail_password || "-"}</TableCell>
-              <TableCell>
+              <TableCell className="whitespace-nowrap">{item.install_date ? new Date(item.install_date).toLocaleDateString('id-ID') : '-'}</TableCell>
+              <TableCell className="whitespace-nowrap">{item.notes || "-"}</TableCell>
+  <TableCell>
                 <div className="flex gap-1 justify-center">
                   <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); onEdit(item); }} title="Edit Data">
                     <Edit className="w-4 h-4 text-blue-600" />
@@ -106,18 +99,11 @@ export function DashcamTable({ data, onEdit, onRefresh }: { data: any[], onEdit:
                   </Button>
                 </div>
               </TableCell>
-            </TableRow>
-            {expandedRow === item.id && (
-              <TableRow className="bg-slate-50/50 hover:bg-slate-50/50">
-                <TableCell colSpan={8} className="p-0 border-b">
-                  <ExpandableDetails data={item} fields={viewFields} />
-                </TableCell>
               </TableRow>
-            )}
-          </React.Fragment>
+            </React.Fragment>
           ))}
           {data.length === 0 && (
-            <TableRow><TableCell colSpan={8} className="text-center py-6 text-muted-foreground">Tidak ada data</TableCell></TableRow>
+            <TableRow><TableCell colSpan={13} className="text-center py-6 text-muted-foreground">Tidak ada data</TableCell></TableRow>
           )}
         </TableBody>
       </Table>

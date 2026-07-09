@@ -16,7 +16,7 @@ export function AssetByBranchChart({ data }: { data: { branch: string; count: nu
         {sortedData.length === 0 ? (
           <div className="flex h-full items-center justify-center text-muted-foreground text-sm">No data available</div>
         ) : (
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
             <BarChart
               layout="vertical"
               data={sortedData}
