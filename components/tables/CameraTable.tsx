@@ -4,17 +4,15 @@ import { SortableTableHead } from '@/components/shared/SortableTableHead'
 import React, { useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
-import { Edit, Trash, ChevronDown, ChevronRight } from 'lucide-react'
+import { Edit, Trash } from 'lucide-react'
 import { ConditionBadge } from '@/components/shared/ConditionBadge'
 import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
 import { toast } from 'sonner'
 import { ViewField } from '@/components/shared/ViewDetailsDialog'
-import { ExpandableDetails } from '@/components/shared/ExpandableDetails'
 
 export function CameraTable({ data, onEdit, onRefresh }: { data: any[], onEdit: (item: any) => void, onRefresh: () => void }) {
   const { processedData, requestSort, sortConfig , columnFilters, setColumnFilter } = useTableLogic(data, 'id')
   const [delItem, setDelItem] = useState<any>(null)
-  const [expandedRow, setExpandedRow] = useState<number | null>(null)
 
   const handleDelete = async () => {
     if (!delItem) return
@@ -33,19 +31,7 @@ export function CameraTable({ data, onEdit, onRefresh }: { data: any[], onEdit: 
     setDelItem(null)
   }
 
-  const viewFields: ViewField[] = [
-    { label: 'Kode Aset', key: 'asset_code' },
-    { label: 'Nama Pegawai', key: 'pic' },
-    { label: 'Brand', key: 'brand' },
-    { label: 'Tipe / Model', key: 'model' },
-    { label: 'Lokasi', key: 'location' },
-    { label: 'Tanggal Pembelian', key: 'purchase_date', isDate: true },
-    { label: 'Tanggal Serah Terima', key: 'handover_date', isDate: true },
-    { label: 'Tanggal Pengembalian', key: 'return_date', isDate: true },
-    { label: 'Kondisi', key: 'condition', isBadge: true },
-    { label: 'Aksesoris', key: 'accessories' },
-    { label: 'Keterangan', key: 'notes' }
-  ]
+
 
   const getAccessoriesNames = (acc: any) => {
     if (!acc) return '-'
@@ -62,16 +48,22 @@ export function CameraTable({ data, onEdit, onRefresh }: { data: any[], onEdit: 
   }
 
   return (
-    <div className="border rounded-md bg-white">
-      <Table>
+    <div className="border rounded-md bg-white overflow-x-auto">
+      <Table className="whitespace-nowrap">
         <TableHeader>
           <TableRow>
-            <SortableTableHead label="Kode Aset" sortKey="asset_code" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['asset_code']} onFilterChange={setColumnFilter}  data={data} />
-            <SortableTableHead label="Nama Pegawai" sortKey="pic" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['pic']} onFilterChange={setColumnFilter}  data={data} />
-            <SortableTableHead label="Brand & Tipe" sortKey="brand,model" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['brand,model']} onFilterChange={setColumnFilter}  data={data} />
-            <SortableTableHead label="Lokasi" sortKey="location" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['location']} onFilterChange={setColumnFilter}  data={data} />
-            <SortableTableHead label="Kondisi" sortKey="condition" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['condition']} onFilterChange={setColumnFilter}  data={data} />
-            <TableHead className="w-24">Aksi</TableHead>
+            <SortableTableHead label="Kode Aset" sortKey="asset_code" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['asset_code']} onFilterChange={setColumnFilter} data={data} />
+            <SortableTableHead label="Nama Pegawai" sortKey="pic" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['pic']} onFilterChange={setColumnFilter} data={data} />
+            <SortableTableHead label="Brand" sortKey="brand" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['brand']} onFilterChange={setColumnFilter} data={data} />
+            <SortableTableHead label="Tipe / Model" sortKey="model" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['model']} onFilterChange={setColumnFilter} data={data} />
+            <SortableTableHead label="Lokasi" sortKey="location" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['location']} onFilterChange={setColumnFilter} data={data} />
+            <SortableTableHead label="Tanggal Pembelian" sortKey="purchase_date" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['purchase_date']} onFilterChange={setColumnFilter} data={data} />
+            <SortableTableHead label="Tanggal Serah Terima" sortKey="handover_date" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['handover_date']} onFilterChange={setColumnFilter} data={data} />
+            <SortableTableHead label="Tanggal Pengembalian" sortKey="return_date" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['return_date']} onFilterChange={setColumnFilter} data={data} />
+            <SortableTableHead label="Kondisi" sortKey="condition" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['condition']} onFilterChange={setColumnFilter} data={data} />
+            <SortableTableHead label="Aksesoris" sortKey="accessories" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['accessories']} onFilterChange={setColumnFilter} data={data} />
+            <SortableTableHead label="Keterangan" sortKey="notes" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['notes']} onFilterChange={setColumnFilter} data={data} />
+            <TableHead className="w-24 whitespace-nowrap">Aksi</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -79,17 +71,18 @@ export function CameraTable({ data, onEdit, onRefresh }: { data: any[], onEdit: 
             const formattedItem = { ...item, accessories: getAccessoriesNames(item.accessories) }
             return (
               <React.Fragment key={item.id}>
-              <TableRow className="cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => setExpandedRow(expandedRow === item.id ? null : item.id)}>
-                <TableCell className="font-medium">
-                  <div className="flex items-center gap-2">
-                    {expandedRow === item.id ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
-                    <span>{item.asset_code || '-'}</span>
-                  </div>
-                </TableCell>
-                <TableCell>{item.pic || "-"}</TableCell>
-                <TableCell>{item.brand || '-'} {item.model || ''}</TableCell>
-                <TableCell>{item.location || '-'}</TableCell>
-                <TableCell><ConditionBadge condition={item.condition} /></TableCell>
+              <TableRow className="hover:bg-slate-50 transition-colors">
+                <TableCell className="font-medium whitespace-nowrap">{formattedItem.asset_code || '-'}</TableCell>
+                <TableCell className="whitespace-nowrap">{formattedItem.pic || "-"}</TableCell>
+                <TableCell className="whitespace-nowrap">{formattedItem.brand || '-'}</TableCell>
+                <TableCell className="whitespace-nowrap">{formattedItem.model || '-'}</TableCell>
+                <TableCell className="whitespace-nowrap">{formattedItem.location || '-'}</TableCell>
+                <TableCell className="whitespace-nowrap">{formattedItem.purchase_date ? new Date(formattedItem.purchase_date).toLocaleDateString('id-ID') : '-'}</TableCell>
+                <TableCell className="whitespace-nowrap">{formattedItem.handover_date ? new Date(formattedItem.handover_date).toLocaleDateString('id-ID') : '-'}</TableCell>
+                <TableCell className="whitespace-nowrap">{formattedItem.return_date ? new Date(formattedItem.return_date).toLocaleDateString('id-ID') : '-'}</TableCell>
+                <TableCell className="whitespace-nowrap"><ConditionBadge condition={formattedItem.condition} /></TableCell>
+                <TableCell className="whitespace-nowrap">{formattedItem.accessories}</TableCell>
+                <TableCell className="whitespace-nowrap">{formattedItem.notes || '-'}</TableCell>
                 <TableCell>
                   <div className="flex gap-1 justify-center">
                     <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); onEdit(item); }} title="Edit Data">
@@ -101,18 +94,11 @@ export function CameraTable({ data, onEdit, onRefresh }: { data: any[], onEdit: 
                   </div>
                 </TableCell>
               </TableRow>
-              {expandedRow === item.id && (
-                <TableRow className="bg-slate-50/50 hover:bg-slate-50/50">
-                  <TableCell colSpan={6} className="p-0 border-b">
-                    <ExpandableDetails data={formattedItem} fields={viewFields} />
-                  </TableCell>
-                </TableRow>
-              )}
             </React.Fragment>
             )
           })}
           {data.length === 0 && (
-            <TableRow><TableCell colSpan={6} className="text-center">Tidak ada data</TableCell></TableRow>
+            <TableRow><TableCell colSpan={12} className="text-center py-6 text-muted-foreground">Tidak ada data</TableCell></TableRow>
           )}
         </TableBody>
       </Table>

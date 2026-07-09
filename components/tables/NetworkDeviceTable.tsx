@@ -4,7 +4,7 @@ import { SortableTableHead } from '@/components/shared/SortableTableHead'
 import React, { useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
-import { Edit, Trash, ChevronDown, ChevronRight } from 'lucide-react'
+import { Edit, Trash } from 'lucide-react'
 import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
 import { toast } from 'sonner'
 import { ViewField } from '@/components/shared/ViewDetailsDialog'
@@ -49,34 +49,31 @@ export function NetworkDeviceTable({ data, onEdit, onRefresh }: { data: any[], o
 
   return (
     <div className="border rounded-md bg-white overflow-x-auto">
-      <Table>
+      <Table className="whitespace-nowrap">
         <TableHeader>
           <TableRow>
-            <SortableTableHead label="Kode Aset" sortKey="asset_code" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['asset_code']} onFilterChange={setColumnFilter}  data={data} />
-            <SortableTableHead label="Nama Aset" sortKey="name" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['name']} onFilterChange={setColumnFilter}  data={data} />
-            <SortableTableHead label="Tipe" sortKey="type" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['type']} onFilterChange={setColumnFilter}  data={data} />
-            <SortableTableHead label="MacAddr" sortKey="mac_address" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['mac_address']} onFilterChange={setColumnFilter}  data={data} />
-            <SortableTableHead label="Lokasi" sortKey="location" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['location']} onFilterChange={setColumnFilter}  data={data} />
-            <SortableTableHead label="Tgl Pembelian" sortKey="purchase_date" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['purchase_date']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Kode Aset" sortKey="asset_code" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['asset_code']} onFilterChange={setColumnFilter} data={data} />
+            <SortableTableHead label="Nama Aset" sortKey="name" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['name']} onFilterChange={setColumnFilter} data={data} />
+            <SortableTableHead label="Tipe Perangkat" sortKey="device_type" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['device_type']} onFilterChange={setColumnFilter} data={data} />
+            <SortableTableHead label="MAC Address" sortKey="mac_address" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['mac_address']} onFilterChange={setColumnFilter} data={data} />
+            <SortableTableHead label="Lokasi" sortKey="location" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['location']} onFilterChange={setColumnFilter} data={data} />
+            <SortableTableHead label="Tanggal Pembelian" sortKey="purchase_date" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['purchase_date']} onFilterChange={setColumnFilter} data={data} />
+            <SortableTableHead label="Keterangan" sortKey="notes" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['notes']} onFilterChange={setColumnFilter} data={data} />
             <TableHead className="whitespace-nowrap w-24">Aksi</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {processedData.map((item: any) => (
             <React.Fragment key={item.id}>
-              <TableRow className="cursor-pointer hover:bg-slate-50 transition-colors" onClick={() => setExpandedRow(expandedRow === item.id ? null : item.id)}>
-                <TableCell className="font-medium whitespace-nowrap">
-                  <div className="flex items-center gap-2">
-                    {expandedRow === item.id ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
-                    <span>{item.asset_code || '-'}</span>
-                  </div>
-                </TableCell>
+              <TableRow className="hover:bg-slate-50 transition-colors">
+              <TableCell className="whitespace-nowrap">{item.asset_code || "-"}</TableCell>
               <TableCell className="whitespace-nowrap">{item.name || "-"}</TableCell>
               <TableCell className="whitespace-nowrap">{item.device_type || "-"}</TableCell>
               <TableCell className="whitespace-nowrap">{item.mac_address || "-"}</TableCell>
               <TableCell className="whitespace-nowrap">{item.location || "-"}</TableCell>
-              <TableCell className="whitespace-nowrap">{formatDate(item.purchase_date)}</TableCell>
-              <TableCell>
+              <TableCell className="whitespace-nowrap">{item.purchase_date ? new Date(item.purchase_date).toLocaleDateString('id-ID') : '-'}</TableCell>
+              <TableCell className="whitespace-nowrap">{item.notes || "-"}</TableCell>
+  <TableCell>
                 <div className="flex gap-1 justify-center">
                   <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); onEdit(item); }} title="Edit Data">
                     <Edit className="w-4 h-4 text-blue-600" />
@@ -86,18 +83,11 @@ export function NetworkDeviceTable({ data, onEdit, onRefresh }: { data: any[], o
                   </Button>
                 </div>
               </TableCell>
-            </TableRow>
-            {expandedRow === item.id && (
-              <TableRow className="bg-slate-50/50 hover:bg-slate-50/50">
-                <TableCell colSpan={7} className="p-0 border-b">
-                  <ExpandableDetails data={item} fields={viewFields} />
-                </TableCell>
               </TableRow>
-            )}
-          </React.Fragment>
+            </React.Fragment>
           ))}
           {data.length === 0 && (
-            <TableRow><TableCell colSpan={7} className="text-center py-6 text-muted-foreground">Tidak ada data</TableCell></TableRow>
+            <TableRow><TableCell colSpan={8} className="text-center py-6 text-muted-foreground">Tidak ada data</TableCell></TableRow>
           )}
         </TableBody>
       </Table>
