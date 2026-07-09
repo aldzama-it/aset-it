@@ -1,7 +1,7 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import { Bell, UserCircle } from 'lucide-react'
+import { Bell, UserCircle, Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 export function TopBar() {
@@ -24,10 +24,20 @@ export function TopBar() {
   }
 
   return (
-    <header className="h-16 border-b border-border/40 bg-background/60 backdrop-blur-md supports-[backdrop-filter]:bg-background/40 flex items-center px-8 sticky top-0 z-10 shadow-sm transition-all">
-      <h2 className="font-semibold text-lg text-foreground tracking-tight font-poppins flex-1">
-        {getPageTitle()}
-      </h2>
+    <header className="h-16 border-b border-border/40 bg-background/60 backdrop-blur-md supports-[backdrop-filter]:bg-background/40 flex items-center px-4 md:px-8 sticky top-0 z-10 shadow-sm transition-all">
+      <div className="flex items-center flex-1 gap-2">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="md:hidden text-muted-foreground hover:text-foreground"
+          onClick={() => window.dispatchEvent(new CustomEvent('toggle-mobile-sidebar'))}
+        >
+          <Menu className="w-5 h-5" />
+        </Button>
+        <h2 className="font-semibold text-lg text-foreground tracking-tight font-poppins">
+          {getPageTitle()}
+        </h2>
+      </div>
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground hover:text-foreground">
           <Bell className="w-5 h-5" />
