@@ -21,7 +21,7 @@ export function DashboardCards({ data }: { data: DashboardKPIs }) {
   ]
 
   return (
-    <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-6 mb-8">
+    <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-8">
       {cards.map((card, i) => (
         <Card key={i} className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
