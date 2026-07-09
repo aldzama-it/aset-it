@@ -78,7 +78,14 @@ export function ImportExcel({
         const payload: Record<string, any> = {}
         headers.forEach((h, index) => {
           if (row[index] !== undefined && row[index] !== null) {
-            payload[h] = row[index]
+            if (h === 'quantity') {
+              payload[h] = parseInt(row[index], 10)
+            } else if (typeof row[index] === 'number') {
+              // Convert numbers to string to avoid Prisma type errors (e.g. phone numbers, serials)
+              payload[h] = String(row[index])
+            } else {
+              payload[h] = row[index]
+            }
           }
         })
 
