@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
@@ -16,6 +16,18 @@ import { logout } from '@/app/login/actions'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { LogoutAnimation } from '@/components/dashboard/LogoutAnimation'
 import { digitalAssetsConfig } from '@/lib/digital-assets-config'
 
 const physicalAssetItems = [
@@ -35,6 +47,8 @@ export function Sidebar() {
   const pathname = usePathname()
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [isMobileOpen, setIsMobileOpen] = useState(false)
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const formRef = useRef<HTMLFormElement>(null)
   const [dynamicCategories, setDynamicCategories] = useState<any[]>([])
   
   // State for collapsibles
@@ -243,25 +257,45 @@ export function Sidebar() {
       </nav>
 
       <div className="absolute bottom-0 left-0 w-full px-3 bg-transparent border-t border-white/10 pt-3 pb-4">
-        <form action={logout}>
-          <Tooltip delayDuration={0}>
-            <TooltipTrigger asChild>
-              <button 
-                type="submit"
-                className={cn(
-                  "flex items-center gap-3 w-full px-3 py-2 rounded-xl text-sm font-semibold transition-all duration-200 group relative overflow-hidden text-red-200 hover:bg-red-500/20 hover:text-white",
-                  isCollapsed && "justify-center px-0"
-                )}
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <button 
+              className={cn(
+                "flex items-center gap-3 w-full px-3 py-2 rounded-xl text-sm font-semibold transition-all duration-200 group relative overflow-hidden text-red-200 hover:bg-red-500/20 hover:text-white",
+                isCollapsed && "justify-center px-0"
+              )}
+            >
+              <LogOut className="w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110" />
+              {!isCollapsed && <span className="truncate transition-opacity duration-300">Logout</span>}
+            </button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you sure you want to log out?</AlertDialogTitle>
+              <AlertDialogDescription>
+                You will be redirected to the login page and need to enter your credentials to access the dashboard again.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={() => {
+                  setIsLoggingOut(true)
+                  setTimeout(() => {
+                    formRef.current?.requestSubmit()
+                  }, 1200) // Wait for animation before actually submitting
+                }}
+                className="bg-red-600 hover:bg-red-700 text-white"
               >
-                <LogOut className="w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110" />
-                {!isCollapsed && <span className="truncate transition-opacity duration-300">Logout</span>}
-              </button>
-            </TooltipTrigger>
-            {isCollapsed && <TooltipContent side="right" className="font-medium text-red-500 bg-white border-red-200">Logout</TooltipContent>}
-          </Tooltip>
-        </form>
+                Log out
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+        <form action={logout} ref={formRef} className="hidden" />
       </div>
     </aside>
+    {isLoggingOut && <LogoutAnimation />}
     </>
   )
 }
