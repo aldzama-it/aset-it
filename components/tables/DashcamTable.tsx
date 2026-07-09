@@ -65,6 +65,10 @@ export function DashcamTable({ data, onEdit, onRefresh }: { data: any[], onEdit:
             <SortableTableHead label="Project" sortKey="project_name" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['project_name']} onFilterChange={setColumnFilter}  data={data} />
             <SortableTableHead label="Status Pemasangan" sortKey="status" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['status']} onFilterChange={setColumnFilter}  data={data} />
             <SortableTableHead label="Tgl Pemasangan" sortKey="installation_date" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['installation_date']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Email Azdome" sortKey="azdome_email" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['azdome_email']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Password Azdome" sortKey="azdome_password" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['azdome_password']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Gmail" sortKey="gmail" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['gmail']} onFilterChange={setColumnFilter}  data={data} />
+            <SortableTableHead label="Password Gmail" sortKey="gmail_password" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['gmail_password']} onFilterChange={setColumnFilter}  data={data} />
             <TableHead className="whitespace-nowrap w-24">Aksi</TableHead>
           </TableRow>
         </TableHeader>
@@ -88,6 +92,10 @@ export function DashcamTable({ data, onEdit, onRefresh }: { data: any[], onEdit:
                 </Badge>
               </TableCell>
               <TableCell className="whitespace-nowrap">{formatDate(item.install_date)}</TableCell>
+              <TableCell className="whitespace-nowrap">{item.azdome_email || "-"}</TableCell>
+              <TableCell className="whitespace-nowrap">{item.azdome_password || "-"}</TableCell>
+              <TableCell className="whitespace-nowrap">{item.gmail || "-"}</TableCell>
+              <TableCell className="whitespace-nowrap">{item.gmail_password || "-"}</TableCell>
               <TableCell>
                 <div className="flex gap-1 justify-center">
                   <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); onEdit(item); }} title="Edit Data">
