@@ -34,6 +34,7 @@ const physicalAssetItems = [
 export function Sidebar() {
   const pathname = usePathname()
   const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isMobileOpen, setIsMobileOpen] = useState(false)
   const [dynamicCategories, setDynamicCategories] = useState<any[]>([])
   
   // State for collapsibles
@@ -44,6 +45,18 @@ export function Sidebar() {
   useEffect(() => {
     if (pathname.includes('/digital-assets/')) setIsDigitalOpen(true)
     if (physicalAssetItems.some(i => pathname.includes(i.href)) || pathname.includes('/assets/')) setIsPhysicalOpen(true)
+  }, [pathname])
+
+  // Mobile sidebar toggle listener
+  useEffect(() => {
+    const handleToggle = () => setIsMobileOpen(prev => !prev)
+    window.addEventListener('toggle-mobile-sidebar', handleToggle)
+    return () => window.removeEventListener('toggle-mobile-sidebar', handleToggle)
+  }, [])
+
+  // Auto close mobile sidebar on route change
+  useEffect(() => {
+    setIsMobileOpen(false)
   }, [pathname])
 
   const fetchCategories = () => {
@@ -77,20 +90,26 @@ export function Sidebar() {
         className={cn(
           "flex items-center gap-3 px-3 py-2 text-[13px] transition-all duration-200 group relative",
           isActive ? "bg-background text-primary font-bold shadow-none" : "text-white/70 font-medium hover:bg-white/10 hover:text-white",
-          isCollapsed ? "justify-center px-0 rounded-xl mx-2" : "rounded-l-full rounded-r-none"
+          isCollapsed ? "md:justify-center px-0 rounded-xl mx-2" : "rounded-l-full rounded-r-none"
         )}
       >
         <Icon className={cn("w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110", isActive ? "text-primary" : "")} />
-        {!isCollapsed && <span className="truncate transition-opacity duration-300">{label}</span>}
+        {(!isCollapsed || isMobileOpen) && <span className={cn("truncate transition-opacity duration-300", isCollapsed && "md:hidden")}>{label}</span>}
       </Link>
     )
 
     if (isCollapsed) {
       return (
-        <Tooltip delayDuration={0}>
-          <TooltipTrigger asChild>{content}</TooltipTrigger>
-          <TooltipContent side="right" className="font-medium bg-white text-primary border-border">{label}</TooltipContent>
-        </Tooltip>
+        <>
+          {/* Tooltip only for desktop collapsed mode */}
+          <div className="hidden md:block">
+            <Tooltip delayDuration={0}>
+              <TooltipTrigger asChild>{content}</TooltipTrigger>
+              <TooltipContent side="right" className="font-medium bg-white text-primary border-border">{label}</TooltipContent>
+            </Tooltip>
+          </div>
+          <div className="md:hidden">{content}</div>
+        </>
       )
     }
     return content
@@ -103,7 +122,7 @@ export function Sidebar() {
         className={cn(
           "flex items-center gap-3 pl-10 pr-3 py-1.5 text-[12px] transition-all duration-200 rounded-l-full relative",
           isActive ? "text-white font-bold bg-white/10" : "text-white/60 hover:text-white hover:bg-white/5",
-          isCollapsed && "hidden"
+          isCollapsed && "md:hidden"
         )}
       >
         <div className={cn("w-1.5 h-1.5 rounded-full absolute left-5", isActive ? "bg-white" : "bg-white/30")} />
@@ -113,12 +132,29 @@ export function Sidebar() {
   }
 
   return (
-    <aside 
-      className={cn(
-        "bg-gradient-to-br from-primary/90 via-primary to-blue-900 text-white border-r-0 flex-shrink-0 min-h-screen font-sans transition-all duration-300 ease-in-out relative z-20",
-        isCollapsed ? "w-20" : "w-64"
+    <>
+      {/* Mobile backdrop */}
+      {isMobileOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-50 md:hidden"
+          onClick={() => setIsMobileOpen(false)}
+        />
       )}
-    >
+      <aside 
+        className={cn(
+          "bg-gradient-to-br from-primary/90 via-primary to-blue-900 text-white border-r-0 flex-shrink-0 min-h-screen font-sans transition-all duration-300 ease-in-out z-[60]",
+          // Base (Mobile)
+          "fixed inset-y-0 left-0 w-64",
+          isMobileOpen ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0",
+          // Desktop
+          isCollapsed 
+            ? "md:fixed md:left-0 md:top-0 md:bottom-0 md:w-20 md:-translate-x-[64px] md:opacity-0 md:hover:translate-x-0 md:hover:opacity-80 md:cursor-pointer" 
+            : "md:relative md:w-64 md:translate-x-0 md:opacity-100"
+        )}
+        onClick={(e) => {
+          if (isCollapsed && window.innerWidth >= 768) setIsCollapsed(false)
+        }}
+      >
       <div className="px-4 font-bold text-xl border-b border-white/10 h-16 flex items-center justify-between overflow-hidden">
         <div className={cn(
           "flex items-center gap-2 transition-all duration-300 whitespace-nowrap",
@@ -133,7 +169,13 @@ export function Sidebar() {
           variant="ghost" 
           size="icon" 
           className={cn("h-8 w-8 text-white hover:bg-white/10 hover:text-white", isCollapsed ? "mx-auto" : "")} 
-          onClick={() => setIsCollapsed(!isCollapsed)}
+          onClick={() => {
+            if (window.innerWidth < 768) {
+              setIsMobileOpen(false)
+            } else {
+              setIsCollapsed(!isCollapsed)
+            }
+          }}
         >
           {isCollapsed ? <Menu className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
         </Button>
@@ -220,5 +262,6 @@ export function Sidebar() {
         </form>
       </div>
     </aside>
+    </>
   )
 }
