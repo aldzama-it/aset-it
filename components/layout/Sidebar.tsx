@@ -50,7 +50,7 @@ export function Sidebar() {
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const formRef = useRef<HTMLFormElement>(null)
   const [dynamicCategories, setDynamicCategories] = useState<any[]>([])
-  
+
   // State for collapsibles
   const [isDigitalOpen, setIsDigitalOpen] = useState(false)
   const [isPhysicalOpen, setIsPhysicalOpen] = useState(false)
@@ -81,7 +81,7 @@ export function Sidebar() {
           setDynamicCategories(res.data)
         }
       })
-      .catch(() => {})
+      .catch(() => { })
   }
 
   useEffect(() => {
@@ -149,153 +149,153 @@ export function Sidebar() {
     <>
       {/* Mobile backdrop */}
       {isMobileOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 z-50 md:hidden"
           onClick={() => setIsMobileOpen(false)}
         />
       )}
-      <aside 
+      <aside
         className={cn(
           "bg-gradient-to-br from-primary/90 via-primary to-blue-900 text-white border-r-0 flex-shrink-0 min-h-screen font-sans transition-all duration-300 ease-in-out z-[60]",
           // Base (Mobile)
           "fixed inset-y-0 left-0 w-64",
           isMobileOpen ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0",
           // Desktop
-          isCollapsed 
-            ? "md:fixed md:left-0 md:top-0 md:bottom-0 md:w-20 md:-translate-x-[64px] md:opacity-0 md:hover:translate-x-0 md:hover:opacity-80 md:cursor-pointer" 
+          isCollapsed
+            ? "md:fixed md:left-0 md:top-0 md:bottom-0 md:w-20 md:-translate-x-[64px] md:opacity-0 md:hover:translate-x-0 md:hover:opacity-80 md:cursor-pointer"
             : "md:relative md:w-64 md:translate-x-0 md:opacity-100"
         )}
         onClick={(e) => {
           if (isCollapsed && window.innerWidth >= 768) setIsCollapsed(false)
         }}
       >
-      <div className="px-4 font-bold text-xl border-b border-white/10 h-16 flex items-center justify-between overflow-hidden">
-        <div className={cn(
-          "flex items-center gap-2 transition-all duration-300 whitespace-nowrap",
-          isCollapsed ? "opacity-0 w-0 hidden" : "opacity-100 w-auto flex"
-        )}>
-          <Image src="/logo-white.png" alt="Logo" width={60} height={60} className="object-contain shrink-0" />
-          <span className="text-white tracking-tight font-sans text-sm font-semibold leading-tight">
-            Asset IT & System
-          </span>
+        <div className="px-4 font-bold text-xl border-b border-white/10 h-16 flex items-center justify-between overflow-hidden">
+          <div className={cn(
+            "flex items-center gap-3 overflow-hidden transition-all duration-300",
+            isCollapsed ? "opacity-0 w-0 hidden" : "opacity-100 w-auto flex"
+          )}>
+            <Image src="/logo-white.png" alt="Logo" width={60} height={60} className="object-contain shrink-0" />
+            <span className="text-white tracking-tight font-sans text-sm font-semibold leading-tight">
+              Asset IT & System
+            </span>
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className={cn("h-8 w-8 text-white hover:bg-white/10 hover:text-white", isCollapsed ? "mx-auto" : "")}
+            onClick={() => {
+              if (window.innerWidth < 768) {
+                setIsMobileOpen(false)
+              } else {
+                setIsCollapsed(!isCollapsed)
+              }
+            }}
+          >
+            {isCollapsed ? <Menu className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
+          </Button>
         </div>
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className={cn("h-8 w-8 text-white hover:bg-white/10 hover:text-white", isCollapsed ? "mx-auto" : "")} 
-          onClick={() => {
-            if (window.innerWidth < 768) {
-              setIsMobileOpen(false)
-            } else {
-              setIsCollapsed(!isCollapsed)
-            }
-          }}
-        >
-          {isCollapsed ? <Menu className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
-        </Button>
-      </div>
-      
-      <nav className="pl-3 py-3 pr-0 space-y-1 overflow-y-auto max-h-[calc(100vh-3.5rem)] scrollbar-hide pb-20">
-        <NavItem href="/dashboard" icon={LayoutDashboard} label="Dashboard" isActive={pathname === '/dashboard'} />
 
-        {/* Digital Assets Collapsible */}
-        <Collapsible open={isDigitalOpen && !isCollapsed} onOpenChange={setIsDigitalOpen} className="mt-1">
-          <CollapsibleTrigger className="w-full">
-            <div className={cn(
-              "flex items-center justify-between px-3 py-2 text-[13px] text-white/70 font-medium hover:bg-white/10 hover:text-white transition-all duration-200",
-              isCollapsed ? "justify-center rounded-xl mx-2" : "rounded-l-full"
-            )}>
-              <div className="flex items-center gap-3">
-                <Cloud className="w-5 h-5 flex-shrink-0" />
-                {!isCollapsed && <span>Aset Digital</span>}
+        <nav className="pl-3 py-3 pr-0 space-y-1 overflow-y-auto max-h-[calc(100vh-3.5rem)] scrollbar-hide pb-20">
+          <NavItem href="/dashboard" icon={LayoutDashboard} label="Dashboard" isActive={pathname === '/dashboard'} />
+
+          {/* Digital Assets Collapsible */}
+          <Collapsible open={isDigitalOpen && !isCollapsed} onOpenChange={setIsDigitalOpen} className="mt-1">
+            <CollapsibleTrigger className="w-full">
+              <div className={cn(
+                "flex items-center justify-between px-3 py-2 text-[13px] text-white/70 font-medium hover:bg-white/10 hover:text-white transition-all duration-200",
+                isCollapsed ? "justify-center rounded-xl mx-2" : "rounded-l-full"
+              )}>
+                <div className="flex items-center gap-3">
+                  <Cloud className="w-5 h-5 flex-shrink-0" />
+                  {!isCollapsed && <span>Aset Digital</span>}
+                </div>
+                {!isCollapsed && (isDigitalOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />)}
               </div>
-              {!isCollapsed && (isDigitalOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />)}
-            </div>
-          </CollapsibleTrigger>
-          <CollapsibleContent className="space-y-1 mt-1 mb-2">
-            {digitalAssetsConfig.map(asset => (
-               <SubNavItem 
-                 key={asset.id} 
-                 href={`/digital-assets/${asset.id}`} 
-                 label={asset.title} 
-                 isActive={pathname === `/digital-assets/${asset.id}`} 
-               />
-            ))}
-          </CollapsibleContent>
-        </Collapsible>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="space-y-1 mt-1 mb-2">
+              {digitalAssetsConfig.map(asset => (
+                <SubNavItem
+                  key={asset.id}
+                  href={`/digital-assets/${asset.id}`}
+                  label={asset.title}
+                  isActive={pathname === `/digital-assets/${asset.id}`}
+                />
+              ))}
+            </CollapsibleContent>
+          </Collapsible>
 
-        {/* Physical Assets Collapsible */}
-        <Collapsible open={isPhysicalOpen && !isCollapsed} onOpenChange={setIsPhysicalOpen}>
-          <CollapsibleTrigger className="w-full">
-            <div className={cn(
-              "flex items-center justify-between px-3 py-2 text-[13px] text-white/70 font-medium hover:bg-white/10 hover:text-white transition-all duration-200",
-              isCollapsed ? "justify-center rounded-xl mx-2" : "rounded-l-full"
-            )}>
-              <div className="flex items-center gap-3">
-                <MonitorDot className="w-5 h-5 flex-shrink-0" />
-                {!isCollapsed && <span>Aset Fisik</span>}
+          {/* Physical Assets Collapsible */}
+          <Collapsible open={isPhysicalOpen && !isCollapsed} onOpenChange={setIsPhysicalOpen}>
+            <CollapsibleTrigger className="w-full">
+              <div className={cn(
+                "flex items-center justify-between px-3 py-2 text-[13px] text-white/70 font-medium hover:bg-white/10 hover:text-white transition-all duration-200",
+                isCollapsed ? "justify-center rounded-xl mx-2" : "rounded-l-full"
+              )}>
+                <div className="flex items-center gap-3">
+                  <MonitorDot className="w-5 h-5 flex-shrink-0" />
+                  {!isCollapsed && <span>Aset Fisik</span>}
+                </div>
+                {!isCollapsed && (isPhysicalOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />)}
               </div>
-              {!isCollapsed && (isPhysicalOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />)}
-            </div>
-          </CollapsibleTrigger>
-          <CollapsibleContent className="space-y-1 mt-1 mb-2">
-            {allPhysicalAssets.map(asset => (
-               <SubNavItem 
-                 key={asset.href} 
-                 href={asset.href} 
-                 label={asset.label} 
-                 isActive={pathname === asset.href} 
-               />
-            ))}
-          </CollapsibleContent>
-        </Collapsible>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="space-y-1 mt-1 mb-2">
+              {allPhysicalAssets.map(asset => (
+                <SubNavItem
+                  key={asset.href}
+                  href={asset.href}
+                  label={asset.label}
+                  isActive={pathname === asset.href}
+                />
+              ))}
+            </CollapsibleContent>
+          </Collapsible>
 
-        <div className="my-2 border-t border-white/10 pr-3" />
-        
-        <NavItem href="/history" icon={History} label="Riwayat Aset" isActive={pathname === '/history'} />
-        <NavItem href="/settings/categories" icon={Settings} label="Pengaturan" isActive={pathname.startsWith('/settings')} />
-      </nav>
+          <div className="my-2 border-t border-white/10 pr-3" />
 
-      <div className="absolute bottom-0 left-0 w-full px-3 bg-transparent border-t border-white/10 pt-3 pb-4">
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <button 
-              className={cn(
-                "flex items-center gap-3 w-full px-3 py-2 rounded-xl text-sm font-semibold transition-all duration-200 group relative overflow-hidden text-red-200 hover:bg-red-500/20 hover:text-white",
-                isCollapsed && "justify-center px-0"
-              )}
-            >
-              <LogOut className="w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110" />
-              {!isCollapsed && <span className="truncate transition-opacity duration-300">Logout</span>}
-            </button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you sure you want to log out?</AlertDialogTitle>
-              <AlertDialogDescription>
-                You will be redirected to the login page and need to enter your credentials to access the dashboard again.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction 
-                onClick={() => {
-                  setIsLoggingOut(true)
-                  setTimeout(() => {
-                    formRef.current?.requestSubmit()
-                  }, 1200) // Wait for animation before actually submitting
-                }}
-                className="bg-red-600 hover:bg-red-700 text-white"
+          <NavItem href="/history" icon={History} label="Riwayat Aset" isActive={pathname === '/history'} />
+          <NavItem href="/settings/categories" icon={Settings} label="Pengaturan" isActive={pathname.startsWith('/settings')} />
+        </nav>
+
+        <div className="absolute bottom-0 left-0 w-full px-3 bg-transparent border-t border-white/10 pt-3 pb-4">
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <button
+                className={cn(
+                  "flex items-center gap-3 w-full px-3 py-2 rounded-xl text-sm font-semibold transition-all duration-200 group relative overflow-hidden text-red-200 hover:bg-red-500/20 hover:text-white",
+                  isCollapsed && "justify-center px-0"
+                )}
               >
-                Log out
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-        <form action={logout} ref={formRef} className="hidden" />
-      </div>
-    </aside>
-    {isLoggingOut && <LogoutAnimation />}
+                <LogOut className="w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110" />
+                {!isCollapsed && <span className="truncate transition-opacity duration-300">Logout</span>}
+              </button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure you want to log out?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  You will be redirected to the login page and need to enter your credentials to access the dashboard again.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => {
+                    setIsLoggingOut(true)
+                    setTimeout(() => {
+                      formRef.current?.requestSubmit()
+                    }, 1200) // Wait for animation before actually submitting
+                  }}
+                  className="bg-red-600 hover:bg-red-700 text-white"
+                >
+                  Log out
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+          <form action={logout} ref={formRef} className="hidden" />
+        </div>
+      </aside>
+      {isLoggingOut && <LogoutAnimation />}
     </>
   )
 }
