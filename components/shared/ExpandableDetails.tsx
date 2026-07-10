@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import { ViewField } from './ViewDetailsDialog'
 import { Badge } from '@/components/ui/badge'
 

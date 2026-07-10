@@ -1,4 +1,5 @@
 'use client'
+import { Badge } from "@/components/ui/badge";
 import { useTableLogic } from '@/hooks/useTableLogic'
 import { SortableTableHead } from '@/components/shared/SortableTableHead'
 import React, { useState } from 'react'
