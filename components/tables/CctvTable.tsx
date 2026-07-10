@@ -11,7 +11,7 @@ import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
 import { toast } from 'sonner'
 import { ViewField } from '@/components/shared/ViewDetailsDialog'
 import { ExpandableDetails } from '@/components/shared/ExpandableDetails'
-import { Badge } from '@/components/ui/badge'
+
 
 export function CctvTable({ data, onEdit, onRefresh }: { data: any[], onEdit: (item: any) => void, onRefresh: () => void }) {
   const { processedData, requestSort, sortConfig, columnFilters, setColumnFilter } = useTableLogic(data, 'id')
