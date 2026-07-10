@@ -2,17 +2,16 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { usePathname, useSearchParams } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 
 export function TopProgressBar() {
   const [isAnimating, setIsAnimating] = useState(false)
   const pathname = usePathname()
-  const searchParams = useSearchParams()
 
-  // Selesaikan animasi ketika rute atau parameter pencarian berubah (navigasi selesai)
+  // Selesaikan animasi ketika rute berubah (navigasi selesai)
   useEffect(() => {
     setIsAnimating(false)
-  }, [pathname, searchParams])
+  }, [pathname])
 
   // Cegat event klik secara global untuk mendeteksi navigasi link
   useEffect(() => {
