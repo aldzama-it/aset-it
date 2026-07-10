@@ -19,7 +19,7 @@ export async function GET(req: Request) {
       orderBy: { created_at: 'desc' }
     })
     return Response.json({ success: true, data })
-  } catch (e) {
+  } catch (e: any) {
     return Response.json({ success: false, error: 'Gagal mengambil data' }, { status: 500 })
   }
 }
@@ -41,7 +41,7 @@ export async function POST(req: Request) {
       to_location: data.location
     })
     return Response.json({ success: true, data }, { status: 201 })
-  } catch (e) {
-    return Response.json({ success: false, error: 'Gagal menyimpan data' }, { status: 500 })
+  } catch (e: any) {
+    return Response.json({ success: false, error: 'Gagal menyimpan data', details: e instanceof Error ? e.message : String(e) }, { status: 500 })
   }
 }

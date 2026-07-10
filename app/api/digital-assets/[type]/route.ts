@@ -26,7 +26,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ type
     })
 
     return NextResponse.json({ success: true, data })
-  } catch (e) {
+  } catch (e: any) {
     return NextResponse.json({ success: false, error: 'Gagal mengambil data', details: getErrorMessage(e) }, { status: 500 })
   }
 }
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ typ
     })
 
     return NextResponse.json({ success: true, data: newAsset })
-  } catch (e) {
+  } catch (e: any) {
     return NextResponse.json({ success: false, error: 'Gagal menyimpan data', details: getErrorMessage(e) }, { status: 500 })
   }
 }

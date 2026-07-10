@@ -32,10 +32,10 @@ export function AttachmentField({
       if (json.success) {
         onUploadSuccess(json.data.attachment_name, json.data.attachment_path)
       } else {
-        toast.error('Gagal upload')
+        toast.error(`Gagal upload: ${json.error || 'Terjadi kesalahan'}`)
       }
-    } catch {
-      toast.error('Terjadi kesalahan')
+    } catch (err: any) {
+      toast.error(`Terjadi kesalahan jaringan: ${err.message || ''}`)
     } finally {
       setUploading(false)
     }
