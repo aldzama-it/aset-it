@@ -120,6 +120,8 @@ model Laptop {
   notes           String?          @db.Text
   it_handover     String?          @db.VarChar(100)
   it_receiver     String?          @db.VarChar(100)
+  admin_password  String?          @db.VarChar(100)
+  anydesk_code    String?          @db.VarChar(50)
   created_at      DateTime         @default(now())
   updated_at      DateTime
 }
