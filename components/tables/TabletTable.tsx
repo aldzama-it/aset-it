@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button'
 import { Edit, Trash } from 'lucide-react'
 import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
 import { toast } from 'sonner'
-import { Badge } from '@/components/ui/badge'
 import { ViewField } from '@/components/shared/ViewDetailsDialog'
 import { ExpandableDetails } from '@/components/shared/ExpandableDetails'
 
