@@ -10,9 +10,10 @@ import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
 import { toast } from 'sonner'
 import { ViewField } from '@/components/shared/ViewDetailsDialog'
 import { ExpandableDetails } from '@/components/shared/ExpandableDetails'
+import { Badge } from '@/components/ui/badge'
 
 export function CctvTable({ data, onEdit, onRefresh }: { data: any[], onEdit: (item: any) => void, onRefresh: () => void }) {
-  const { processedData, requestSort, sortConfig , columnFilters, setColumnFilter } = useTableLogic(data, 'id')
+  const { processedData, requestSort, sortConfig, columnFilters, setColumnFilter } = useTableLogic(data, 'id')
   const [delItem, setDelItem] = useState<any>(null)
   const [expandedRow, setExpandedRow] = useState<number | null>(null)
 
@@ -68,26 +69,26 @@ export function CctvTable({ data, onEdit, onRefresh }: { data: any[], onEdit: (i
           {processedData.map((item: any) => (
             <React.Fragment key={item.id}>
               <TableRow className="hover:bg-slate-50 transition-colors">
-              <TableCell className="whitespace-nowrap">{item.asset_code || "-"}</TableCell>
-              <TableCell className="whitespace-nowrap">{item.brand || "-"}</TableCell>
-              <TableCell className="whitespace-nowrap">{item.model || "-"}</TableCell>
-              <TableCell className="whitespace-nowrap">{item.location || "-"}</TableCell>
-              <TableCell className="whitespace-nowrap">{item.position_label || "-"}</TableCell>
-              <TableCell className="whitespace-nowrap">{item.ip_address || "-"}</TableCell>
-              <TableCell className="whitespace-nowrap">{item.mac_address || "-"}</TableCell>
-              <TableCell className="whitespace-nowrap">{item.install_date ? new Date(item.install_date).toLocaleDateString('id-ID') : '-'}</TableCell>
-              <TableCell className="whitespace-nowrap"><Badge variant={item.condition === 'Baik' || item.condition === 'Terpasang' || item.condition === 'Active' ? 'default' : 'secondary'} className={item.condition === 'Baik' || item.condition === 'Terpasang' ? 'bg-green-600 hover:bg-green-700' : ''}>{item.condition}</Badge></TableCell>
-              <TableCell className="whitespace-nowrap">{item.notes || "-"}</TableCell>
-  <TableCell>
-                <div className="flex gap-1 justify-center">
-                  <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); onEdit(item); }} title="Edit Data">
-                    <Edit className="w-4 h-4 text-blue-600" />
-                  </Button>
-                  <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); setDelItem(item); }} title="Hapus Data">
-                    <Trash className="w-4 h-4 text-red-600" />
-                  </Button>
-                </div>
-              </TableCell>
+                <TableCell className="whitespace-nowrap">{item.asset_code || "-"}</TableCell>
+                <TableCell className="whitespace-nowrap">{item.brand || "-"}</TableCell>
+                <TableCell className="whitespace-nowrap">{item.model || "-"}</TableCell>
+                <TableCell className="whitespace-nowrap">{item.location || "-"}</TableCell>
+                <TableCell className="whitespace-nowrap">{item.position_label || "-"}</TableCell>
+                <TableCell className="whitespace-nowrap">{item.ip_address || "-"}</TableCell>
+                <TableCell className="whitespace-nowrap">{item.mac_address || "-"}</TableCell>
+                <TableCell className="whitespace-nowrap">{item.install_date ? new Date(item.install_date).toLocaleDateString('id-ID') : '-'}</TableCell>
+                <TableCell className="whitespace-nowrap"><Badge variant={item.condition === 'Baik' || item.condition === 'Terpasang' || item.condition === 'Active' ? 'default' : 'secondary'} className={item.condition === 'Baik' || item.condition === 'Terpasang' ? 'bg-green-600 hover:bg-green-700' : ''}>{item.condition}</Badge></TableCell>
+                <TableCell className="whitespace-nowrap">{item.notes || "-"}</TableCell>
+                <TableCell>
+                  <div className="flex gap-1 justify-center">
+                    <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); onEdit(item); }} title="Edit Data">
+                      <Edit className="w-4 h-4 text-blue-600" />
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); setDelItem(item); }} title="Hapus Data">
+                      <Trash className="w-4 h-4 text-red-600" />
+                    </Button>
+                  </div>
+                </TableCell>
               </TableRow>
             </React.Fragment>
           ))}
@@ -97,6 +98,6 @@ export function CctvTable({ data, onEdit, onRefresh }: { data: any[], onEdit: (i
         </TableBody>
       </Table>
       <DeleteConfirmDialog open={!!delItem} onOpenChange={(o) => !o && setDelItem(null)} onConfirm={handleDelete} itemName={delItem?.asset_code || 'data ini'} />
-      </div>
+    </div>
   )
 }
