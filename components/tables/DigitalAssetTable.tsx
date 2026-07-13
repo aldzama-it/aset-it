@@ -6,6 +6,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { TablePagination } from '@/components/shared/TablePagination'
 import { Button } from '@/components/ui/button'
 import { Edit, Trash, Eye, EyeOff } from 'lucide-react'
+import { Checkbox } from '@/components/ui/checkbox'
+import { TableSelectionBar } from '@/components/shared/TableSelectionBar'
+import { EmptyState } from '@/components/shared/EmptyState'
+import { exportToExcel } from '@/lib/excel'
 import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
 import { toast } from 'sonner'
 import { DigitalAssetConfig } from '@/lib/digital-assets-config'
@@ -23,10 +27,31 @@ export function DigitalAssetTable({ config, data, onEdit, onRefresh }: { config:
     requestSort, 
     sortConfig, 
     columnFilters, 
-    setColumnFilter 
+    setColumnFilter,
+    selectedIds,
+    toggleSelection,
+    toggleAllPageSelection,
+    clearSelection
   } = useTableLogic(data, 'id')
   const [delItem, setDelItem] = useState<any>(null)
   const [showPasswords, setShowPasswords] = useState<Record<number, boolean>>({})
+
+  
+  const handleBatchDelete = async () => {
+    try {
+      await Promise.all(Array.from(selectedIds).map(id => fetch('/api/unknown/' + id, { method: 'DELETE' })))
+      toast.success(`${selectedIds.size} data dihapus`)
+      clearSelection()
+      onRefresh()
+    } catch {
+      toast.error('Gagal menghapus data terpilih')
+    }
+  }
+
+  const handleExportSelected = () => {
+    const selectedData = data.filter(item => selectedIds.has(item.id))
+    exportToExcel(selectedData, 'Data_Terpilih')
+  }
 
   const handleDelete = async () => {
     if (!delItem) return
@@ -53,9 +78,9 @@ export function DigitalAssetTable({ config, data, onEdit, onRefresh }: { config:
   const tableColumns = config.fields
 
   return (
-    <div className="border rounded-md bg-white overflow-x-auto">
+    <div className="border rounded-md bg-white flex flex-col shadow-sm">
       <Table>
-        <TableHeader>
+        <TableHeader className="sticky top-0 bg-white/95 backdrop-blur z-10 shadow-sm">
           <TableRow>
             {tableColumns.map(col => (
                <SortableTableHead 

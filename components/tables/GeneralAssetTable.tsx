@@ -5,6 +5,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { TablePagination } from '@/components/shared/TablePagination'
 import { Button } from '@/components/ui/button'
 import { Edit, Trash2 } from 'lucide-react'
+import { Checkbox } from '@/components/ui/checkbox'
+import { TableSelectionBar } from '@/components/shared/TableSelectionBar'
+import { EmptyState } from '@/components/shared/EmptyState'
+import { exportToExcel } from '@/lib/excel'
 import { toast } from 'sonner'
 import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
 
@@ -23,9 +27,30 @@ export function GeneralAssetTable({ data, onEdit, onRefresh }: { data: any[], on
     requestSort, 
     sortConfig, 
     columnFilters, 
-    setColumnFilter 
+    setColumnFilter,
+    selectedIds,
+    toggleSelection,
+    toggleAllPageSelection,
+    clearSelection
   } = useTableLogic(data, 'id')
   const [delItem, setDelItem] = useState<any>(null)
+
+  
+  const handleBatchDelete = async () => {
+    try {
+      await Promise.all(Array.from(selectedIds).map(id => fetch('/api/general-assets/' + id, { method: 'DELETE' })))
+      toast.success(`${selectedIds.size} data dihapus`)
+      clearSelection()
+      onRefresh()
+    } catch {
+      toast.error('Gagal menghapus data terpilih')
+    }
+  }
+
+  const handleExportSelected = () => {
+    const selectedData = data.filter(item => selectedIds.has(item.id))
+    exportToExcel(selectedData, 'Data_Terpilih')
+  }
 
   const handleDelete = async () => {
     if (!delItem) return
@@ -45,10 +70,11 @@ export function GeneralAssetTable({ data, onEdit, onRefresh }: { data: any[], on
   }
 
   return (
-    <div className="border rounded-md bg-white overflow-x-auto">
+    <div className="border rounded-md bg-white flex flex-col shadow-sm">
       <Table>
-        <TableHeader>
+        <TableHeader className="sticky top-0 bg-white/95 backdrop-blur z-10 shadow-sm">
           <TableRow>
+            <TableHead className="w-[50px]"><Checkbox checked={paginatedData.length > 0 && paginatedData.every((item: any) => selectedIds.has(item.id))} onCheckedChange={toggleAllPageSelection} aria-label="Select all" /></TableHead>
             <SortableTableHead label="Kode Aset" sortKey="asset_code" currentSort={sortConfig} onRequestSort={requestSort}  currentFilter={columnFilters['asset_code']} onFilterChange={setColumnFilter}  data={data} />
             <SortableTableHead label="Brand & Model" sortKey="brand,model" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['brand,model']} onFilterChange={setColumnFilter}  data={data} />
             <SortableTableHead label="PIC / Lokasi" sortKey="pic,location" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['pic,location']} onFilterChange={setColumnFilter}  data={data} />
@@ -78,7 +104,7 @@ export function GeneralAssetTable({ data, onEdit, onRefresh }: { data: any[], on
             </TableRow>
           ))}
           {data.length === 0 && (
-            <TableRow><TableCell colSpan={6} className="text-center py-6 text-muted-foreground">Tidak ada data aset</TableCell></TableRow>
+            <TableRow><TableCell colSpan={7} className="text-center py-6 text-muted-foreground">Tidak ada data aset</TableCell></TableRow>
           )}
         </TableBody>
       </Table>

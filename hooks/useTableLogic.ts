@@ -85,6 +85,36 @@ export function useTableLogic<T>(data: T[], initialSortKey: string | null = null
   const totalPages = Math.ceil(processedData.length / pageSize)
   const totalItems = processedData.length
 
+  const [selectedIds, setSelectedIds] = useState<Set<number | string>>(new Set())
+
+  const toggleSelection = (id: number | string) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
+  const toggleAllPageSelection = () => {
+    const pageIds = paginatedData.map((item: any) => item.id)
+    const allSelected = pageIds.every(id => selectedIds.has(id))
+    
+    setSelectedIds(prev => {
+      const next = new Set(prev)
+      if (allSelected) {
+        pageIds.forEach(id => next.delete(id))
+      } else {
+        pageIds.forEach(id => next.add(id))
+      }
+      return next
+    })
+  }
+
+  const clearSelection = () => {
+    setSelectedIds(new Set())
+  }
+
   return { 
     processedData, 
     paginatedData,
@@ -97,6 +127,11 @@ export function useTableLogic<T>(data: T[], initialSortKey: string | null = null
     requestSort, 
     sortConfig, 
     columnFilters, 
-    setColumnFilter 
+    setColumnFilter,
+    selectedIds,
+    toggleSelection,
+    toggleAllPageSelection,
+    clearSelection
   }
 }
+

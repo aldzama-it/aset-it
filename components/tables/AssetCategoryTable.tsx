@@ -5,6 +5,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { TablePagination } from '@/components/shared/TablePagination'
 import { Button } from '@/components/ui/button'
 import { Edit, Trash2 } from 'lucide-react'
+import { Checkbox } from '@/components/ui/checkbox'
+import { TableSelectionBar } from '@/components/shared/TableSelectionBar'
+import { EmptyState } from '@/components/shared/EmptyState'
+import { exportToExcel } from '@/lib/excel'
 import { toast } from 'sonner'
 import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
 
@@ -21,9 +25,30 @@ export function AssetCategoryTable({ data, onEdit, onRefresh }: { data: any[], o
     requestSort, 
     sortConfig, 
     columnFilters, 
-    setColumnFilter 
+    setColumnFilter,
+    selectedIds,
+    toggleSelection,
+    toggleAllPageSelection,
+    clearSelection
   } = useTableLogic(data, 'id')
   const [delItem, setDelItem] = useState<any>(null)
+
+  
+  const handleBatchDelete = async () => {
+    try {
+      await Promise.all(Array.from(selectedIds).map(id => fetch('/api/settings/categories/' + id, { method: 'DELETE' })))
+      toast.success(`${selectedIds.size} data dihapus`)
+      clearSelection()
+      onRefresh()
+    } catch {
+      toast.error('Gagal menghapus data terpilih')
+    }
+  }
+
+  const handleExportSelected = () => {
+    const selectedData = data.filter(item => selectedIds.has(item.id))
+    exportToExcel(selectedData, 'Data_Terpilih')
+  }
 
   const handleDelete = async () => {
     if (!delItem) return
@@ -45,8 +70,9 @@ export function AssetCategoryTable({ data, onEdit, onRefresh }: { data: any[], o
   return (
     <div className="border rounded-md bg-white">
       <Table>
-        <TableHeader>
+        <TableHeader className="sticky top-0 bg-white/95 backdrop-blur z-10 shadow-sm">
           <TableRow>
+            <TableHead className="w-[50px]"><Checkbox checked={paginatedData.length > 0 && paginatedData.every((item: any) => selectedIds.has(item.id))} onCheckedChange={toggleAllPageSelection} aria-label="Select all" /></TableHead>
             <SortableTableHead label="Nama Kategori" sortKey="name" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['name']} onFilterChange={setColumnFilter}  data={data} />
             <SortableTableHead label="Slug" sortKey="slug" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['slug']} onFilterChange={setColumnFilter}  data={data} />
             <TableHead className="w-24">Aksi</TableHead>
@@ -66,7 +92,7 @@ export function AssetCategoryTable({ data, onEdit, onRefresh }: { data: any[], o
             </TableRow>
           ))}
           {data.length === 0 && (
-            <TableRow><TableCell colSpan={3} className="text-center py-6 text-muted-foreground">Tidak ada kategori data</TableCell></TableRow>
+            <TableRow><TableCell colSpan={4} className="text-center py-6 text-muted-foreground">Tidak ada kategori data</TableCell></TableRow>
           )}
         </TableBody>
       </Table>
