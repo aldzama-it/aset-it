@@ -7,7 +7,7 @@ import { downloadTemplate, readExcelFile } from '@/lib/excel'
 import { toast } from 'sonner'
 
 const HEADER_MAP: Record<string, string[]> = {
-  'Laptop': ['asset_code', 'pic', 'department', 'division', 'job_level', 'branch', 'handover_date', 'return_date', 'brand', 'model', 'ram', 'storage', 'processor', 'screen_size', 'mac_address', 'condition', 'notes', 'it_handover', 'it_receiver'],
+  'Laptop': ['asset_code', 'pic', 'department', 'division', 'job_level', 'branch', 'handover_date', 'return_date', 'brand', 'model', 'ram', 'storage', 'processor', 'screen_size', 'mac_address', 'condition', 'notes', 'admin_password', 'anydesk_code', 'it_handover', 'it_receiver'],
   'Printer': ['asset_code', 'brand', 'model', 'location', 'condition', 'notes', 'ink_type', 'mac_address', 'ip_address', 'purchase_date', 'connection'],
   'Kamera': ['asset_code', 'pic', 'brand', 'model', 'location', 'handover_date', 'return_date', 'purchase_date', 'condition', 'notes'],
   'CCTV': ['asset_code', 'brand', 'model', 'location', 'position_label', 'ip_address', 'mac_address', 'install_date', 'condition', 'notes'],
@@ -73,11 +73,41 @@ export function ImportExcel({
       let errorCount = 0
       const errorDetails: string[] = []
 
+      const getFriendlyImportError = (rawErr: string) => {
+        const msg = String(rawErr);
+        const lowerMsg = msg.toLowerCase();
+        
+        // Ekstrak nama kolom dari log Prisma (biasanya diapit backtick `nama_kolom` atau tanda kurung)
+        const argMatch = msg.match(/argument `(.*?)`/i) || msg.match(/fields: \(`(.*?)`\)/i) || msg.match(/fields: \((.*?)\)/i);
+        const field = argMatch ? argMatch[1] : '';
+        const fieldText = field ? ` pada kolom '${field}'` : '';
+
+        if (lowerMsg.includes('premature end of input') || lowerMsg.includes('iso-8601') || lowerMsg.includes('invalid value for argument')) {
+          if (field.includes('date')) {
+            return `Format tanggal${fieldText} tidak sesuai. Pastikan menggunakan format teks YYYY-MM-DD (contoh: 2026-12-31) atau hapus (kosongkan) sel tersebut jika tidak ada data.`;
+          }
+          return `Isian${fieldText} tidak valid. Pastikan format isiannya benar.`;
+        }
+        if (lowerMsg.includes('unique constraint')) {
+          return `Data${fieldText} sudah digunakan oleh aset lain (duplikat). Harap gunakan nilai yang berbeda/unik.`;
+        }
+        if (lowerMsg.includes('unknown argument')) {
+          return `Kolom${fieldText} tidak dikenali sistem. Pastikan judul (header) tabel persis seperti di template bawaan.`;
+        }
+        if (lowerMsg.includes('provided') && lowerMsg.includes('expected')) {
+          return `Tipe data${fieldText} keliru. Silakan cek kembali apakah harusnya diisi angka atau teks.`;
+        }
+        
+        // Potong pesan asli jika terlalu panjang agar rapi
+        const shortError = msg.length > 60 ? msg.substring(0, 60) + '...' : msg;
+        return `Gagal diproses. Cek kembali isian baris ini. (${shortError})`;
+      }
+
       for (let i = 1; i < data.length; i++) {
         const row = data[i]
         const payload: Record<string, any> = {}
         headers.forEach((h, index) => {
-          if (row[index] !== undefined && row[index] !== null) {
+          if (row[index] !== undefined && row[index] !== null && row[index] !== '') {
             if (h === 'quantity') {
               payload[h] = parseInt(row[index], 10)
             } else if (typeof row[index] === 'number') {
@@ -97,6 +127,8 @@ export function ImportExcel({
              const parsed = new Date(payload[field])
              if (!isNaN(parsed.getTime())) {
                payload[field] = parsed.toISOString()
+             } else {
+               delete payload[field]
              }
           }
         }
@@ -116,12 +148,11 @@ export function ImportExcel({
             successCount++
           } else {
             errorCount++
-            const detailMsg = json.details ? ` (${json.details.split('\\n').pop()})` : ''
-            errorDetails.push(`Baris ${i + 1}: ${json.error || 'Gagal menyimpan data'}${detailMsg}`)
+            errorDetails.push(`Baris ${i + 1}: ${getFriendlyImportError(json.error || json.details || '')}`)
           }
         } catch (e: any) {
           errorCount++
-          errorDetails.push(`Baris ${i + 1}: ${e.message || 'Error jaringan'}`)
+          errorDetails.push(`Baris ${i + 1}: Koneksi terputus atau server error.`)
         }
       }
 
