@@ -99,7 +99,7 @@ model Ht {
 
 model Laptop {
   id              Int              @id @default(autoincrement())
-  asset_code      String?          @unique(map: "Laptop_asset_code_key") @db.VarChar(20)
+  asset_code      String?          @db.VarChar(20)
   pic             String?          @db.VarChar(100)
   department      String?          @db.VarChar(100)
   division        String?          @db.VarChar(100)
