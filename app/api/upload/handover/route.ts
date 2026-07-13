@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
         attachment_path: `private-uploads/handover/${filename}`
       }
     })
-  } catch (e) {
-    return Response.json({ success: false, error: 'Gagal upload file' }, { status: 500 })
+  } catch (e: any) {
+    return Response.json({ success: false, error: e.message || 'Gagal upload file' }, { status: 500 })
   }
 }

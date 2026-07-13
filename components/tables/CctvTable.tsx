@@ -4,6 +4,7 @@ import { useTableLogic } from '@/hooks/useTableLogic'
 import { SortableTableHead } from '@/components/shared/SortableTableHead'
 import React, { useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { TablePagination } from '@/components/shared/TablePagination'
 import { Button } from '@/components/ui/button'
 import { Edit, Trash } from 'lucide-react'
 import { ConditionBadge } from '@/components/shared/ConditionBadge'
@@ -14,7 +15,20 @@ import { ExpandableDetails } from '@/components/shared/ExpandableDetails'
 
 
 export function CctvTable({ data, onEdit, onRefresh }: { data: any[], onEdit: (item: any) => void, onRefresh: () => void }) {
-  const { processedData, requestSort, sortConfig, columnFilters, setColumnFilter } = useTableLogic(data, 'id')
+  const { 
+    processedData, 
+    paginatedData,
+    currentPage,
+    setCurrentPage,
+    pageSize,
+    setPageSize,
+    totalPages,
+    totalItems,
+    requestSort, 
+    sortConfig, 
+    columnFilters, 
+    setColumnFilter 
+  } = useTableLogic(data, 'id')
   const [delItem, setDelItem] = useState<any>(null)
   const [expandedRow, setExpandedRow] = useState<number | null>(null)
 
@@ -67,7 +81,7 @@ export function CctvTable({ data, onEdit, onRefresh }: { data: any[], onEdit: (i
           </TableRow>
         </TableHeader>
         <TableBody>
-          {processedData.map((item: any) => (
+          {paginatedData.map((item: any) => (
             <React.Fragment key={item.id}>
               <TableRow className="hover:bg-slate-50 transition-colors">
                 <TableCell className="whitespace-nowrap">{item.asset_code || "-"}</TableCell>
@@ -98,6 +112,15 @@ export function CctvTable({ data, onEdit, onRefresh }: { data: any[], onEdit: (i
           )}
         </TableBody>
       </Table>
+      
+      <TablePagination 
+        currentPage={currentPage}
+        totalPages={totalPages}
+        pageSize={pageSize}
+        totalItems={totalItems}
+        onPageChange={setCurrentPage}
+        onPageSizeChange={setPageSize}
+      />
       <DeleteConfirmDialog open={!!delItem} onOpenChange={(o) => !o && setDelItem(null)} onConfirm={handleDelete} itemName={delItem?.asset_code || 'data ini'} />
     </div>
   )

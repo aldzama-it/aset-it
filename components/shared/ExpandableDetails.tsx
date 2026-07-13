@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import { ViewField } from './ViewDetailsDialog'
 
 export function ExpandableDetails({ data, fields }: { data: any, fields: ViewField[] }) {

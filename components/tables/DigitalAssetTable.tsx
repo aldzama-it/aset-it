@@ -3,6 +3,7 @@ import { useTableLogic } from '@/hooks/useTableLogic'
 import { SortableTableHead } from '@/components/shared/SortableTableHead'
 import React, { useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { TablePagination } from '@/components/shared/TablePagination'
 import { Button } from '@/components/ui/button'
 import { Edit, Trash, Eye, EyeOff } from 'lucide-react'
 import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
@@ -10,7 +11,20 @@ import { toast } from 'sonner'
 import { DigitalAssetConfig } from '@/lib/digital-assets-config'
 
 export function DigitalAssetTable({ config, data, onEdit, onRefresh }: { config: DigitalAssetConfig, data: any[], onEdit: (item: any) => void, onRefresh: () => void }) {
-  const { processedData, requestSort, sortConfig , columnFilters, setColumnFilter } = useTableLogic(data, 'id')
+  const { 
+    processedData, 
+    paginatedData,
+    currentPage,
+    setCurrentPage,
+    pageSize,
+    setPageSize,
+    totalPages,
+    totalItems,
+    requestSort, 
+    sortConfig, 
+    columnFilters, 
+    setColumnFilter 
+  } = useTableLogic(data, 'id')
   const [delItem, setDelItem] = useState<any>(null)
   const [showPasswords, setShowPasswords] = useState<Record<number, boolean>>({})
 
@@ -66,7 +80,7 @@ export function DigitalAssetTable({ config, data, onEdit, onRefresh }: { config:
               </TableCell>
             </TableRow>
           ) : (
-            processedData.map((item, i) => (
+            paginatedData.map((item, i) => (
               <TableRow key={item.id || i} className="hover:bg-muted/50">
                 {tableColumns.map(col => (
                   <TableCell key={col.name} className="whitespace-nowrap">
@@ -97,6 +111,15 @@ export function DigitalAssetTable({ config, data, onEdit, onRefresh }: { config:
           )}
         </TableBody>
       </Table>
+      
+      <TablePagination 
+        currentPage={currentPage}
+        totalPages={totalPages}
+        pageSize={pageSize}
+        totalItems={totalItems}
+        onPageChange={setCurrentPage}
+        onPageSizeChange={setPageSize}
+      />
 
       <DeleteConfirmDialog 
         open={!!delItem} 

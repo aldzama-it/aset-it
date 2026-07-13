@@ -3,6 +3,7 @@ import { useTableLogic } from '@/hooks/useTableLogic'
 import { SortableTableHead } from '@/components/shared/SortableTableHead'
 import React, { useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { TablePagination } from '@/components/shared/TablePagination'
 import { Button } from '@/components/ui/button'
 import { Edit, Trash } from 'lucide-react'
 import { ConditionBadge } from '@/components/shared/ConditionBadge'
@@ -11,7 +12,20 @@ import { toast } from 'sonner'
 import { ViewField } from '@/components/shared/ViewDetailsDialog'
 
 export function CameraTable({ data, onEdit, onRefresh }: { data: any[], onEdit: (item: any) => void, onRefresh: () => void }) {
-  const { processedData, requestSort, sortConfig , columnFilters, setColumnFilter } = useTableLogic(data, 'id')
+  const { 
+    processedData, 
+    paginatedData,
+    currentPage,
+    setCurrentPage,
+    pageSize,
+    setPageSize,
+    totalPages,
+    totalItems,
+    requestSort, 
+    sortConfig, 
+    columnFilters, 
+    setColumnFilter 
+  } = useTableLogic(data, 'id')
   const [delItem, setDelItem] = useState<any>(null)
 
   const handleDelete = async () => {
@@ -67,7 +81,7 @@ export function CameraTable({ data, onEdit, onRefresh }: { data: any[], onEdit: 
           </TableRow>
         </TableHeader>
         <TableBody>
-          {processedData.map((item: any) => {
+          {paginatedData.map((item: any) => {
             const formattedItem = { ...item, accessories: getAccessoriesNames(item.accessories) }
             return (
               <React.Fragment key={item.id}>
@@ -102,6 +116,15 @@ export function CameraTable({ data, onEdit, onRefresh }: { data: any[], onEdit: 
           )}
         </TableBody>
       </Table>
+      
+      <TablePagination 
+        currentPage={currentPage}
+        totalPages={totalPages}
+        pageSize={pageSize}
+        totalItems={totalItems}
+        onPageChange={setCurrentPage}
+        onPageSizeChange={setPageSize}
+      />
       <DeleteConfirmDialog open={!!delItem} onOpenChange={(o) => !o && setDelItem(null)} onConfirm={handleDelete} itemName={delItem?.asset_code || 'data ini'} />
     </div>
   )

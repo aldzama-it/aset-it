@@ -109,6 +109,16 @@ export function LaptopForm({ open, onOpenChange, item, onSuccess }: { open: bool
               <Input type="text" {...register('branch')} />
             </div>
 
+            {/* Credentials */}
+            <div className="space-y-2">
+              <Label>Password Admin</Label>
+              <Input type="text" {...register('admin_password')} />
+            </div>
+            <div className="space-y-2">
+              <Label>Kode Anydesk</Label>
+              <Input type="text" {...register('anydesk_code')} />
+            </div>
+
             {/* Handover Info */}
             <div className="space-y-2">
               <Label>Tgl Serah Terima</Label>

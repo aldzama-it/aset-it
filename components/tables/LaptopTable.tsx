@@ -4,6 +4,7 @@ import { useTableLogic } from '@/hooks/useTableLogic'
 import { SortableTableHead } from '@/components/shared/SortableTableHead'
 import React, { useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+
 import { Button } from '@/components/ui/button'
 import { Edit, Trash, Paperclip, XCircle, Mail } from 'lucide-react'
 import { ConditionBadge } from '@/components/shared/ConditionBadge'
@@ -11,9 +12,23 @@ import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
 import { toast } from 'sonner'
 import { ViewField } from '@/components/shared/ViewDetailsDialog'
 import { ExpandableDetails } from '@/components/shared/ExpandableDetails'
+import { TablePagination } from '@/components/shared/TablePagination'
 
 export function LaptopTable({ data, onEdit, onRefresh }: { data: any[], onEdit: (item: any) => void, onRefresh: () => void }) {
-  const { processedData, requestSort, sortConfig , columnFilters, setColumnFilter } = useTableLogic(data, 'id')
+  const { 
+    processedData, 
+    paginatedData,
+    currentPage,
+    setCurrentPage,
+    pageSize,
+    setPageSize,
+    totalPages,
+    totalItems,
+    requestSort, 
+    sortConfig, 
+    columnFilters, 
+    setColumnFilter 
+  } = useTableLogic(data, 'id')
   const [delItem, setDelItem] = useState<any>(null)
   const [expandedRow, setExpandedRow] = useState<number | null>(null)
 
@@ -119,13 +134,15 @@ Tim IT`)
             <SortableTableHead label="Kondisi" sortKey="condition" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['condition']} onFilterChange={setColumnFilter} data={data} />
             <SortableTableHead label="IT Penyerah" sortKey="it_handover" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['it_handover']} onFilterChange={setColumnFilter} data={data} />
             <SortableTableHead label="IT Penerima" sortKey="it_receiver" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['it_receiver']} onFilterChange={setColumnFilter} data={data} />
+            <SortableTableHead label="Password Admin" sortKey="admin_password" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['admin_password']} onFilterChange={setColumnFilter} data={data} />
+            <SortableTableHead label="Kode Anydesk" sortKey="anydesk_code" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['anydesk_code']} onFilterChange={setColumnFilter} data={data} />
             <SortableTableHead label="Keterangan" sortKey="notes" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['notes']} onFilterChange={setColumnFilter} data={data} />
             <TableHead>Form ST</TableHead>
             <TableHead className="w-32">Aksi</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {processedData.map((item: any) => (
+          {paginatedData.map((item: any) => (
             <React.Fragment key={item.id}>
               <TableRow className="hover:bg-slate-50 transition-colors">
               <TableCell className="whitespace-nowrap">{item.asset_code || "-"}</TableCell>
@@ -146,6 +163,8 @@ Tim IT`)
               <TableCell className="whitespace-nowrap"><Badge variant={item.condition === 'Baik' || item.condition === 'Terpasang' || item.condition === 'Active' ? 'default' : 'secondary'} className={item.condition === 'Baik' || item.condition === 'Terpasang' ? 'bg-green-600 hover:bg-green-700' : ''}>{item.condition}</Badge></TableCell>
               <TableCell className="whitespace-nowrap">{item.it_handover || "-"}</TableCell>
               <TableCell className="whitespace-nowrap">{item.it_receiver || "-"}</TableCell>
+              <TableCell className="whitespace-nowrap">{item.admin_password || "-"}</TableCell>
+              <TableCell className="whitespace-nowrap">{item.anydesk_code || "-"}</TableCell>
               <TableCell className="whitespace-nowrap">{item.notes || "-"}</TableCell>
                 <TableCell>{item.attachment_path ? <a href="#" onClick={(e) => {
                 e.preventDefault();
@@ -173,6 +192,15 @@ Tim IT`)
           )}
         </TableBody>
       </Table>
+      
+      <TablePagination 
+        currentPage={currentPage}
+        totalPages={totalPages}
+        pageSize={pageSize}
+        totalItems={totalItems}
+        onPageChange={setCurrentPage}
+        onPageSizeChange={setPageSize}
+      />
       
       <DeleteConfirmDialog open={!!delItem} onOpenChange={(o) => !o && setDelItem(null)} onConfirm={handleDelete} itemName={delItem?.asset_code || 'data ini'} />
       </div>
