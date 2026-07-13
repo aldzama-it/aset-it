@@ -1,10 +1,12 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 
 export function useTableLogic<T>(data: T[], initialSortKey: string | null = null) {
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(
     initialSortKey ? { key: initialSortKey, direction: 'asc' } : null
   )
   const [columnFilters, setColumnFilters] = useState<Record<string, string>>({})
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pageSize, setPageSize] = useState(10)
 
   const requestSort = (key: string) => {
     // If it's a combined key like 'brand,model', use the first one for sorting
@@ -70,8 +72,28 @@ export function useTableLogic<T>(data: T[], initialSortKey: string | null = null
     return resultItems
   }, [data, sortConfig, columnFilters])
 
+  // Reset pagination when dependencies change
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [processedData.length, sortConfig, columnFilters])
+
+  const paginatedData = useMemo(() => {
+    const startIndex = (currentPage - 1) * pageSize
+    return processedData.slice(startIndex, startIndex + pageSize)
+  }, [processedData, currentPage, pageSize])
+
+  const totalPages = Math.ceil(processedData.length / pageSize)
+  const totalItems = processedData.length
+
   return { 
     processedData, 
+    paginatedData,
+    currentPage,
+    setCurrentPage,
+    pageSize,
+    setPageSize,
+    totalPages,
+    totalItems,
     requestSort, 
     sortConfig, 
     columnFilters, 
