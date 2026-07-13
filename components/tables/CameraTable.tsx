@@ -6,6 +6,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { TablePagination } from '@/components/shared/TablePagination'
 import { Button } from '@/components/ui/button'
 import { Edit, Trash } from 'lucide-react'
+import { Checkbox } from '@/components/ui/checkbox'
+import { TableSelectionBar } from '@/components/shared/TableSelectionBar'
+import { EmptyState } from '@/components/shared/EmptyState'
+import { exportToExcel } from '@/lib/excel'
 import { ConditionBadge } from '@/components/shared/ConditionBadge'
 import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
 import { toast } from 'sonner'
@@ -24,9 +28,30 @@ export function CameraTable({ data, onEdit, onRefresh }: { data: any[], onEdit: 
     requestSort, 
     sortConfig, 
     columnFilters, 
-    setColumnFilter 
+    setColumnFilter,
+    selectedIds,
+    toggleSelection,
+    toggleAllPageSelection,
+    clearSelection
   } = useTableLogic(data, 'id')
   const [delItem, setDelItem] = useState<any>(null)
+
+  
+  const handleBatchDelete = async () => {
+    try {
+      await Promise.all(Array.from(selectedIds).map(id => fetch('/api/cameras/' + id, { method: 'DELETE' })))
+      toast.success(`${selectedIds.size} data dihapus`)
+      clearSelection()
+      onRefresh()
+    } catch {
+      toast.error('Gagal menghapus data terpilih')
+    }
+  }
+
+  const handleExportSelected = () => {
+    const selectedData = data.filter(item => selectedIds.has(item.id))
+    exportToExcel(selectedData, 'Data_Terpilih')
+  }
 
   const handleDelete = async () => {
     if (!delItem) return
@@ -62,10 +87,13 @@ export function CameraTable({ data, onEdit, onRefresh }: { data: any[], onEdit: 
   }
 
   return (
-    <div className="border rounded-md bg-white overflow-x-auto">
-      <Table className="whitespace-nowrap">
-        <TableHeader>
+    <div className="border rounded-md bg-white flex flex-col shadow-sm">
+      <TableSelectionBar selectedCount={selectedIds.size} onClear={clearSelection} onDelete={handleBatchDelete} onExport={handleExportSelected} />
+      <div className="overflow-auto max-h-[calc(100vh-16rem)] relative">
+        <Table className="whitespace-nowrap">
+        <TableHeader className="sticky top-0 bg-white/95 backdrop-blur z-10 shadow-sm">
           <TableRow>
+            <TableHead className="w-[50px]"><Checkbox checked={paginatedData.length > 0 && paginatedData.every((item: any) => selectedIds.has(item.id))} onCheckedChange={toggleAllPageSelection} aria-label="Select all" /></TableHead>
             <SortableTableHead label="Kode Aset" sortKey="asset_code" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['asset_code']} onFilterChange={setColumnFilter} data={data} />
             <SortableTableHead label="Nama Pegawai" sortKey="pic" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['pic']} onFilterChange={setColumnFilter} data={data} />
             <SortableTableHead label="Brand" sortKey="brand" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['brand']} onFilterChange={setColumnFilter} data={data} />
@@ -86,7 +114,8 @@ export function CameraTable({ data, onEdit, onRefresh }: { data: any[], onEdit: 
             return (
               <React.Fragment key={item.id}>
               <TableRow className="hover:bg-slate-50 transition-colors">
-                <TableCell className="font-medium whitespace-nowrap">{formattedItem.asset_code || '-'}</TableCell>
+              <TableCell><Checkbox checked={selectedIds.has(item.id)} onCheckedChange={() => toggleSelection(item.id)} aria-label="Select row" onClick={(e) => e.stopPropagation()} /></TableCell>
+              <TableCell className="font-medium whitespace-nowrap">{formattedItem.asset_code || '-'}</TableCell>
                 <TableCell className="whitespace-nowrap">{formattedItem.pic || "-"}</TableCell>
                 <TableCell className="whitespace-nowrap">{formattedItem.brand || '-'}</TableCell>
                 <TableCell className="whitespace-nowrap">{formattedItem.model || '-'}</TableCell>
@@ -112,10 +141,11 @@ export function CameraTable({ data, onEdit, onRefresh }: { data: any[], onEdit: 
             )
           })}
           {data.length === 0 && (
-            <TableRow><TableCell colSpan={12} className="text-center py-6 text-muted-foreground">Tidak ada data</TableCell></TableRow>
+            <TableRow><TableCell colSpan={13} className="p-0"><EmptyState /></TableCell></TableRow>
           )}
         </TableBody>
       </Table>
+      </div>
       
       <TablePagination 
         currentPage={currentPage}
