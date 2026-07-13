@@ -1,4 +1,5 @@
 'use client'
+import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 
 export type ViewField = {
