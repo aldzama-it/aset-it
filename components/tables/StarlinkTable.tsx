@@ -14,6 +14,7 @@ import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
 import { toast } from 'sonner'
 import { ViewField } from '@/components/shared/ViewDetailsDialog'
 import { ExpandableDetails } from '@/components/shared/ExpandableDetails'
+import { AssetTransferActions } from '@/components/shared/AssetTransferActions'
 
 export function StarlinkTable({ data, onEdit, onRefresh }: { data: any[], onEdit: (item: any) => void, onRefresh: () => void }) {
   const { 
@@ -112,6 +113,7 @@ export function StarlinkTable({ data, onEdit, onRefresh }: { data: any[], onEdit
               <TableCell className="whitespace-nowrap">{item.notes || "-"}</TableCell>
   <TableCell>
                 <div className="flex gap-1 justify-center">
+                  <AssetTransferActions item={item} tableName="starlinks" onSuccess={onRefresh} />
                   <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); onEdit(item); }} title="Edit Data">
                     <Edit className="w-4 h-4 text-blue-600" />
                   </Button>

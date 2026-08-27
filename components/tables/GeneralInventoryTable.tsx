@@ -16,6 +16,7 @@ import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
 import { toast } from 'sonner'
 import { ViewField } from '@/components/shared/ViewDetailsDialog'
 import { ExpandableDetails } from '@/components/shared/ExpandableDetails'
+import { AssetTransferActions } from '@/components/shared/AssetTransferActions'
 
 export function GeneralInventoryTable({ data, onEdit, onRefresh }: { data: any[], onEdit: (item: any) => void, onRefresh: () => void }) {
   const { 
@@ -147,6 +148,7 @@ export function GeneralInventoryTable({ data, onEdit, onRefresh }: { data: any[]
               <TableCell className="whitespace-nowrap">{item.notes || "-"}</TableCell>
   <TableCell className="sticky right-0 bg-white/90 backdrop-blur shadow-[-4px_0_12px_rgba(0,0,0,0.02)] z-10">
                 <div className="flex gap-1 justify-center">
+                  <AssetTransferActions item={item} tableName="generalInventories" onSuccess={onRefresh} />
                   <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); onEdit(item); }} title="Edit Data">
                     <Edit className="w-4 h-4 text-blue-600" />
                   </Button>

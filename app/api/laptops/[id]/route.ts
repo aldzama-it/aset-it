@@ -12,7 +12,8 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     })
     await recordHistory({
       table_name: 'laptops', asset_id: data.id, asset_code: data.asset_code,
-      action: before?.branch !== data.branch ? 'Dipindah_Lokasi'
+      action: before?.pic !== data.pic ? 'Diserahkan'
+            : before?.branch !== data.branch ? 'Dipindah_Lokasi'
             : before?.condition !== data.condition ? 'Kondisi_Berubah'
             : 'Diperbarui',
       old_condition: before?.condition, new_condition: data.condition,

@@ -37,6 +37,9 @@ yarn-error.log*
 # deployment
 deploy/
 
+# documentation
+docs/
+
 # vercel
 .vercel
 

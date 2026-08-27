@@ -42,7 +42,7 @@ export default async function ExecutiveDashboardPage() {
 
     // Core
     prisma.user.count(),
-    prisma.assetHistory.findMany({ take: 10, orderBy: { event_at: 'desc' } })
+    prisma.assetHistory.findMany({ take: 10, orderBy: { id: 'desc' } })
   ])
 
   // 1. Group Physical Data for Aggregation

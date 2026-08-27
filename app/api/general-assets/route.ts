@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma'
+import { getHistoryActor } from '@/lib/history'
 import { generateAssetCode, getErrorMessage } from '@/lib/utils'
 
 export async function GET(req: Request) {
@@ -42,8 +43,24 @@ export async function POST(req: Request) {
       asset_code = generateAssetCode(category.prefix, last?.asset_code)
     }
 
-    const data = await prisma.generalAsset.create({
-      data: { ...body, asset_code, updated_at: new Date() }
+    const changedBy = await getHistoryActor()
+    const data = await prisma.$transaction(async (tx) => {
+      const created = await tx.generalAsset.create({
+        data: { ...body, asset_code, updated_at: new Date() },
+      })
+      await tx.assetHistory.create({
+        data: {
+          table_name: 'generalAssets',
+          asset_id: created.id,
+          asset_code: created.asset_code,
+          action: 'Dibuat',
+          to_employee: created.pic,
+          to_location: created.location,
+          new_condition: created.condition,
+          changed_by: changedBy,
+        },
+      })
+      return created
     })
     return Response.json({ success: true, data }, { status: 201 })
   } catch (e) {

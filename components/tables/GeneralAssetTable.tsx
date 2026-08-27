@@ -13,6 +13,7 @@ import { toast } from 'sonner'
 import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
 
 import { ConditionBadge } from '@/components/shared/ConditionBadge'
+import { AssetTransferActions } from '@/components/shared/AssetTransferActions'
 
 export function GeneralAssetTable({ data, onEdit, onRefresh }: { data: any[], onEdit: (item: any) => void, onRefresh: () => void,  }) {
   const { 
@@ -97,6 +98,7 @@ export function GeneralAssetTable({ data, onEdit, onRefresh }: { data: any[], on
               </TableCell>
               <TableCell>
                 <div className="flex gap-2">
+                  <AssetTransferActions item={item} tableName="generalAssets" onSuccess={onRefresh} />
                   <Button variant="outline" size="icon" onClick={() => onEdit(item)}><Edit className="w-4 h-4" /></Button>
                   <Button variant="destructive" size="icon" onClick={() => setDelItem(item)}><Trash2 className="w-4 h-4" /></Button>
                 </div>
