@@ -11,8 +11,8 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     })
     await recordHistory({
       table_name: 'generalInventories', asset_id: data.id, asset_code: data.asset_code,
-      action: before?.branch !== data.branch ? 'Dipindah_Lokasi'
-            : before?.pic_name !== data.pic_name ? 'Diserahkan'
+      action: before?.pic_name !== data.pic_name ? 'Diserahkan'
+            : before?.branch !== data.branch ? 'Dipindah_Lokasi'
             : before?.condition !== data.condition ? 'Kondisi_Berubah'
             : 'Diperbarui',
       old_condition: before?.condition, new_condition: data.condition,
