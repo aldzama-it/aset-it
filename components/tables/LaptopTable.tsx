@@ -17,6 +17,7 @@ import { toast } from 'sonner'
 import { ViewField } from '@/components/shared/ViewDetailsDialog'
 import { ExpandableDetails } from '@/components/shared/ExpandableDetails'
 import { TablePagination } from '@/components/shared/TablePagination'
+import { AssetTransferActions } from '@/components/shared/AssetTransferActions'
 
 export function LaptopTable({ data, onEdit, onRefresh }: { data: any[], onEdit: (item: any) => void, onRefresh: () => void }) {
   const { 
@@ -202,6 +203,7 @@ Tim IT`)
               }} className="flex items-center text-blue-600 hover:underline"><Paperclip className="w-4 h-4 mr-1"/> File</a> : <XCircle className="w-4 h-4 text-red-500" />}</TableCell>
   <TableCell>
                 <div className="flex gap-1 justify-center">
+                  <AssetTransferActions item={item} tableName="laptops" onSuccess={onRefresh} />
                   <Button variant="ghost" size="icon" onClick={(e) => handleEmail(e, item)} title="Kirim Email">
                     <Mail className="w-4 h-4 text-emerald-600" />
                   </Button>
