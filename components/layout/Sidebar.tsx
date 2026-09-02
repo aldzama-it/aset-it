@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils'
 import {
   LayoutDashboard, Network, Printer, Camera, Laptop,
   Radio, Tablet, Satellite, Car, History,
-  ChevronLeft, Menu, LogOut, Settings, Box, Cloud, MonitorDot, Activity,
+  ChevronLeft, Menu, LogOut, Settings, Box, Cloud, MonitorDot, Activity, TicketCheck,
   ChevronDown, ChevronRight
 } from 'lucide-react'
 import * as LucideIcons from 'lucide-react'
@@ -197,6 +197,7 @@ export function Sidebar() {
 
         <nav className="pl-3 py-3 pr-0 space-y-1 overflow-y-auto max-h-[calc(100vh-3.5rem)] scrollbar-hide pb-20">
           <NavItem href="/dashboard" icon={LayoutDashboard} label="Dashboard" isActive={pathname === '/dashboard'} />
+          <NavItem href="/ticketing" icon={TicketCheck} label="Ticketing" isActive={pathname.startsWith('/ticketing')} />
           {/* Pemantauan, bukan inventaris -- sengaja di luar grup "Aset Fisik",
               yang sudah punya "/network" untuk perangkat jaringan. */}
           <NavItem href="/network-analyzer" icon={Activity} label="Network Analyzer" isActive={pathname.startsWith('/network-analyzer')} />

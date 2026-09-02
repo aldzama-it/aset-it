@@ -25,6 +25,17 @@ docker compose down
 docker compose down -v
 ```
 
+## Ticketing integration
+
+Halaman `/ticketing` mengambil ringkasan dan daftar tiket secara server-to-server dari aplikasi Ticketing. Atur environment berikut pada deployment Asset IT:
+
+```dotenv
+TICKETING_API_URL=https://ticketing.aldzama.com
+TICKETING_API_TOKEN=<secret-yang-sama>
+```
+
+`TICKETING_API_TOKEN` harus sama dengan `TICKETING_INTEGRATION_TOKEN` pada deployment Ticketing. Token hanya dipakai oleh server Next.js dan tidak pernah dikirim ke browser.
+
 ## Getting Started
 
 First, run the development server:

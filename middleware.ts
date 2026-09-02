@@ -4,7 +4,7 @@ import { decrypt } from '@/lib/session'
 import { cookies } from 'next/headers'
 
 // Rute yang memerlukan autentikasi
-const protectedRoutes = ['/', '/dashboard', '/cameras', '/cctv', '/dashcams', '/history', '/ht', '/laptop-accessories', '/laptops', '/network', '/network-analyzer', '/printers', '/starlinks', '/tablets']
+const protectedRoutes = ['/', '/dashboard', '/cameras', '/cctv', '/dashcams', '/history', '/ht', '/laptop-accessories', '/laptops', '/network', '/network-analyzer', '/printers', '/starlinks', '/tablets', '/ticketing']
 const publicRoutes = ['/login']
 
 export async function middleware(req: NextRequest) {
