@@ -15,6 +15,7 @@ export function TopBar() {
   
   const getPageTitle = () => {
     if (pathname === '/dashboard') return 'Dashboard'
+    if (pathname.startsWith('/network-analyzer')) return 'Network Analyzer'
     if (pathname === '/network') return 'Jaringan'
     if (pathname === '/printers') return 'Printer'
     if (pathname === '/cctv') return 'CCTV'
