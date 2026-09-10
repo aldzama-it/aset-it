@@ -36,7 +36,7 @@ export function exportToExcel(data: any[], filename: string) {
 
 export function downloadTemplate(headers: string[], filename: string) {
   const sampleRow = headers.map(h => {
-    if (h.includes('date')) return '2024-01-01'
+    if (h.includes('date')) return '12/31/2024'
     if (h === 'condition' || h === 'install_status') return 'Baik'
     if (h === 'ram') return '16GB'
     if (h === 'storage') return '512GB SSD'
@@ -64,8 +64,8 @@ export function readExcelFile(file: File): Promise<any[]> {
         const workbook = XLSX.read(data, { type: 'binary' })
         const sheetName = workbook.SheetNames[0]
         const worksheet = workbook.Sheets[sheetName]
-        // Convert sheet to JSON array of arrays
-        const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 })
+        // Convert sheet to JSON array of arrays, forcing dates and numbers to be formatted as strings
+        const json = XLSX.utils.sheet_to_json(worksheet, { header: 1, raw: false, dateNF: 'mm/dd/yyyy' })
         resolve(json)
       } catch (error) {
         reject(error)

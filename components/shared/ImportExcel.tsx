@@ -84,7 +84,7 @@ export function ImportExcel({
 
         if (lowerMsg.includes('premature end of input') || lowerMsg.includes('iso-8601') || lowerMsg.includes('invalid value for argument')) {
           if (field.includes('date')) {
-            return `Format tanggal${fieldText} tidak sesuai. Pastikan menggunakan format teks YYYY-MM-DD (contoh: 2026-12-31) atau hapus (kosongkan) sel tersebut jika tidak ada data.`;
+            return `Format tanggal${fieldText} tidak sesuai. Pastikan menggunakan format teks MM/DD/YYYY (contoh: 12/31/2026) atau hapus (kosongkan) sel tersebut jika tidak ada data.`;
           }
           return `Isian${fieldText} tidak valid. Pastikan format isiannya benar.`;
         }
