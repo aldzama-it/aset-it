@@ -5,6 +5,8 @@ import { ArrowRightLeft, History } from 'lucide-react'
 import type { AssetTableName, AssetTransferItem } from '@/lib/asset-transfer'
 import { AssetHistoryDialog } from '@/components/shared/AssetHistoryDialog'
 import { AssetTransferDialog } from '@/components/shared/AssetTransferDialog'
+import { LaptopTransferModal } from '@/components/forms/LaptopTransferModal'
+import { LaptopHistoryDialog } from '@/components/shared/LaptopHistoryDialog'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
@@ -53,7 +55,15 @@ export function AssetTransferActions({ item, tableName, onSuccess }: AssetTransf
         <TooltipContent>Riwayat</TooltipContent>
       </Tooltip>
 
-      {transferOpen && (
+      {transferOpen && tableName === 'laptops' && (
+        <LaptopTransferModal
+          open
+          onOpenChange={setTransferOpen}
+          assetCode={item.asset_code || ''}
+          onSuccess={onSuccess}
+        />
+      )}
+      {transferOpen && tableName !== 'laptops' && (
         <AssetTransferDialog
           open
           onOpenChange={setTransferOpen}
@@ -62,7 +72,15 @@ export function AssetTransferActions({ item, tableName, onSuccess }: AssetTransf
           onSuccess={onSuccess}
         />
       )}
-      {historyOpen && (
+      
+      {historyOpen && tableName === 'laptops' && (
+        <LaptopHistoryDialog
+          open
+          onOpenChange={setHistoryOpen}
+          assetCode={item.asset_code || ''}
+        />
+      )}
+      {historyOpen && tableName !== 'laptops' && (
         <AssetHistoryDialog
           open
           onOpenChange={setHistoryOpen}

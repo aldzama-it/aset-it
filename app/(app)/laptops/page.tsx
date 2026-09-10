@@ -2,16 +2,19 @@
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Plus, Download } from 'lucide-react'
+import { Plus, Download, Laptop, Laptop2, MonitorX } from 'lucide-react'
 import { exportToExcel } from '@/lib/excel'
 import { ImportExcel } from '@/components/shared/ImportExcel'
 import { LaptopTable } from '@/components/tables/LaptopTable'
 import { LaptopForm } from '@/components/forms/LaptopForm'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
+import { Card, CardContent } from '@/components/ui/card'
 
 export default function LaptopPage() {
   const [data, setData] = useState([])
+  const [summary, setSummary] = useState({ total: 0, dipakai: 0, tersedia: 0 })
   const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState('all') // 'all', 'Aktif', 'Tersedia'
   const [formOpen, setFormOpen] = useState(false)
   const [editItem, setEditItem] = useState(null)
 
@@ -20,7 +23,12 @@ export default function LaptopPage() {
   const fetchData = () => {
     fetch('/api/laptops?search=' + search)
       .then(r => r.json())
-      .then(res => { if (res.success) setData(res.data) })
+      .then(res => { 
+        if (res.success) {
+          setData(res.data)
+          if (res.summary) setSummary(res.summary)
+        } 
+      })
   }
 
   useEffect(() => { fetchData() }, [search])
@@ -30,21 +38,78 @@ export default function LaptopPage() {
     setExportOpen(false)
   }
 
+  const filteredData = data.filter(item => {
+    if (statusFilter === 'all') return true
+    return item.status_virtual === statusFilter
+  })
+
   return (
     <div className="space-y-4">
-      <div className="flex justify-end items-center gap-2">
-        <Button onClick={() => { setEditItem(null); setFormOpen(true) }}>
-          <Plus className="w-4 h-4 mr-2" /> Tambah Data
-        </Button>
-        <ImportExcel apiUrl="/api/laptops" assetType="Laptop" onSuccess={fetchData} />
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <Card 
+          className={`bg-card/80 backdrop-blur-sm border-border/60 cursor-pointer transition-all hover:border-primary/50 ${statusFilter === 'all' ? 'ring-2 ring-primary border-transparent' : ''}`}
+          onClick={() => setStatusFilter('all')}
+        >
+          <CardContent className="p-4 flex items-center gap-4">
+            <div className="p-3 bg-primary/10 rounded-xl">
+              <Laptop className="w-6 h-6 text-primary" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">Total Laptop (Unik)</p>
+              <h3 className="text-2xl font-bold font-poppins">{summary.total}</h3>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card 
+          className={`bg-card/80 backdrop-blur-sm border-border/60 cursor-pointer transition-all hover:border-green-500/50 ${statusFilter === 'Aktif' ? 'ring-2 ring-green-500 border-transparent' : ''}`}
+          onClick={() => setStatusFilter('Aktif')}
+        >
+          <CardContent className="p-4 flex items-center gap-4">
+            <div className="p-3 bg-green-500/10 rounded-xl">
+              <Laptop2 className="w-6 h-6 text-green-600" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">Laptop Dipakai</p>
+              <h3 className="text-2xl font-bold font-poppins">{summary.dipakai}</h3>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card 
+          className={`bg-card/80 backdrop-blur-sm border-border/60 cursor-pointer transition-all hover:border-amber-500/50 ${statusFilter === 'Tersedia' ? 'ring-2 ring-amber-500 border-transparent' : ''}`}
+          onClick={() => setStatusFilter('Tersedia')}
+        >
+          <CardContent className="p-4 flex items-center gap-4">
+            <div className="p-3 bg-amber-500/10 rounded-xl">
+              <MonitorX className="w-6 h-6 text-amber-600" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">Laptop Tidak Dipakai (Tersedia)</p>
+              <h3 className="text-2xl font-bold font-poppins">{summary.tersedia}</h3>
+            </div>
+          </CardContent>
+        </Card>
       </div>
-      <div className="flex items-center gap-2 max-w-xl">
-        <Input placeholder="Cari..." value={search} onChange={e => setSearch(e.target.value)} />
-        <Button variant="outline" onClick={() => setExportOpen(true)}>
-          <Download className="w-4 h-4 md:mr-2" /> <span className="hidden md:inline">Export</span>
-        </Button>
+
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="flex items-center gap-2 w-full sm:max-w-xs">
+          <Input placeholder="Cari..." value={search} onChange={e => setSearch(e.target.value)} />
+        </div>
+        <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto pb-2 sm:pb-0">
+          <Button variant="outline" onClick={() => setExportOpen(true)} className="shrink-0">
+            <Download className="w-4 h-4 md:mr-2" /> <span className="hidden md:inline">Export</span>
+          </Button>
+          <div className="shrink-0">
+            <ImportExcel apiUrl="/api/laptops" assetType="Laptop" onSuccess={fetchData} />
+          </div>
+          <Button onClick={() => { setEditItem(null); setFormOpen(true) }} className="shrink-0">
+            <Plus className="w-4 h-4 mr-2" /> Tambah Data
+          </Button>
+        </div>
       </div>
-      <LaptopTable data={data} onEdit={(item) => { setEditItem(item); setFormOpen(true) }} onRefresh={fetchData} />
+      <LaptopTable data={filteredData} onEdit={(item) => { setEditItem(item); setFormOpen(true) }} onRefresh={fetchData} />
       <LaptopForm open={formOpen} onOpenChange={setFormOpen} item={editItem} onSuccess={fetchData} />
 
       {/* Export Confirmation */}
@@ -53,7 +118,7 @@ export default function LaptopPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Konfirmasi Export</AlertDialogTitle>
             <AlertDialogDescription>
-              Anda akan mengunduh file Excel yang berisi {data.length} baris data Laptop. Lanjutkan?
+              Anda akan mengunduh file Excel yang berisi {filteredData.length} baris data Laptop. Lanjutkan?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
