@@ -54,9 +54,8 @@ export function PrinterForm({ open, onOpenChange, item, onSuccess }: { open: boo
     if (data.storage_gb) data.storage_gb = parseInt(data.storage_gb)
     delete data.accessories; // prevent Prisma invalid argument errors
 
-    if (data.quantity) data.quantity = parseInt(data.quantity)
-    if (data.storage_gb) data.storage_gb = parseInt(data.storage_gb)
-    if (data.ram_gb) data.ram_gb = parseInt(data.ram_gb)
+    // Fix empty strings for enums
+    if (data.connection === '' || data.connection === 'none') data.connection = null;
     
 
     try {
@@ -121,7 +120,13 @@ export function PrinterForm({ open, onOpenChange, item, onSuccess }: { open: boo
             </div>
             <div className="space-y-2">
               <Label>Koneksi</Label>
-              <Input type="text" {...register('connection')} />
+              <Select value={watch('connection') || ''} onValueChange={v => setValue('connection', v === 'none' ? null : v)}>
+                <SelectTrigger><SelectValue placeholder="Pilih koneksi..." /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">- Tidak Ada -</SelectItem>
+                  {['WiFi', 'LAN', 'USB', 'Cellular', 'Satelit'].map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-2">
               <Label>Tanggal Pembelian</Label>

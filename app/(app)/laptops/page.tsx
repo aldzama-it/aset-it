@@ -46,49 +46,34 @@ export default function LaptopPage() {
   return (
     <div className="space-y-4">
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <Card 
-          className={`bg-card/80 backdrop-blur-sm border-border/60 cursor-pointer transition-all hover:border-primary/50 ${statusFilter === 'all' ? 'ring-2 ring-primary border-transparent' : ''}`}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+        <Card
+          className={`py-3 px-1 bg-card/80 backdrop-blur-sm border-border/60 cursor-pointer transition-all hover:border-primary/50 ${statusFilter === 'all' ? 'ring-2 ring-primary border-transparent' : ''}`}
           onClick={() => setStatusFilter('all')}
         >
-          <CardContent className="p-4 flex items-center gap-4">
-            <div className="p-3 bg-primary/10 rounded-xl">
-              <Laptop className="w-6 h-6 text-primary" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Total Laptop (Unik)</p>
-              <h3 className="text-2xl font-bold font-poppins">{summary.total}</h3>
-            </div>
+          <CardContent className="p-0 flex items-center gap-3 px-4">
+            <div className="p-2 bg-primary/10 rounded-lg"><Laptop className="w-5 h-5 text-primary" /></div>
+            <div><p className="text-xs font-medium text-muted-foreground">Total Laptop (Unik)</p><h3 className="text-xl font-bold font-poppins">{summary.total}</h3></div>
           </CardContent>
         </Card>
         
-        <Card 
-          className={`bg-card/80 backdrop-blur-sm border-border/60 cursor-pointer transition-all hover:border-green-500/50 ${statusFilter === 'Aktif' ? 'ring-2 ring-green-500 border-transparent' : ''}`}
+        <Card
+          className={`py-3 px-1 bg-card/80 backdrop-blur-sm border-border/60 cursor-pointer transition-all hover:border-green-500/50 ${statusFilter === 'Aktif' ? 'ring-2 ring-green-500 border-transparent' : ''}`}
           onClick={() => setStatusFilter('Aktif')}
         >
-          <CardContent className="p-4 flex items-center gap-4">
-            <div className="p-3 bg-green-500/10 rounded-xl">
-              <Laptop2 className="w-6 h-6 text-green-600" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Laptop Dipakai</p>
-              <h3 className="text-2xl font-bold font-poppins">{summary.dipakai}</h3>
-            </div>
+          <CardContent className="p-0 flex items-center gap-3 px-4">
+            <div className="p-2 bg-green-500/10 rounded-lg"><Laptop2 className="w-5 h-5 text-green-600" /></div>
+            <div><p className="text-xs font-medium text-muted-foreground">Laptop Dipakai</p><h3 className="text-xl font-bold font-poppins">{summary.dipakai}</h3></div>
           </CardContent>
         </Card>
         
-        <Card 
-          className={`bg-card/80 backdrop-blur-sm border-border/60 cursor-pointer transition-all hover:border-amber-500/50 ${statusFilter === 'Tersedia' ? 'ring-2 ring-amber-500 border-transparent' : ''}`}
+        <Card
+          className={`py-3 px-1 bg-card/80 backdrop-blur-sm border-border/60 cursor-pointer transition-all hover:border-amber-500/50 ${statusFilter === 'Tersedia' ? 'ring-2 ring-amber-500 border-transparent' : ''}`}
           onClick={() => setStatusFilter('Tersedia')}
         >
-          <CardContent className="p-4 flex items-center gap-4">
-            <div className="p-3 bg-amber-500/10 rounded-xl">
-              <MonitorX className="w-6 h-6 text-amber-600" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Laptop Tidak Dipakai (Tersedia)</p>
-              <h3 className="text-2xl font-bold font-poppins">{summary.tersedia}</h3>
-            </div>
+          <CardContent className="p-0 flex items-center gap-3 px-4">
+            <div className="p-2 bg-amber-500/10 rounded-lg"><MonitorX className="w-5 h-5 text-amber-600" /></div>
+            <div><p className="text-xs font-medium text-muted-foreground">Laptop Tidak Dipakai (Tersedia)</p><h3 className="text-xl font-bold font-poppins">{summary.tersedia}</h3></div>
           </CardContent>
         </Card>
       </div>
