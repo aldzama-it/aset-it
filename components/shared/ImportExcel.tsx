@@ -12,11 +12,15 @@ const HEADER_MAP: Record<string, string[]> = {
   'Kamera': ['asset_code', 'pic', 'brand', 'model', 'location', 'handover_date', 'return_date', 'purchase_date', 'condition', 'notes'],
   'CCTV': ['asset_code', 'brand', 'model', 'location', 'position_label', 'ip_address', 'mac_address', 'install_date', 'condition', 'notes'],
   'Dashcam': ['asset_code', 'vehicle_name', 'plate_number', 'location', 'project', 'install_status', 'install_date', 'notes'],
-  'HT': ['asset_code', 'pic_name', 'department', 'division', 'job_level', 'branch', 'handover_date', 'return_date', 'brand', 'type', 'accessories', 'condition', 'notes', 'form_path', 'it_handover', 'it_receiver'],
+  'HT': ['asset_code', 'pic_name', 'brand', 'type', 'accessories', 'handover_date', 'return_date', 'condition', 'division', 'branch', 'notes', 'it_handover', 'it_receiver'],
   'Inventaris_Umum': ['asset_code', 'pic_name', 'department', 'division', 'job_level', 'branch', 'handover_date', 'return_date', 'asset_type', 'brand', 'condition', 'notes', 'handover_form', 'return_form', 'it_handover', 'it_receiver'],
   'Network_Device': ['asset_code', 'name', 'device_type', 'mac_address', 'location', 'purchase_date', 'notes'],
   'Starlink': ['asset_code', 'location', 'serial_number', 'account_email', 'install_date', 'notes'],
   'Tablet': ['asset_code', 'pic_name', 'department', 'division', 'job_level', 'branch', 'handover_date', 'return_date', 'asset_type', 'brand', 'type', 'ram', 'storage', 'condition', 'notes', 'form_path', 'it_handover', 'it_receiver']
+}
+
+const DISPLAY_HEADER_MAP: Record<string, string[]> = {
+  'HT': ['Kode Aset', 'Penerima', 'Barang (Brand)', 'Tipe', 'Kelengkapan', 'Handover Date', 'Return Date', 'Kondisi', 'Divisi / Project', 'Lokasi', 'Keterangan', 'IT Penyerah', 'IT Penerima']
 }
 
 const DEFAULT_HEADERS = ['asset_code', 'brand', 'model', 'location', 'pic', 'purchase_date', 'handover_date', 'condition', 'notes']
@@ -46,7 +50,8 @@ export function ImportExcel({
   const headers = customHeaders || HEADER_MAP[assetType] || DEFAULT_HEADERS
 
   const handleDownloadTemplate = () => {
-    downloadTemplate(headers, assetType)
+    const displayHeaders = DISPLAY_HEADER_MAP[assetType] || headers
+    downloadTemplate(headers, assetType, displayHeaders)
   }
 
   const onFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
