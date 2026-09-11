@@ -312,3 +312,15 @@ docker compose exec app npx prisma migrate deploy
 docker compose down
 
 ```
+
+---
+
+## 12. Browser Testing Rules
+
+### 12.1 Dilarang Membuka Scratchpad
+
+Saat melakukan verifikasi atau testing menggunakan browser subagent, **jangan pernah membuka atau membaca file scratchpad** (termasuk file di direktori `.system_generated`, `browser/`, atau file sementara lainnya milik sistem).
+
+- Langsung navigasi ke URL yang ingin diuji.
+- Gunakan screenshot, DOM inspection, atau interaksi langsung untuk verifikasi.
+- Jika halaman membutuhkan login, lakukan login secara langsung tanpa membaca file scratchpad terlebih dahulu.
