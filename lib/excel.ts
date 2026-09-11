@@ -34,22 +34,30 @@ export function exportToExcel(data: any[], filename: string) {
   XLSX.writeFile(workbook, `${filename}_${new Date().toISOString().split('T')[0]}.xlsx`)
 }
 
-export function downloadTemplate(headers: string[], filename: string) {
+export function downloadTemplate(headers: string[], filename: string, displayHeaders?: string[]) {
   const sampleRow = headers.map(h => {
-    if (h.includes('date')) return '12/31/2024'
+    if (h.includes('date')) return '12/31/2026'
     if (h === 'condition' || h === 'install_status') return 'Baik'
     if (h === 'ram') return '16GB'
     if (h === 'storage') return '512GB SSD'
     if (h.includes('email')) return 'user@example.com'
     if (h === 'asset_code') return 'AST-001'
-    if (h === 'brand') return 'Contoh Brand'
+    if (h === 'brand') return 'Baofeng'
     if (h === 'mac_address') return '00:1A:2B:3C:4D:5E'
     if (h === 'ip_address') return '192.168.1.100'
+    if (h === 'pic_name' || h === 'pic') return 'Budi Santoso'
+    if (h === 'accessories') return 'Baterai, Charger, Antena'
+    if (h === 'type' || h === 'model') return 'UV-5R'
+    if (h === 'division' || h === 'department') return 'Operasional'
+    if (h === 'branch' || h === 'location') return 'Kantor Pusat'
+    if (h === 'it_handover') return 'Admin IT'
+    if (h === 'it_receiver') return 'Staff Ops'
+    if (h === 'notes') return '-'
     return `Contoh ${h.replace(/_/g, ' ')}`
   })
 
   // Create an array with headers as the first row and sampleRow as the second row
-  const worksheet = XLSX.utils.aoa_to_sheet([headers, sampleRow])
+  const worksheet = XLSX.utils.aoa_to_sheet([displayHeaders || headers, sampleRow])
   const workbook = XLSX.utils.book_new()
   XLSX.utils.book_append_sheet(workbook, worksheet, 'Template')
   XLSX.writeFile(workbook, `Template_${filename}.xlsx`)

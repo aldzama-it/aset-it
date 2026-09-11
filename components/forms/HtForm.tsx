@@ -84,33 +84,28 @@ export function HtForm({ open, onOpenChange, item, onSuccess }: { open: boolean,
             </div>
             
             <div className="space-y-2">
-              <Label>Nama Penanggung Jawab (PIC)</Label>
+              <Label>Nama Penerima (PIC)</Label>
               <Input type="text" {...register('pic_name')} required />
             </div>
             <div className="space-y-2">
-              <Label>Departemen</Label>
-              <Input type="text" {...register('department')} />
+              <Label>Barang (Brand)</Label>
+              <Input type="text" {...register('brand')} required />
             </div>
             <div className="space-y-2">
-              <Label>Divisi</Label>
-              <Input type="text" {...register('division')} />
-            </div>
-            <div className="space-y-2">
-              <Label>Job Level</Label>
-              <Input type="text" {...register('job_level')} />
-            </div>
-            <div className="space-y-2">
-              <Label>Branch / Lokasi</Label>
-              <Input type="text" {...register('branch')} />
-            </div>
-            
-            <div className="space-y-2">
-              <Label>Type</Label>
+              <Label>Tipe</Label>
               <Input type="text" {...register('type')} />
             </div>
             <div className="space-y-2">
-              <Label>Kelengkapan (Aksesoris)</Label>
+              <Label>Kelengkapan</Label>
               <Input type="text" {...register('accessories')} placeholder="Baterai, Charger, dll" />
+            </div>
+            <div className="space-y-2">
+              <Label>Divisi / Project</Label>
+              <Input type="text" {...register('division')} />
+            </div>
+            <div className="space-y-2">
+              <Label>Lokasi</Label>
+              <Input type="text" {...register('branch')} />
             </div>
             <div className="space-y-2">
               <Label>Kondisi</Label>
@@ -131,10 +126,6 @@ export function HtForm({ open, onOpenChange, item, onSuccess }: { open: boolean,
               <Input type="date" {...register('return_date')} />
             </div>
 
-            <div className="space-y-2">
-              <Label>Link Form Serah Terima</Label>
-              <Input type="url" {...register('form_path')} placeholder="https://..." />
-            </div>
             <div className="space-y-2">
               <Label>IT Penyerah</Label>
               <Input type="text" {...register('it_handover')} />

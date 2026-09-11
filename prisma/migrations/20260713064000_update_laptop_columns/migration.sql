@@ -1,0 +1,4 @@
+-- Migration: update_laptop_columns
+-- This migration file was restored as a placeholder.
+-- The schema changes were already applied directly to the database.
+-- No SQL statements needed here.

@@ -18,7 +18,11 @@ export async function GET(req: Request) {
       } : undefined,
       orderBy: { created_at: 'desc' }
     })
-    return Response.json({ success: true, data })
+    const total = data.reduce((acc, curr) => acc + curr.quantity, 0)
+    const rusak = data.filter(d => d.condition === 'Rusak' || d.condition === 'Perlu_Servis').reduce((acc, curr) => acc + curr.quantity, 0)
+    const tersedia = data.filter(d => (d.condition === 'Baik' || d.condition === 'Baru') && (!d.pic_name || d.return_date !== null)).reduce((acc, curr) => acc + curr.quantity, 0)
+
+    return Response.json({ success: true, data, summary: { total, rusak, tersedia } })
   } catch (e: any) {
     return Response.json({ success: false, error: 'Gagal mengambil data' }, { status: 500 })
   }

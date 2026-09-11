@@ -79,9 +79,7 @@ model Ht {
   id              Int          @id @default(autoincrement())
   asset_code      String?      @unique(map: "Ht_asset_code_key") @db.VarChar(20)
   pic_name        String?      @db.VarChar(100)
-  department      String?      @db.VarChar(100)
   division        String?      @db.VarChar(100)
-  job_level       String?      @db.VarChar(100)
   branch          String?      @db.VarChar(100)
   handover_date   DateTime?
   return_date     DateTime?
@@ -90,7 +88,6 @@ model Ht {
   accessories     String?      @db.VarChar(255)
   condition       ht_condition @default(Baik)
   notes           String?      @db.Text
-  form_path       String?      @db.VarChar(255)
   it_handover     String?      @db.VarChar(100)
   it_receiver     String?      @db.VarChar(100)
   created_at      DateTime     @default(now())

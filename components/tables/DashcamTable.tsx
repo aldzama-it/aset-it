@@ -85,10 +85,6 @@ export function DashcamTable({ data, onEdit, onRefresh }: { data: any[], onEdit:
     { label: 'Lokasi', key: 'location' },
     { label: 'Project', key: 'project' },
     { label: 'Status Pemasangan', key: 'install_status', isBadge: true },
-    { label: 'Email Azdome', key: 'azdome_email' },
-    { label: 'Password Azdome', key: 'azdome_password' },
-    { label: 'Gmail', key: 'gmail' },
-    { label: 'Password Gmail', key: 'gmail_password' },
     { label: 'Tanggal Pemasangan', key: 'install_date', isDate: true },
     { label: 'Keterangan', key: 'notes' }
   ]
@@ -107,10 +103,6 @@ export function DashcamTable({ data, onEdit, onRefresh }: { data: any[], onEdit:
             <SortableTableHead label="Lokasi" sortKey="location" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['location']} onFilterChange={setColumnFilter} data={data} />
             <SortableTableHead label="Project" sortKey="project" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['project']} onFilterChange={setColumnFilter} data={data} />
             <SortableTableHead label="Status Pemasangan" sortKey="install_status" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['install_status']} onFilterChange={setColumnFilter} data={data} />
-            <SortableTableHead label="Email Azdome" sortKey="azdome_email" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['azdome_email']} onFilterChange={setColumnFilter} data={data} />
-            <SortableTableHead label="Password Azdome" sortKey="azdome_password" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['azdome_password']} onFilterChange={setColumnFilter} data={data} />
-            <SortableTableHead label="Gmail" sortKey="gmail" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['gmail']} onFilterChange={setColumnFilter} data={data} />
-            <SortableTableHead label="Password Gmail" sortKey="gmail_password" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['gmail_password']} onFilterChange={setColumnFilter} data={data} />
             <SortableTableHead label="Tanggal Pemasangan" sortKey="install_date" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['install_date']} onFilterChange={setColumnFilter} data={data} />
             <SortableTableHead label="Keterangan" sortKey="notes" currentSort={sortConfig} onRequestSort={requestSort} currentFilter={columnFilters['notes']} onFilterChange={setColumnFilter} data={data} />
             <TableHead className="whitespace-nowrap w-24">Aksi</TableHead>
@@ -127,10 +119,6 @@ export function DashcamTable({ data, onEdit, onRefresh }: { data: any[], onEdit:
               <TableCell className="whitespace-nowrap">{item.location || "-"}</TableCell>
               <TableCell className="whitespace-nowrap">{item.project || "-"}</TableCell>
               <TableCell className="whitespace-nowrap"><Badge variant={item.install_status === 'Baik' || item.install_status === 'Terpasang' || item.install_status === 'Active' ? 'default' : 'secondary'} className={item.install_status === 'Baik' || item.install_status === 'Terpasang' ? 'bg-green-600 hover:bg-green-700' : ''}>{item.install_status}</Badge></TableCell>
-              <TableCell className="whitespace-nowrap">{item.azdome_email || "-"}</TableCell>
-              <TableCell className="whitespace-nowrap">{item.azdome_password || "-"}</TableCell>
-              <TableCell className="whitespace-nowrap">{item.gmail || "-"}</TableCell>
-              <TableCell className="whitespace-nowrap">{item.gmail_password || "-"}</TableCell>
               <TableCell className="whitespace-nowrap">{item.install_date ? new Date(item.install_date).toLocaleDateString('id-ID') : '-'}</TableCell>
               <TableCell className="whitespace-nowrap">{item.notes || "-"}</TableCell>
   <TableCell>
@@ -148,7 +136,7 @@ export function DashcamTable({ data, onEdit, onRefresh }: { data: any[], onEdit:
             </React.Fragment>
           ))}
           {data.length === 0 && (
-            <TableRow><TableCell colSpan={14} className="p-0"><EmptyState /></TableCell></TableRow>
+            <TableRow><TableCell colSpan={10} className="p-0"><EmptyState /></TableCell></TableRow>
           )}
         </TableBody>
       </Table>
