@@ -18,7 +18,11 @@ export async function GET(req: Request) {
       } : undefined,
       orderBy: { created_at: 'desc' }
     })
-    return Response.json({ success: true, data })
+    const total = data.length
+    const rusak = 0
+    const tersedia = total
+
+    return Response.json({ success: true, data, summary: { total, rusak, tersedia } })
   } catch (e: any) {
     return Response.json({ success: false, error: 'Gagal mengambil data' }, { status: 500 })
   }

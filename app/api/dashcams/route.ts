@@ -18,7 +18,11 @@ export async function GET(req: Request) {
       } : undefined,
       orderBy: { created_at: 'desc' }
     })
-    return Response.json({ success: true, data })
+    const total = data.length
+    const terpasang = data.filter(d => d.install_status === 'Terpasang' || d.install_status === 'Sudah Terpasang').length
+    const belum_terpasang = data.filter(d => d.install_status === 'Belum Terpasang').length
+
+    return Response.json({ success: true, data, summary: { total, terpasang, belum_terpasang } })
   } catch (e: any) {
     return Response.json({ success: false, error: 'Gagal mengambil data' }, { status: 500 })
   }
