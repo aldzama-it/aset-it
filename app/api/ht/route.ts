@@ -37,34 +37,35 @@ export async function GET(req: Request) {
         return dateB - dateA
       })
 
-      // Active adalah yang return_date nya null, atau jika tidak ada, ambil yang terbaru (index 0)
-      let active = group.find((g: any) => g.return_date === null)
-      
+      const active = group.find((g: any) => g.return_date === null)
+
       if (!active) {
-        active = { ...group[0], return_date: null }
-        // Jika kondisi Baik/Baru dan tidak ada PIC, maka Tersedia
-        if ((active.condition === 'Baik' || active.condition === 'Baru') && (!active.pic_name && !active.pic)) {
-          tersedia++
-          active.status_virtual = 'Tersedia'
-        } else if (active.condition === 'Rusak' || active.condition === 'Perlu_Servis') {
-          rusak++
-          active.status_virtual = 'Rusak'
-        } else {
-          // Ada PIC tapi return_date null buatan (anomali data), anggap Dipakai
-          dipakai++
-          active.status_virtual = 'Dipakai'
+        // Aset ini sudah dikembalikan -> Tidak Terpakai
+        tersedia++
+        const unassigned = {
+          ...group[0],
+          status_virtual: 'Tersedia'
         }
+        if (unassigned.condition === 'Rusak' || unassigned.condition === 'Perlu_Servis') {
+          rusak++
+        }
+        processedData.push(unassigned)
       } else {
+        const pic = active.pic_name || active.pic
+        // 1. Kondisi (independen)
         if (active.condition === 'Rusak' || active.condition === 'Perlu_Servis') {
           rusak++
-          active.status_virtual = 'Rusak'
+        }
+        // 2. Status Pakai (independen)
+        if (!pic) {
+          tersedia++
+          active.status_virtual = 'Tersedia'
         } else {
           dipakai++
           active.status_virtual = 'Dipakai'
         }
+        processedData.push(active)
       }
-
-      processedData.push(active)
     }
 
     if (search) {
