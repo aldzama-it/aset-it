@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Plus, Download, Laptop, Laptop2, MonitorX } from 'lucide-react'
+import { Plus, Download, Laptop, Laptop2, MonitorX, AlertTriangle } from 'lucide-react'
 import { exportToExcel } from '@/lib/excel'
 import { ImportExcel } from '@/components/shared/ImportExcel'
 import { LaptopTable } from '@/components/tables/LaptopTable'
@@ -12,9 +12,9 @@ import { Card, CardContent } from '@/components/ui/card'
 
 export default function LaptopPage() {
   const [data, setData] = useState<any[]>([])
-  const [summary, setSummary] = useState({ total: 0, dipakai: 0, tersedia: 0 })
+  const [summary, setSummary] = useState({ total: 0, dipakai: 0, tersedia: 0, rusak: 0 })
   const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all') // 'all', 'Aktif', 'Tersedia'
+  const [statusFilter, setStatusFilter] = useState('all') // 'all', 'Aktif', 'Rusak', 'Tersedia'
   const [formOpen, setFormOpen] = useState(false)
   const [editItem, setEditItem] = useState(null)
 
@@ -40,13 +40,16 @@ export default function LaptopPage() {
 
   const filteredData = data.filter(item => {
     if (statusFilter === 'all') return true
-    return item.status_virtual === statusFilter
+    if (statusFilter === 'Rusak') return item.condition === 'Rusak' || item.condition === 'Perlu_Servis'
+    if (statusFilter === 'Tersedia') return item.status_virtual === 'Tersedia'
+    if (statusFilter === 'Aktif' || statusFilter === 'Dipakai') return item.status_virtual === 'Aktif' || item.status_virtual === 'Dipakai'
+    return true
   })
 
   return (
     <div className="space-y-4">
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-4">
         <Card
           className={`py-3 px-1 bg-card/80 backdrop-blur-sm border-border/60 cursor-pointer transition-all hover:border-primary/50 ${statusFilter === 'all' ? 'ring-2 ring-primary border-transparent' : ''}`}
           onClick={() => setStatusFilter('all')}
@@ -66,6 +69,16 @@ export default function LaptopPage() {
             <div><p className="text-xs font-medium text-muted-foreground">Laptop Dipakai</p><h3 className="text-xl font-bold font-poppins">{summary.dipakai}</h3></div>
           </CardContent>
         </Card>
+
+        <Card
+          className={`py-3 px-1 bg-card/80 backdrop-blur-sm border-border/60 cursor-pointer transition-all hover:border-red-500/50 ${statusFilter === 'Rusak' ? 'ring-2 ring-red-500 border-transparent' : ''}`}
+          onClick={() => setStatusFilter('Rusak')}
+        >
+          <CardContent className="p-0 flex items-center gap-3 px-4">
+            <div className="p-2 bg-red-500/10 rounded-lg"><AlertTriangle className="w-5 h-5 text-red-600" /></div>
+            <div><p className="text-xs font-medium text-muted-foreground">Kondisi Rusak</p><h3 className="text-xl font-bold font-poppins">{summary.rusak}</h3></div>
+          </CardContent>
+        </Card>
         
         <Card
           className={`py-3 px-1 bg-card/80 backdrop-blur-sm border-border/60 cursor-pointer transition-all hover:border-amber-500/50 ${statusFilter === 'Tersedia' ? 'ring-2 ring-amber-500 border-transparent' : ''}`}
@@ -73,7 +86,7 @@ export default function LaptopPage() {
         >
           <CardContent className="p-0 flex items-center gap-3 px-4">
             <div className="p-2 bg-amber-500/10 rounded-lg"><MonitorX className="w-5 h-5 text-amber-600" /></div>
-            <div><p className="text-xs font-medium text-muted-foreground">Laptop Tidak Dipakai (Tersedia)</p><h3 className="text-xl font-bold font-poppins">{summary.tersedia}</h3></div>
+            <div><p className="text-xs font-medium text-muted-foreground">Tidak Terpakai</p><h3 className="text-xl font-bold font-poppins">{summary.tersedia}</h3></div>
           </CardContent>
         </Card>
       </div>

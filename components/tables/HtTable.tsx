@@ -123,7 +123,7 @@ export function HtTable({ data, onEdit, onRefresh }: { data: any[], onEdit: (ite
               <TableRow className="hover:bg-slate-50 transition-colors">
               <TableCell><Checkbox checked={selectedIds.has(item.id)} onCheckedChange={() => toggleSelection(item.id)} aria-label="Select row" onClick={(e) => e.stopPropagation()} /></TableCell>
               <TableCell className="whitespace-nowrap">{item.asset_code || "-"}</TableCell>
-              <TableCell className="whitespace-nowrap">{item.pic_name || "-"}</TableCell>
+              <TableCell className="whitespace-nowrap">{item.pic_name || "Tidak Diketahui"}</TableCell>
               <TableCell className="whitespace-nowrap">{item.brand || "-"}</TableCell>
               <TableCell className="whitespace-nowrap">{item.type || "-"}</TableCell>
               <TableCell className="whitespace-nowrap">{item.accessories || "-"}</TableCell>

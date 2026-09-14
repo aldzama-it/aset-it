@@ -26,11 +26,19 @@ export async function GET(req: Request, { params }: { params: Promise<{ tableNam
       return Response.json({ success: false, error: 'Tabel tidak ditemukan' }, { status: 400 })
     }
 
-    const data = await model.findMany({
+    const rawData = await model.findMany({
       where: { asset_code: assetCode }
     })
-    
-    // Urutkan berdasarkan timeline (handover_date / install_date) alih-alih waktu input (created_at)
+
+    // Filter out dummy/junk records without specs or pic or handover_date
+    const data = rawData.filter((item: any) => {
+      const hasPic = !!(item.pic_name || item.pic || item.account_email)
+      const hasDate = !!(item.handover_date || item.install_date)
+      const hasSpecs = !!(item.brand || item.type || item.model)
+      return hasPic || hasDate || hasSpecs
+    })
+
+    // Urutkan berdasarkan timeline (handover_date / install_date)
     data.sort((a: any, b: any) => {
       const dateA = new Date(a.handover_date || a.install_date || a.created_at).getTime()
       const dateB = new Date(b.handover_date || b.install_date || b.created_at).getTime()

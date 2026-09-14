@@ -28,25 +28,38 @@ export async function GET(req: Request) {
     let totalLaptop = 0
     let laptopDipakai = 0
     let laptopTersedia = 0
+    let laptopRusak = 0
 
     for (const [asset_code, group] of grouped.entries()) {
       totalLaptop++
-      // Find active: return_date is null
       let active = group.find(g => g.return_date === null)
       
       if (!active) {
         laptopTersedia++
-        // If no active, it means it's available. We take the latest specs (first in array due to orderBy)
-        active = { 
+        const unassigned = { 
           ...group[0], 
-          return_date: null, // it's available, so return_date for the *current* virtual status doesn't apply
-          status_virtual: 'Tersedia' // Custom flag to indicate it's available
+          status_virtual: 'Tersedia'
         }
+        if (unassigned.condition === 'Rusak' || unassigned.condition === 'Perlu_Servis') {
+          laptopRusak++
+        }
+        processedData.push(unassigned)
       } else {
-        laptopDipakai++
-        active = { ...active, status_virtual: 'Aktif' }
+        const pic = active.pic_name || active.pic
+        // 1. Kondisi (independen)
+        if (active.condition === 'Rusak' || active.condition === 'Perlu_Servis') {
+          laptopRusak++
+        }
+        // 2. Status Pakai (independen)
+        if (!pic) {
+          laptopTersedia++
+          active.status_virtual = 'Tersedia'
+        } else {
+          laptopDipakai++
+          active.status_virtual = 'Aktif'
+        }
+        processedData.push(active)
       }
-      processedData.push(active)
     }
 
     // Apply search filter after grouping
@@ -69,7 +82,8 @@ export async function GET(req: Request) {
       summary: {
         total: totalLaptop,
         dipakai: laptopDipakai,
-        tersedia: laptopTersedia
+        tersedia: laptopTersedia,
+        rusak: laptopRusak
       }
     })
   } catch (e) {
