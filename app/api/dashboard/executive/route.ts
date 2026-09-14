@@ -27,8 +27,8 @@ export async function GET() {
       // Branch distribution
       laptopBranch, tabletBranch, htBranch,
       laptopLoc, printerLoc, cctvLoc, cameraLoc, starlinkLoc, networkLoc, generalAssetLoc,
-      // Department distribution
-      laptopDept, tabletDept, htDept,
+      // Department distribution (HT no longer has a department field)
+      laptopDept, tabletDept,
       // Growth data
       laptopGrowth, tabletGrowth, printerGrowth, cctvGrowth, cameraGrowth,
       htGrowth, dashcamGrowth, starlinkGrowth, networkGrowth, generalAssetGrowth,
@@ -196,7 +196,7 @@ export async function GET() {
 
     // ── 6. Department distribution ───────────────────────────────────────────
     const deptMap: Record<string, number> = {}
-    ;[laptopDept, tabletDept, htDept].forEach(arr => {
+    ;[laptopDept, tabletDept].forEach(arr => {
       arr.forEach((item: any) => {
         const key = item.department || item.division
         if (key) deptMap[key] = (deptMap[key] || 0) + item._count
