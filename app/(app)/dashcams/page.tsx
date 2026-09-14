@@ -37,7 +37,7 @@ export default function DashcamPage() {
     <div className="space-y-4">
       
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-4">
         <Card className={`py-3 px-1 bg-card/80 backdrop-blur-sm border-border/60 cursor-pointer transition-all hover:border-primary/50 ${statusFilter === 'all' ? 'ring-2 ring-primary border-transparent' : ''}`} onClick={() => setStatusFilter('all')}>
           <CardContent className="p-0 flex items-center gap-3 px-4">
             <div className="p-2 bg-primary/10 rounded-lg"><Camera className="w-5 h-5 text-primary" /></div>
