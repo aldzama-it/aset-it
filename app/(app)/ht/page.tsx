@@ -10,8 +10,8 @@ import { HtTable } from '@/components/tables/HtTable'
 import { HtForm } from '@/components/forms/HtForm'
 
 export default function HtPage() {
-  const [data, setData] = useState([])
-  const [summary, setSummary] = useState({ total: 0, rusak: 0, tersedia: 0 })
+  const [data, setData] = useState<any[]>([])
+  const [summary, setSummary] = useState({ total: 0, dipakai: 0, rusak: 0, tersedia: 0 })
   const [statusFilter, setStatusFilter] = useState('all')
   const [search, setSearch] = useState('')
   const [formOpen, setFormOpen] = useState(false)

@@ -1,4 +1,5 @@
 'use client'
+import type { Cctv as PrismaCctv } from '@prisma/client'
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -10,8 +11,8 @@ import { CctvTable } from '@/components/tables/CctvTable'
 import { CctvForm } from '@/components/forms/CctvForm'
 
 export default function CctvPage() {
-  const [data, setData] = useState([])
-  const [summary, setSummary] = useState({ total: 0, rusak: 0, tersedia: 0 })
+  const [data, setData] = useState<PrismaCctv[]>([])
+  const [summary, setSummary] = useState({ total: 0, dipakai: 0, rusak: 0, tersedia: 0 })
   const [statusFilter, setStatusFilter] = useState('all')
   const [search, setSearch] = useState('')
   const [formOpen, setFormOpen] = useState(false)

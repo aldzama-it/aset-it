@@ -10,8 +10,8 @@ import { TabletTable } from '@/components/tables/TabletTable'
 import { TabletForm } from '@/components/forms/TabletForm'
 
 export default function TabletPage() {
-  const [data, setData] = useState([])
-  const [summary, setSummary] = useState({ total: 0, rusak: 0, tersedia: 0 })
+  const [data, setData] = useState<any[]>([])
+  const [summary, setSummary] = useState({ total: 0, dipakai: 0, rusak: 0, tersedia: 0 })
   const [statusFilter, setStatusFilter] = useState('all')
   const [search, setSearch] = useState('')
   const [formOpen, setFormOpen] = useState(false)

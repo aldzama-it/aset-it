@@ -11,7 +11,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Card, CardContent } from '@/components/ui/card'
 
 export default function LaptopPage() {
-  const [data, setData] = useState([])
+  const [data, setData] = useState<any[]>([])
   const [summary, setSummary] = useState({ total: 0, dipakai: 0, tersedia: 0 })
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all') // 'all', 'Aktif', 'Tersedia'

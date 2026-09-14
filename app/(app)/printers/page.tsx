@@ -10,8 +10,8 @@ import { PrinterTable } from '@/components/tables/PrinterTable'
 import { PrinterForm } from '@/components/forms/PrinterForm'
 
 export default function PrinterPage() {
-  const [data, setData] = useState([])
-  const [summary, setSummary] = useState({ total: 0, rusak: 0, tersedia: 0 })
+  const [data, setData] = useState<any[]>([])
+  const [summary, setSummary] = useState({ total: 0, dipakai: 0, rusak: 0, tersedia: 0 })
   const [statusFilter, setStatusFilter] = useState('all') // 'all', 'Rusak', 'Tersedia'
   const [search, setSearch] = useState('')
   const [formOpen, setFormOpen] = useState(false)

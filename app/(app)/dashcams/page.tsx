@@ -10,7 +10,7 @@ import { DashcamTable } from '@/components/tables/DashcamTable'
 import { DashcamForm } from '@/components/forms/DashcamForm'
 
 export default function DashcamPage() {
-  const [data, setData] = useState([])
+  const [data, setData] = useState<any[]>([])
   const [summary, setSummary] = useState({ total: 0, terpasang: 0, belum_terpasang: 0 })
   const [statusFilter, setStatusFilter] = useState('all') // 'all', 'Terpasang', 'Belum Terpasang'
   const [search, setSearch] = useState('')
