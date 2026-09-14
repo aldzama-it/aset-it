@@ -86,7 +86,7 @@ export default async function ExecutiveDashboardPage() {
     // Department
     prisma.laptop.groupBy({ by: ['department'], _count: true, where: { department: { not: null } } }),
     prisma.tablet.groupBy({ by: ['department'], _count: true, where: { department: { not: null } } }),
-    prisma.ht.groupBy({ by: ['department'], _count: true, where: { department: { not: null } } }),
+    prisma.ht.groupBy({ by: ['division'], _count: true, where: { division: { not: null } } }),
     // Growth dates
     prisma.laptop.findMany({ select: { created_at: true } }),
     prisma.tablet.findMany({ select: { created_at: true } }),
@@ -222,20 +222,20 @@ export default async function ExecutiveDashboardPage() {
 
   // ── Section wrapper (used multiple times) ─────────────────────────────────
   const Panel = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
-    <div className={`bg-[#111827]/80 border border-white/[0.07] rounded-2xl shadow-xl ${className}`}>
+    <div className={`bg-white border border-slate-200/60 rounded-2xl shadow-xl ${className}`}>
       {children}
     </div>
   )
 
   const SectionTitle = ({ title, sub }: { title: string; sub?: string }) => (
     <div className="mb-4">
-      <h2 className="text-white/90 font-semibold text-sm tracking-wide">{title}</h2>
-      {sub && <p className="text-white/35 text-[11px] mt-0.5">{sub}</p>}
+      <h2 className="text-slate-800 font-semibold text-sm tracking-wide">{title}</h2>
+      {sub && <p className="text-slate-500 text-[11px] mt-0.5">{sub}</p>}
     </div>
   )
 
   return (
-    <div className="flex-1 w-full overflow-y-auto bg-[#0A0F1E] text-white">
+    <div className="flex-1 w-full overflow-y-auto bg-slate-50/50 text-slate-800">
       <div className="p-4 md:p-6 pb-20 space-y-4 max-w-[1600px] mx-auto">
 
         {/* ── ROW 1: Hero ─────────────────────────────────────────────────── */}
@@ -244,6 +244,8 @@ export default async function ExecutiveDashboardPage() {
           totalDigital={totalDigital}
           healthScore={healthScore}
           thisMonthCount={thisMonthCount}
+          totalGood={totalGood}
+          totalPhysicalWithCond={totalPhysicalWithCond}
         />
 
         {/* ── ROW 2: KPI Cards ─────────────────────────────────────────────── */}

@@ -23,87 +23,94 @@ export function DigitalAssetSummary({ data }: DigitalAssetSummaryProps) {
       label: 'Email Aktif',
       value: data.email.active,
       total: data.email.total,
-      color: 'text-blue-400',
-      bg: 'bg-blue-400/10',
-      border: 'border-blue-400/20',
+      color: 'text-blue-600',
+      bg: 'bg-blue-50/80',
+      border: 'border-blue-200/80',
+      progressBg: 'bg-blue-600',
     },
     {
       icon: ShieldCheck,
       label: 'VPN Aktif',
       value: data.vpn.active,
       total: data.vpn.total,
-      color: 'text-violet-400',
-      bg: 'bg-violet-400/10',
-      border: 'border-violet-400/20',
+      color: 'text-violet-600',
+      bg: 'bg-violet-50/80',
+      border: 'border-violet-200/80',
+      progressBg: 'bg-violet-600',
     },
     {
       icon: Database,
       label: 'Synology',
       value: data.synology.active,
       total: data.synology.total,
-      color: 'text-cyan-400',
-      bg: 'bg-cyan-400/10',
-      border: 'border-cyan-400/20',
+      color: 'text-cyan-600',
+      bg: 'bg-cyan-50/80',
+      border: 'border-cyan-200/80',
+      progressBg: 'bg-cyan-600',
     },
     {
       icon: Globe,
       label: 'Ext. App',
       value: data.externalApp,
       total: null,
-      color: 'text-emerald-400',
-      bg: 'bg-emerald-400/10',
-      border: 'border-emerald-400/20',
+      color: 'text-emerald-600',
+      bg: 'bg-emerald-50/80',
+      border: 'border-emerald-200/80',
+      progressBg: 'bg-emerald-600',
     },
     {
       icon: LayoutGrid,
       label: 'Admin SW',
       value: data.adminSoftware,
       total: null,
-      color: 'text-amber-400',
-      bg: 'bg-amber-400/10',
-      border: 'border-amber-400/20',
+      color: 'text-amber-600',
+      bg: 'bg-amber-50/80',
+      border: 'border-amber-200/80',
+      progressBg: 'bg-amber-600',
     },
     {
       icon: Server,
       label: 'Infrastruktur',
       value: data.infrastructure,
       total: null,
-      color: 'text-rose-400',
-      bg: 'bg-rose-400/10',
-      border: 'border-rose-400/20',
+      color: 'text-rose-600',
+      bg: 'bg-rose-50/80',
+      border: 'border-rose-200/80',
+      progressBg: 'bg-rose-600',
     },
     {
       icon: Phone,
       label: 'Office Phone',
       value: data.officePhone,
       total: null,
-      color: 'text-pink-400',
-      bg: 'bg-pink-400/10',
-      border: 'border-pink-400/20',
+      color: 'text-pink-600',
+      bg: 'bg-pink-50/80',
+      border: 'border-pink-200/80',
+      progressBg: 'bg-pink-600',
     },
   ]
 
   return (
-    <div className="grid grid-cols-2 gap-2 h-full content-start">
+    <div className="grid grid-cols-2 gap-2.5 h-full content-start">
       {items.map((item, i) => {
         const Icon = item.icon
         const pct = item.total && item.total > 0 ? Math.round((item.value / item.total) * 100) : null
         return (
           <div
             key={i}
-            className={`flex items-center gap-2.5 p-2.5 rounded-xl border ${item.border} ${item.bg} transition-all duration-150 hover:scale-[1.02]`}
+            className={`flex items-center gap-2.5 p-3 rounded-xl border ${item.border} ${item.bg} transition-all duration-150 hover:shadow-sm`}
           >
-            <div className={`w-7 h-7 rounded-lg ${item.bg} border ${item.border} flex items-center justify-center flex-shrink-0`}>
-              <Icon className={`w-3.5 h-3.5 ${item.color}`} />
+            <div className={`w-8 h-8 rounded-lg bg-white border ${item.border} flex items-center justify-center flex-shrink-0 shadow-xs`}>
+              <Icon className={`w-4 h-4 ${item.color}`} />
             </div>
             <div className="min-w-0 flex-1">
-              <p className={`text-sm font-bold font-poppins ${item.color} leading-none`}>{item.value.toLocaleString()}</p>
-              <p className="text-white/40 text-[10px] mt-0.5 truncate">{item.label}</p>
+              <p className="text-base font-bold font-poppins text-slate-900 leading-none">{item.value.toLocaleString()}</p>
+              <p className="text-slate-600 text-[11px] font-medium mt-0.5 truncate">{item.label}</p>
               {pct !== null && (
-                <div className="mt-1 h-0.5 w-full bg-white/10 rounded-full overflow-hidden">
+                <div className="mt-1.5 h-1 w-full bg-slate-200/80 rounded-full overflow-hidden">
                   <div
-                    className={`h-full rounded-full ${item.bg}`}
-                    style={{ width: `${pct}%`, backgroundColor: item.color.replace('text-', '') }}
+                    className={`h-full rounded-full ${item.progressBg}`}
+                    style={{ width: `${pct}%` }}
                   />
                 </div>
               )}

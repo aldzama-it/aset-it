@@ -37,11 +37,17 @@ export default function CctvPage() {
     <div className="space-y-4">
       
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-4">
         <Card className={`py-3 px-1 bg-card/80 backdrop-blur-sm border-border/60 cursor-pointer transition-all hover:border-primary/50 ${statusFilter === 'all' ? 'ring-2 ring-primary border-transparent' : ''}`} onClick={() => setStatusFilter('all')}>
           <CardContent className="p-0 flex items-center gap-3 px-4">
             <div className="p-2 bg-primary/10 rounded-lg"><Video className="w-5 h-5 text-primary" /></div>
             <div><p className="text-xs font-medium text-muted-foreground">Total Data</p><h3 className="text-xl font-bold font-poppins">{summary.total}</h3></div>
+          </CardContent>
+        </Card>
+        <Card className={`py-3 px-1 bg-card/80 backdrop-blur-sm border-border/60 cursor-pointer transition-all hover:border-blue-500/50 ${statusFilter === 'Dipakai' ? 'ring-2 ring-blue-500 border-transparent' : ''}`} onClick={() => setStatusFilter('Dipakai')}>
+          <CardContent className="p-0 flex items-center gap-3 px-4">
+            <div className="p-2 bg-blue-500/10 rounded-lg"><CheckCircle2 className="w-5 h-5 text-blue-600" /></div>
+            <div><p className="text-xs font-medium text-muted-foreground">Sedang Dipakai</p><h3 className="text-xl font-bold font-poppins">{summary.dipakai || 0}</h3></div>
           </CardContent>
         </Card>
         <Card className={`py-3 px-1 bg-card/80 backdrop-blur-sm border-border/60 cursor-pointer transition-all hover:border-red-500/50 ${statusFilter === 'Rusak' ? 'ring-2 ring-red-500 border-transparent' : ''}`} onClick={() => setStatusFilter('Rusak')}>

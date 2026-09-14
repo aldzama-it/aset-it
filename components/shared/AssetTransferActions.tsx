@@ -7,6 +7,7 @@ import { AssetHistoryDialog } from '@/components/shared/AssetHistoryDialog'
 import { AssetTransferDialog } from '@/components/shared/AssetTransferDialog'
 import { LaptopTransferModal } from '@/components/forms/LaptopTransferModal'
 import { LaptopHistoryDialog } from '@/components/shared/LaptopHistoryDialog'
+import { PhysicalAssetHistoryDialog } from '@/components/shared/PhysicalAssetHistoryDialog'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
@@ -80,7 +81,15 @@ export function AssetTransferActions({ item, tableName, onSuccess }: AssetTransf
           assetCode={item.asset_code || ''}
         />
       )}
-      {historyOpen && tableName !== 'laptops' && (
+      {historyOpen && tableName !== 'laptops' && item.asset_code && (
+        <PhysicalAssetHistoryDialog
+          open
+          onOpenChange={setHistoryOpen}
+          assetCode={item.asset_code}
+          tableName={tableName}
+        />
+      )}
+      {historyOpen && tableName !== 'laptops' && !item.asset_code && (
         <AssetHistoryDialog
           open
           onOpenChange={setHistoryOpen}

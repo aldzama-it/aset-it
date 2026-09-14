@@ -29,15 +29,15 @@ const BARS = [
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null
   return (
-    <div className="bg-[#0F172A] border border-white/10 rounded-xl px-3 py-2.5 shadow-2xl min-w-[140px]">
-      <p className="text-white font-semibold text-xs mb-2">{label}</p>
+    <div className="bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 shadow-xl min-w-[140px]">
+      <p className="text-slate-900 font-bold text-xs mb-2 border-b border-slate-100 pb-1">{label}</p>
       {payload.map((p: any) => p.value > 0 && (
-        <div key={p.dataKey} className="flex items-center justify-between gap-3">
+        <div key={p.dataKey} className="flex items-center justify-between gap-3 py-0.5">
           <div className="flex items-center gap-1.5">
-            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: p.fill }} />
-            <span className="text-white/60 text-[10px]">{p.name}</span>
+            <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: p.fill }} />
+            <span className="text-slate-600 text-xs font-medium">{p.name}</span>
           </div>
-          <span className="text-white text-xs font-bold">{p.value}</span>
+          <span className="text-slate-900 text-xs font-bold font-poppins">{p.value}</span>
         </div>
       ))}
     </div>
@@ -45,11 +45,11 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 }
 
 const CustomLegend = ({ payload }: any) => (
-  <div className="flex flex-wrap justify-center gap-x-3 gap-y-1 mt-1">
+  <div className="flex flex-wrap justify-center gap-x-4 gap-y-1.5 mt-2">
     {payload?.map((entry: any) => (
       <div key={entry.value} className="flex items-center gap-1.5">
-        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
-        <span className="text-white/50 text-[10px]">{entry.value}</span>
+        <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: entry.color }} />
+        <span className="text-slate-600 text-[11px] font-medium">{entry.value}</span>
       </div>
     ))}
   </div>
@@ -60,7 +60,7 @@ export function AssetConditionChart({ data }: Props) {
   const filtered = data.filter(d => BARS.some(b => (d as any)[b.key] > 0))
 
   if (filtered.length === 0) {
-    return <div className="h-full flex items-center justify-center text-white/30 text-sm">Belum ada data</div>
+    return <div className="h-full flex items-center justify-center text-slate-400 text-sm font-medium">Belum ada data</div>
   }
 
   return (
@@ -71,20 +71,20 @@ export function AssetConditionChart({ data }: Props) {
         barCategoryGap="25%"
         barGap={1}
       >
-        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
         <XAxis
           dataKey="name"
-          tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.5)' }}
+          tick={{ fontSize: 11, fill: '#475569', fontWeight: 600 }}
           axisLine={false}
           tickLine={false}
         />
         <YAxis
-          tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.3)' }}
+          tick={{ fontSize: 10, fill: '#64748B' }}
           axisLine={false}
           tickLine={false}
           allowDecimals={false}
         />
-        <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
+        <Tooltip content={<CustomTooltip />} cursor={{ fill: '#F1F5F9' }} />
         <Legend content={<CustomLegend />} />
         {BARS.map(bar => (
           <Bar key={bar.key} dataKey={bar.key} name={bar.label} stackId="a" fill={bar.color} maxBarSize={48} />

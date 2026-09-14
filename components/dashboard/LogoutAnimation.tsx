@@ -25,7 +25,7 @@ export function LogoutAnimation() {
             className="object-contain drop-shadow-lg" 
             priority 
           />
-          <h1 className="text-white font-bold text-2xl font-sans tracking-tight drop-shadow-md">
+          <h1 className="text-slate-800 font-bold text-2xl font-sans tracking-tight drop-shadow-md">
             Logging out...
           </h1>
        </div>
