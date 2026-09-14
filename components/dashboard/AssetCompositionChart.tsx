@@ -25,12 +25,12 @@ const CustomTooltip = ({ active, payload }: any) => {
   const { name, value } = payload[0]
   const cfg = CONDITION_CONFIG[name]
   return (
-    <div className="bg-[#0F172A] border border-white/10 rounded-xl px-3 py-2 shadow-2xl">
+    <div className="bg-white border border-slate-200 rounded-xl px-3 py-2 shadow-xl">
       <div className="flex items-center gap-2">
-        <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: cfg?.color || '#fff' }} />
-        <p className="text-white/80 text-xs font-medium">{cfg?.label || name}</p>
+        <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: cfg?.color || '#94A3B8' }} />
+        <p className="text-slate-600 text-xs font-semibold">{cfg?.label || name}</p>
       </div>
-      <p className="text-white text-lg font-bold font-poppins mt-0.5">{value.toLocaleString()} unit</p>
+      <p className="text-slate-900 text-base font-bold font-poppins mt-0.5">{value.toLocaleString()} unit</p>
     </div>
   )
 }
@@ -41,8 +41,8 @@ const CustomLegend = ({ payload }: any) => (
       const cfg = CONDITION_CONFIG[entry.value]
       return (
         <div key={entry.value} className="flex items-center gap-1.5">
-          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: cfg?.color || entry.color }} />
-          <span className="text-white/50 text-[10px]">{cfg?.label || entry.value}</span>
+          <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: cfg?.color || entry.color }} />
+          <span className="text-slate-600 text-[11px] font-medium">{cfg?.label || entry.value}</span>
         </div>
       )
     })}
@@ -89,8 +89,8 @@ export function AssetCompositionChart({ data }: Props) {
         </ResponsiveContainer>
         {/* Center label */}
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none" style={{ bottom: '12%' }}>
-          <p className="text-3xl font-bold font-poppins text-white">{goodPct}%</p>
-          <p className="text-white/40 text-[10px] font-medium tracking-wide">Kondisi Baik</p>
+          <p className="text-3xl font-bold font-poppins text-slate-900">{goodPct}%</p>
+          <p className="text-slate-500 text-[11px] font-semibold tracking-wide">Kondisi Baik</p>
         </div>
       </div>
     </div>

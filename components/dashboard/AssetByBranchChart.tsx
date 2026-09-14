@@ -16,10 +16,10 @@ const BAR_COLORS = [
 const CustomTooltip = ({ active, payload }: any) => {
   if (!active || !payload?.[0]) return null
   return (
-    <div className="bg-[#0F172A] border border-white/10 rounded-xl px-3 py-2 shadow-2xl">
-      <p className="text-white/60 text-[10px] mb-1">{payload[0].payload.branch}</p>
-      <p className="text-white text-lg font-bold font-poppins">
-        {payload[0].value} <span className="text-white/40 text-xs font-normal">unit</span>
+    <div className="bg-white border border-slate-200 rounded-xl px-3 py-2 shadow-xl">
+      <p className="text-slate-500 text-[10px] mb-0.5 font-medium">{payload[0].payload.branch}</p>
+      <p className="text-slate-900 text-base font-bold font-poppins">
+        {payload[0].value} <span className="text-slate-500 text-xs font-normal">unit</span>
       </p>
     </div>
   )
@@ -34,13 +34,13 @@ export function AssetByBranchChart({ data }: Props) {
       <BarChart
         layout="vertical"
         data={sorted}
-        margin={{ top: 5, right: 50, left: 8, bottom: 5 }}
+        margin={{ top: 5, right: 45, left: 10, bottom: 5 }}
         barCategoryGap="28%"
       >
-        <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="rgba(255,255,255,0.05)" />
+        <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#E2E8F0" />
         <XAxis
           type="number"
-          tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.3)' }}
+          tick={{ fontSize: 10, fill: '#64748B' }}
           axisLine={false}
           tickLine={false}
           domain={[0, max]}
@@ -48,20 +48,20 @@ export function AssetByBranchChart({ data }: Props) {
         <YAxis
           dataKey="branch"
           type="category"
-          tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.6)' }}
-          width={90}
+          tick={{ fontSize: 11, fill: '#334155', fontWeight: 500 }}
+          width={110}
           axisLine={false}
           tickLine={false}
         />
-        <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
+        <Tooltip content={<CustomTooltip />} cursor={{ fill: '#F1F5F9' }} />
         <Bar dataKey="count" radius={[0, 6, 6, 0]} maxBarSize={28}>
           {sorted.map((_, index) => (
-            <Cell key={index} fill={BAR_COLORS[index % BAR_COLORS.length]} fillOpacity={0.85} />
+            <Cell key={index} fill={BAR_COLORS[index % BAR_COLORS.length]} fillOpacity={0.9} />
           ))}
           <LabelList
             dataKey="count"
             position="right"
-            style={{ fill: 'rgba(255,255,255,0.5)', fontSize: 11, fontWeight: 600 }}
+            style={{ fill: '#334155', fontSize: 11, fontWeight: 700 }}
           />
         </Bar>
       </BarChart>

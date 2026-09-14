@@ -16,34 +16,35 @@ interface KPICardProps {
   label: string
   value: number | string
   sub?: string
-  gradient: string
+  accentColor: string
   iconBg: string
   iconColor: string
   badge?: { text: string; color: string }
 }
 
-function KPICard({ icon: Icon, label, value, sub, gradient, iconBg, iconColor, badge }: KPICardProps) {
+function KPICard({ icon: Icon, label, value, sub, accentColor, iconBg, iconColor, badge }: KPICardProps) {
   return (
-    <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${gradient} border border-white/[0.06] shadow-lg group hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5`}>
-      {/* Background decoration */}
-      <div className="absolute right-0 top-0 w-20 h-20 opacity-10 rounded-full blur-xl bg-white translate-x-4 -translate-y-4" />
+    <div className="relative overflow-hidden rounded-2xl bg-white border border-slate-200/80 p-5 shadow-sm hover:shadow-md hover:border-slate-300 transition-all duration-200 group">
+      {/* Top accent line */}
+      <div className={`absolute top-0 left-0 right-0 h-1 ${accentColor}`} />
 
-      <div className="p-4 md:p-5 relative z-10">
-        <div className="flex items-start justify-between mb-3">
-          <div className={`w-9 h-9 rounded-xl ${iconBg} flex items-center justify-center border border-white/10`}>
-            <Icon className={`w-4.5 h-4.5 ${iconColor}`} />
-          </div>
-          {badge && (
-            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${badge.color}`}>
-              {badge.text}
-            </span>
-          )}
+      <div className="flex items-start justify-between mb-4">
+        <div className={`w-10 h-10 rounded-xl ${iconBg} flex items-center justify-center`}>
+          <Icon className={`w-5 h-5 ${iconColor}`} />
         </div>
-        <p className="text-3xl font-bold font-poppins text-white tracking-tight leading-none mb-1">
+        {badge && (
+          <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${badge.color}`}>
+            {badge.text}
+          </span>
+        )}
+      </div>
+
+      <div>
+        <p className="text-3xl font-bold font-poppins text-slate-900 tracking-tight leading-none mb-1">
           {typeof value === 'number' ? value.toLocaleString() : value}
         </p>
-        <p className="text-white/60 text-xs font-medium">{label}</p>
-        {sub && <p className="text-white/40 text-[10px] mt-1">{sub}</p>}
+        <p className="text-slate-600 text-xs font-semibold uppercase tracking-wider">{label}</p>
+        {sub && <p className="text-slate-400 text-xs mt-1 font-normal">{sub}</p>}
       </div>
     </div>
   )
@@ -59,37 +60,37 @@ export function DashboardCards({ data }: { data: ExecutiveKPIs }) {
         label="Aset Fisik"
         value={data.totalPhysical}
         sub="Unit hardware terdaftar"
-        gradient="from-[#1E3A8A]/80 via-[#1E40AF]/60 to-[#1E3A8A]/40"
-        iconBg="bg-blue-500/20"
-        iconColor="text-blue-300"
+        accentColor="bg-blue-500"
+        iconBg="bg-blue-50 text-blue-600 border border-blue-100"
+        iconColor="text-blue-600"
       />
       <KPICard
         icon={Cloud}
         label="Aset Digital"
         value={data.totalDigital}
         sub="Akun & lisensi aktif"
-        gradient="from-[#4C1D95]/80 via-[#5B21B6]/60 to-[#4C1D95]/40"
-        iconBg="bg-violet-500/20"
-        iconColor="text-violet-300"
+        accentColor="bg-violet-500"
+        iconBg="bg-violet-50 text-violet-600 border border-violet-100"
+        iconColor="text-violet-600"
       />
       <KPICard
         icon={AlertTriangle}
         label="Perlu Perhatian"
         value={totalAttention}
         sub={`${data.totalDamaged} rusak · ${data.totalNeedService} servis`}
-        gradient="from-[#7C1D1D]/80 via-[#991B1B]/60 to-[#7C1D1D]/40"
-        iconBg="bg-red-500/20"
-        iconColor="text-red-300"
-        badge={totalAttention > 0 ? { text: 'Action', color: 'bg-red-500/30 text-red-300 border border-red-500/30' } : undefined}
+        accentColor="bg-rose-500"
+        iconBg="bg-rose-50 text-rose-600 border border-rose-100"
+        iconColor="text-rose-600"
+        badge={totalAttention > 0 ? { text: 'Tindakan', color: 'bg-rose-100 text-rose-700 font-semibold' } : undefined}
       />
       <KPICard
         icon={TrendingUp}
         label="Tambah Bulan Ini"
         value={`+${data.thisMonthCount}`}
         sub="Aset baru terdaftar"
-        gradient="from-[#064E3B]/80 via-[#065F46]/60 to-[#064E3B]/40"
-        iconBg="bg-emerald-500/20"
-        iconColor="text-emerald-300"
+        accentColor="bg-emerald-500"
+        iconBg="bg-emerald-50 text-emerald-600 border border-emerald-100"
+        iconColor="text-emerald-600"
       />
     </div>
   )

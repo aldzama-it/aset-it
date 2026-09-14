@@ -102,7 +102,7 @@ export function AssetHealthGauge({ score, size = 160 }: AssetHealthGaugeProps) {
           <span className={`text-3xl font-bold font-poppins ${config.text}`}>
             {score}
           </span>
-          <span className="text-white/40 text-[10px] font-medium tracking-widest uppercase mt-0.5">
+          <span className="text-slate-400 text-[10px] font-medium tracking-widest uppercase mt-0.5">
             / 100
           </span>
         </div>
