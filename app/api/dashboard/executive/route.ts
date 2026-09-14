@@ -77,7 +77,7 @@ export async function GET() {
       // Department
       prisma.laptop.groupBy({ by: ['department'], _count: true, where: { department: { not: null } } }),
       prisma.tablet.groupBy({ by: ['department'], _count: true, where: { department: { not: null } } }),
-      prisma.ht.groupBy({ by: ['department'], _count: true, where: { department: { not: null } } }),
+      prisma.ht.groupBy({ by: ['division'], _count: true, where: { division: { not: null } } }),
       // Growth (created_at)
       prisma.laptop.findMany({ select: { created_at: true } }),
       prisma.tablet.findMany({ select: { created_at: true } }),
@@ -198,7 +198,8 @@ export async function GET() {
     const deptMap: Record<string, number> = {}
     ;[laptopDept, tabletDept, htDept].forEach(arr => {
       arr.forEach((item: any) => {
-        if (item.department) deptMap[item.department] = (deptMap[item.department] || 0) + item._count
+        const key = item.department || item.division
+        if (key) deptMap[key] = (deptMap[key] || 0) + item._count
       })
     })
     const deptData = Object.entries(deptMap)

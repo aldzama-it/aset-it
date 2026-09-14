@@ -10,8 +10,8 @@ import { PrinterTable } from '@/components/tables/PrinterTable'
 import { PrinterForm } from '@/components/forms/PrinterForm'
 
 export default function PrinterPage() {
-  const [data, setData] = useState([])
-  const [summary, setSummary] = useState({ total: 0, rusak: 0, tersedia: 0 })
+  const [data, setData] = useState<any[]>([])
+  const [summary, setSummary] = useState({ total: 0, rusak: 0, tersedia: 0, dipakai: 0 })
   const [statusFilter, setStatusFilter] = useState('all') // 'all', 'Rusak', 'Tersedia'
   const [search, setSearch] = useState('')
   const [formOpen, setFormOpen] = useState(false)
@@ -26,10 +26,11 @@ export default function PrinterPage() {
   useEffect(() => { fetchData() }, [search])
 
   
-  const filteredData = data.filter(item => {
+  const filteredData = data.filter((item: any) => {
     if (statusFilter === 'all') return true
     if (statusFilter === 'Rusak') return item.condition === 'Rusak' || item.condition === 'Perlu_Servis'
-    if (statusFilter === 'Tersedia') return item.condition !== 'Rusak' && item.condition !== 'Perlu_Servis'
+    if (statusFilter === 'Tersedia') return item.status_virtual === 'Tersedia'
+    if (statusFilter === 'Dipakai') return item.status_virtual === 'Dipakai' || item.status_virtual === 'Aktif'
     return true
   })
 
@@ -59,7 +60,7 @@ export default function PrinterPage() {
         <Card className={`py-3 px-1 bg-card/80 backdrop-blur-sm border-border/60 cursor-pointer transition-all hover:border-green-500/50 ${statusFilter === 'Tersedia' ? 'ring-2 ring-green-500 border-transparent' : ''}`} onClick={() => setStatusFilter('Tersedia')}>
           <CardContent className="p-0 flex items-center gap-3 px-4">
             <div className="p-2 bg-green-500/10 rounded-lg"><CheckCircle2 className="w-5 h-5 text-green-600" /></div>
-            <div><p className="text-xs font-medium text-muted-foreground">Kondisi Baik (Tersedia)</p><h3 className="text-xl font-bold font-poppins">{summary.tersedia}</h3></div>
+            <div><p className="text-xs font-medium text-muted-foreground">Tidak Terpakai</p><h3 className="text-xl font-bold font-poppins">{summary.tersedia}</h3></div>
           </CardContent>
         </Card>
       </div>

@@ -176,7 +176,7 @@ Tim IT`)
               <TableRow className="hover:bg-slate-50 transition-colors">
               <TableCell><Checkbox checked={selectedIds.has(item.id)} onCheckedChange={() => toggleSelection(item.id)} aria-label="Select row" onClick={(e) => e.stopPropagation()} /></TableCell>
               <TableCell className="whitespace-nowrap">{item.asset_code || "-"}</TableCell>
-              <TableCell className="whitespace-nowrap">{item.pic || "-"}</TableCell>
+              <TableCell className="whitespace-nowrap">{item.pic || "Tidak Diketahui"}</TableCell>
               <TableCell className="whitespace-nowrap">{item.department || "-"}</TableCell>
               <TableCell className="whitespace-nowrap">{item.division || "-"}</TableCell>
               <TableCell className="whitespace-nowrap">{item.job_level || "-"}</TableCell>
