@@ -77,7 +77,6 @@ export async function GET() {
       // Department
       prisma.laptop.groupBy({ by: ['department'], _count: true, where: { department: { not: null } } }),
       prisma.tablet.groupBy({ by: ['department'], _count: true, where: { department: { not: null } } }),
-      prisma.ht.groupBy({ by: ['division'], _count: true, where: { division: { not: null } } }),
       // Growth (created_at)
       prisma.laptop.findMany({ select: { created_at: true } }),
       prisma.tablet.findMany({ select: { created_at: true } }),
