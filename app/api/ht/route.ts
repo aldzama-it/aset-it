@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { recordHistory } from '@/lib/history'
 import { generateAssetCode } from '@/lib/utils'
+import { hasHtDetails, htCreateSchema } from '@/lib/ht-validation'
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
@@ -9,9 +10,10 @@ export async function GET(req: Request) {
     const allData = await prisma.ht.findMany({
       orderBy: { created_at: 'desc' }
     })
+    const validData = allData.filter((item) => hasHtDetails(item as Record<string, unknown>))
 
     const grouped = new Map<string, any[]>()
-    for (const item of allData) {
+    for (const item of validData) {
       if (!item.asset_code) {
         grouped.set('no-code-' + item.id, [item])
         continue
@@ -90,11 +92,31 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json()
+    const rawBody = await req.json()
     // Sanitize old fields
+    const body = rawBody && typeof rawBody === 'object' && !Array.isArray(rawBody)
+      ? { ...(rawBody as Record<string, unknown>) }
+      : rawBody
+
+    if (!body || typeof body !== 'object' || Array.isArray(body)) {
+      return Response.json({ success: false, error: 'Payload data HT tidak valid', message: 'Payload data HT tidak valid' }, { status: 400 })
+    }
+
     delete body.department
     delete body.job_level
     delete body.form_path
+
+    const validation = htCreateSchema.safeParse(body)
+    if (!validation.success) {
+      const errors = validation.error.flatten().fieldErrors
+      return Response.json({
+        success: false,
+        error: 'Data HT belum lengkap',
+        message: 'Brand dan nama penerima wajib diisi',
+        errors,
+      }, { status: 400 })
+    }
+
     let asset_code = body.asset_code
     if (!asset_code) {
       const last = await prisma.ht.findFirst({ orderBy: { id: 'desc' } })
