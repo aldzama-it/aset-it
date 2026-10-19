@@ -25,6 +25,10 @@ docker compose down
 docker compose down -v
 ```
 
+## Unified Asset API v1
+
+API baca-saja untuk integrasi server-ke-server tersedia di `/api/v1/assets`. Atur `ASSET_API_V1_TOKEN` di environment server. Lihat [panduan integrasi](docs/api-v1.md) untuk kategori, contoh respons, filter, dan riwayat.
+
 ## Ticketing integration
 
 Halaman `/ticketing` mengambil ringkasan dan daftar tiket secara server-to-server dari aplikasi Ticketing. Atur environment berikut pada deployment Asset IT:

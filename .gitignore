@@ -39,6 +39,9 @@ deploy/
 
 # documentation
 docs/
+!docs/
+docs/*
+!docs/api-v1.md
 
 # vercel
 .vercel
