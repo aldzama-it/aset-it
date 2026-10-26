@@ -60,6 +60,12 @@ export function LaptopForm({ open, onOpenChange, item, onSuccess }: { open: bool
     data.handover_date = data.handover_date ? new Date(data.handover_date).toISOString() : null
     data.return_date = data.return_date ? new Date(data.return_date).toISOString() : null
 
+    // Hapus field komputasi / metadata agar tidak terkirim ke server
+    delete data.id
+    delete data.status_virtual
+    delete data.created_at
+    delete data.updated_at
+
     // Sanitasi MAC address
     if (data.mac_address) {
       data.mac_address = String(data.mac_address).trim().slice(0, 17)
