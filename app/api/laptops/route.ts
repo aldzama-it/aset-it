@@ -95,13 +95,35 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    let asset_code = body.asset_code
+
+    // Validasi field krusial
+    if (!body.brand || !String(body.brand).trim()) {
+      return Response.json({ success: false, error: 'Brand laptop wajib diisi' }, { status: 400 })
+    }
+    if (!body.model || !String(body.model).trim()) {
+      return Response.json({ success: false, error: 'Model / Tipe laptop wajib diisi' }, { status: 400 })
+    }
+
+    let asset_code = body.asset_code?.trim()
     if (!asset_code) {
       const last = await prisma.laptop.findFirst({ orderBy: { id: 'desc' } })
       asset_code = generateAssetCode('LPT', last?.asset_code)
     }
+
+    // Sanitasi payload
+    const sanitizedData = {
+      ...body,
+      asset_code,
+      brand: String(body.brand).trim(),
+      model: String(body.model).trim(),
+      mac_address: body.mac_address ? String(body.mac_address).trim().slice(0, 17) : null,
+      handover_date: body.handover_date ? new Date(body.handover_date) : null,
+      return_date: body.return_date ? new Date(body.return_date) : null,
+      updated_at: new Date()
+    }
+
     const data = await prisma.laptop.create({
-      data: { ...body, asset_code , updated_at: new Date() }
+      data: sanitizedData
     })
     await recordHistory({
       table_name: 'laptops', asset_id: data.id, asset_code,

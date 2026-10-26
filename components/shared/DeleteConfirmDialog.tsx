@@ -14,11 +14,13 @@ export function DeleteConfirmDialog({
   onOpenChange,
   onConfirm,
   itemName,
+  description,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
   onConfirm: () => void
   itemName: string
+  description?: string
 }) {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -26,7 +28,11 @@ export function DeleteConfirmDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Apakah Anda yakin?</AlertDialogTitle>
           <AlertDialogDescription>
-            Tindakan ini tidak dapat dibatalkan. Aset <strong>{itemName}</strong> akan dihapus secara permanen.
+            {description ? (
+              description
+            ) : (
+              <>Tindakan ini tidak dapat dibatalkan. Aset <strong>{itemName}</strong> akan dihapus secara permanen.</>
+            )}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
