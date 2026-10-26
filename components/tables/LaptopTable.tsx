@@ -44,12 +44,25 @@ export function LaptopTable({ data, onEdit, onRefresh }: { data: any[], onEdit: 
   
   const handleBatchDelete = async () => {
     try {
-      await Promise.all(Array.from(selectedIds).map(id => fetch('/api/laptops/' + id, { method: 'DELETE' })))
-      toast.success(`${selectedIds.size} data dihapus`)
+      const results = await Promise.all(
+        Array.from(selectedIds).map(id => 
+          fetch('/api/laptops/' + id + '?cascade=true', { method: 'DELETE' })
+            .then(r => r.json())
+            .catch(() => ({ success: false }))
+        )
+      )
+      const successCount = results.filter(r => r.success).length
+      const failedCount = results.length - successCount
+      if (successCount > 0) {
+        toast.success(`${successCount} unit laptop berhasil dihapus`)
+      }
+      if (failedCount > 0) {
+        toast.error(`${failedCount} unit laptop gagal dihapus`)
+      }
       clearSelection()
       onRefresh()
     } catch {
-      toast.error('Gagal menghapus data terpilih')
+      toast.error('Gagal memproses penghapusan data terpilih')
     }
   }
 
@@ -61,16 +74,16 @@ export function LaptopTable({ data, onEdit, onRefresh }: { data: any[], onEdit: 
   const handleDelete = async () => {
     if (!delItem) return
     try {
-      const res = await fetch('/api/laptops/' + delItem.id, { method: 'DELETE' })
+      const res = await fetch('/api/laptops/' + delItem.id + '?cascade=true', { method: 'DELETE' })
       const json = await res.json()
       if (json.success) {
-        toast.success('Data dihapus')
+        toast.success(`Aset laptop ${delItem.asset_code || ''} berhasil dihapus`)
         onRefresh()
       } else {
-        toast.error(json.error)
+        toast.error(json.error || 'Gagal menghapus data')
       }
     } catch {
-      toast.error('Gagal menghapus data')
+      toast.error('Gagal menghubungi server saat menghapus data')
     }
     setDelItem(null)
   }
@@ -234,7 +247,13 @@ Tim IT`)
         onPageSizeChange={setPageSize}
       />
       
-      <DeleteConfirmDialog open={!!delItem} onOpenChange={(o) => !o && setDelItem(null)} onConfirm={handleDelete} itemName={delItem?.asset_code || 'data ini'} />
-      </div>
+      <DeleteConfirmDialog 
+        open={!!delItem} 
+        onOpenChange={(o) => !o && setDelItem(null)} 
+        onConfirm={handleDelete} 
+        itemName={delItem ? `${delItem.asset_code || 'Laptop'} (${delItem.brand || ''} ${delItem.model || ''})` : 'data ini'} 
+        description={delItem ? `Apakah Anda yakin ingin menghapus aset laptop ${delItem.asset_code || ''} (${delItem.brand || ''} ${delItem.model || ''})? Tindakan ini akan menghapus unit laptop beserta seluruh riwayat mutasinya secara permanen.` : undefined}
+      />
+    </div>
   )
 }
