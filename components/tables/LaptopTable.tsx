@@ -196,11 +196,11 @@ Tim IT`)
                   {item.matched_past_holder ? (
                     <span className="inline-flex items-center gap-1 text-[11px] text-amber-700 font-medium bg-amber-50 border border-amber-200/60 rounded px-1.5 py-0.5 mt-1 w-fit">
                       <History className="w-3 h-3 text-amber-600 shrink-0" />
-                      Pernah: {item.matched_past_holder}
+                      Pemegang sebelumnya: {item.matched_past_holder}
                     </span>
                   ) : item.previous_pics && item.previous_pics.length > 0 ? (
                     <span className="text-[10px] text-muted-foreground mt-0.5" title={`Pemegang sebelumnya: ${item.previous_pics.join(', ')}`}>
-                      +{item.previous_pics.length} mantan pemegang
+                      +{item.previous_pics.length} pemegang sebelumnya
                     </span>
                   ) : null}
                 </div>
