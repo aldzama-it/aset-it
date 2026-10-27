@@ -8,6 +8,9 @@ export function exportToExcel(data: any[], filename: string) {
     delete newItem.category_id
     delete newItem.created_at
     delete newItem.updated_at
+    delete newItem.previous_pics
+    delete newItem.matched_past_holder
+    delete newItem.status_virtual
     // Also remove the category object if it exists
     if (newItem.category) delete newItem.category
     
