@@ -6,7 +6,7 @@ import React, { useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 import { Button } from '@/components/ui/button'
-import { Edit, Trash, Paperclip, XCircle, Mail } from 'lucide-react'
+import { Edit, Trash, Paperclip, XCircle, Mail, History } from 'lucide-react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { TableSelectionBar } from '@/components/shared/TableSelectionBar'
 import { EmptyState } from '@/components/shared/EmptyState'
@@ -130,7 +130,8 @@ Tim IT`)
 
   const viewFields: ViewField[] = [
     { label: 'Kode Aset', key: 'asset_code' },
-    { label: 'Nama Pegawai', key: 'pic' },
+    { label: 'Nama Pegawai (Aktif)', key: 'pic' },
+    { label: 'Pemegang Sebelumnya', key: 'previous_pics_text' },
     { label: 'Departemen', key: 'department' },
     { label: 'Divisi', key: 'division' },
     { label: 'Job Level', key: 'job_level' },
@@ -189,7 +190,21 @@ Tim IT`)
               <TableRow className="hover:bg-slate-50 transition-colors">
               <TableCell><Checkbox checked={selectedIds.has(item.id)} onCheckedChange={() => toggleSelection(item.id)} aria-label="Select row" onClick={(e) => e.stopPropagation()} /></TableCell>
               <TableCell className="whitespace-nowrap">{item.asset_code || "-"}</TableCell>
-              <TableCell className="whitespace-nowrap">{item.pic || "Tidak Diketahui"}</TableCell>
+              <TableCell className="whitespace-nowrap">
+                <div className="flex flex-col">
+                  <span className="font-medium text-slate-800">{item.pic || "Tidak Diketahui"}</span>
+                  {item.matched_past_holder ? (
+                    <span className="inline-flex items-center gap-1 text-[11px] text-amber-700 font-medium bg-amber-50 border border-amber-200/60 rounded px-1.5 py-0.5 mt-1 w-fit">
+                      <History className="w-3 h-3 text-amber-600 shrink-0" />
+                      Pernah: {item.matched_past_holder}
+                    </span>
+                  ) : item.previous_pics && item.previous_pics.length > 0 ? (
+                    <span className="text-[10px] text-muted-foreground mt-0.5" title={`Pemegang sebelumnya: ${item.previous_pics.join(', ')}`}>
+                      +{item.previous_pics.length} mantan pemegang
+                    </span>
+                  ) : null}
+                </div>
+              </TableCell>
               <TableCell className="whitespace-nowrap">{item.department || "-"}</TableCell>
               <TableCell className="whitespace-nowrap">{item.division || "-"}</TableCell>
               <TableCell className="whitespace-nowrap">{item.job_level || "-"}</TableCell>

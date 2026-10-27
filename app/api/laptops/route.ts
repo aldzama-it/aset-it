@@ -6,12 +6,39 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
   const search = (searchParams.get('search') || '').toLowerCase()
   try {
-    const allLaptops = await prisma.laptop.findMany({
-      orderBy: [
-        { handover_date: 'desc' },
-        { created_at: 'desc' }
-      ]
-    })
+    const [allLaptops, laptopHistories] = await Promise.all([
+      prisma.laptop.findMany({
+        orderBy: [
+          { handover_date: 'desc' },
+          { created_at: 'desc' }
+        ]
+      }),
+      prisma.assetHistory.findMany({
+        where: {
+          table_name: 'laptops',
+          OR: [
+            { from_employee: { not: null } },
+            { to_employee: { not: null } }
+          ]
+        },
+        select: {
+          asset_code: true,
+          from_employee: true,
+          to_employee: true
+        }
+      })
+    ])
+
+    const historyMap = new Map<string, Set<string>>()
+    for (const h of laptopHistories) {
+      if (!h.asset_code) continue
+      if (!historyMap.has(h.asset_code)) {
+        historyMap.set(h.asset_code, new Set())
+      }
+      const set = historyMap.get(h.asset_code)!
+      if (h.from_employee?.trim()) set.add(h.from_employee.trim())
+      if (h.to_employee?.trim()) set.add(h.to_employee.trim())
+    }
 
     // Group by asset_code
     const grouped = new Map<string, any[]>()
@@ -33,12 +60,44 @@ export async function GET(req: Request) {
     for (const [asset_code, group] of grouped.entries()) {
       totalLaptop++
       let active = group.find(g => g.return_date === null)
+
+      const currentPic = active ? (active.pic_name || active.pic || '') : (group[0]?.pic_name || group[0]?.pic || '')
+      const currentPicNorm = currentPic.toLowerCase().trim()
+
+      const previousPics: string[] = []
+      const seenPics = new Set<string>()
+      if (currentPicNorm) seenPics.add(currentPicNorm)
+
+      // 1. Kumpulkan pemegang dari riwayat Laptop di grup
+      for (const item of group) {
+        const p = (item.pic_name || item.pic || '').trim()
+        if (p && !seenPics.has(p.toLowerCase())) {
+          seenPics.add(p.toLowerCase())
+          previousPics.push(p)
+        }
+      }
+
+      // 2. Kumpulkan pemegang dari log AssetHistory
+      const fromHistory = historyMap.get(asset_code)
+      if (fromHistory) {
+        for (const p of fromHistory) {
+          const trimmed = p.trim()
+          if (trimmed && !seenPics.has(trimmed.toLowerCase())) {
+            seenPics.add(trimmed.toLowerCase())
+            previousPics.push(trimmed)
+          }
+        }
+      }
+
+      const previousPicsText = previousPics.join(', ')
       
       if (!active) {
         laptopTersedia++
         const unassigned = { 
           ...group[0], 
-          status_virtual: 'Tersedia'
+          status_virtual: 'Tersedia',
+          previous_pics: previousPics,
+          previous_pics_text: previousPicsText
         }
         if (unassigned.condition === 'Rusak' || unassigned.condition === 'Perlu_Servis') {
           laptopRusak++
@@ -58,22 +117,38 @@ export async function GET(req: Request) {
           laptopDipakai++
           active.status_virtual = 'Aktif'
         }
+        active.previous_pics = previousPics
+        active.previous_pics_text = previousPicsText
         processedData.push(active)
       }
     }
 
     // Apply search filter after grouping
     if (search) {
-      processedData = processedData.filter(item => {
-        return (
-          (item.asset_code && item.asset_code.toLowerCase().includes(search)) ||
-          (item.pic && item.pic.toLowerCase().includes(search)) ||
-          (item.brand && item.brand.toLowerCase().includes(search)) ||
-          (item.model && item.model.toLowerCase().includes(search)) ||
-          (item.department && item.department.toLowerCase().includes(search)) ||
-          (item.branch && item.branch.toLowerCase().includes(search))
-        )
-      })
+      processedData = processedData
+        .map(item => {
+          const matchedPast = item.previous_pics?.find((p: string) =>
+            p.toLowerCase().includes(search)
+          )
+          if (matchedPast) {
+            return {
+              ...item,
+              matched_past_holder: matchedPast
+            }
+          }
+          return item
+        })
+        .filter(item => {
+          return (
+            (item.asset_code && item.asset_code.toLowerCase().includes(search)) ||
+            (item.pic && item.pic.toLowerCase().includes(search)) ||
+            (item.brand && item.brand.toLowerCase().includes(search)) ||
+            (item.model && item.model.toLowerCase().includes(search)) ||
+            (item.department && item.department.toLowerCase().includes(search)) ||
+            (item.branch && item.branch.toLowerCase().includes(search)) ||
+            Boolean(item.matched_past_holder)
+          )
+        })
     }
 
     return Response.json({ 
