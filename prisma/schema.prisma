@@ -344,13 +344,40 @@ enum tablet_condition {
   Tidak_Aktif
 }
 
-model User {
+model Role {
+  id          Int              @id @default(autoincrement())
+  name        String           @unique @db.VarChar(50)
+  label       String           @db.VarChar(100)
+  description String?          @db.VarChar(255)
+  is_system   Boolean          @default(false)
+  permissions RolePermission[]
+  users       User[]
+  created_at  DateTime         @default(now())
+  updated_at  DateTime         @updatedAt
+}
+
+model RolePermission {
   id         Int      @id @default(autoincrement())
-  name       String   @db.VarChar(100)
-  email      String   @unique @db.VarChar(150)
-  password   String   @db.VarChar(255)
+  role_id    Int
+  role       Role     @relation(fields: [role_id], references: [id], onDelete: Cascade)
+  menu_key   String   @db.VarChar(100)
   created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+
+  @@unique([role_id, menu_key])
+  @@index([role_id])
+}
+
+model User {
+  id         Int       @id @default(autoincrement())
+  name       String    @db.VarChar(100)
+  email      String    @unique @db.VarChar(150)
+  password   String    @db.VarChar(255)
+  role_id    Int?
+  role       Role?     @relation(fields: [role_id], references: [id], onDelete: SetNull)
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+
+  @@index([role_id])
 }
 
 enum general_asset_condition {

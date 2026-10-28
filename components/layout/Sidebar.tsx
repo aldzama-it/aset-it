@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
@@ -9,56 +9,54 @@ import {
   LayoutDashboard, Network, Printer, Camera, Laptop,
   Radio, Tablet, Satellite, Car, History,
   ChevronLeft, Menu, LogOut, Settings, Box, Cloud, MonitorDot, Activity, TicketCheck,
-  ChevronDown, ChevronRight
+  ChevronDown, ChevronRight, Shield, Users
 } from 'lucide-react'
 import * as LucideIcons from 'lucide-react'
 import { logout } from '@/app/login/actions'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
 import { LogoutAnimation } from '@/components/dashboard/LogoutAnimation'
 import { digitalAssetsConfig } from '@/lib/digital-assets-config'
+import { useAuth } from '@/context/AuthContext'
 
-const physicalAssetItems = [
-  { href: '/network', icon: Network, label: 'Jaringan' },
-  { href: '/printers', icon: Printer, label: 'Printer' },
-  { href: '/cctv', icon: Camera, label: 'CCTV' },
-  { href: '/laptops', icon: Laptop, label: 'Laptop' },
-  { href: '/general-inventory', icon: Box, label: 'Inventaris Umum' },
-  { href: '/ht', icon: Radio, label: 'HT (Handy Talky)' },
-  { href: '/tablets', icon: Tablet, label: 'Tablet' },
-  { href: '/cameras', icon: Camera, label: 'Kamera' },
-  { href: '/starlinks', icon: Satellite, label: 'Starlink' },
-  { href: '/dashcams', icon: Car, label: 'Dashcam' },
+const physicalAssetDefinitions = [
+  { href: '/network', icon: Network, label: 'Jaringan', permission: 'physical_assets.network' },
+  { href: '/printers', icon: Printer, label: 'Printer', permission: 'physical_assets.printers' },
+  { href: '/cctv', icon: Camera, label: 'CCTV', permission: 'physical_assets.cctv' },
+  { href: '/laptops', icon: Laptop, label: 'Laptop', permission: 'physical_assets.laptops' },
+  { href: '/general-inventory', icon: Box, label: 'Inventaris Umum', permission: 'physical_assets.general_inventory' },
+  { href: '/ht', icon: Radio, label: 'HT (Handy Talky)', permission: 'physical_assets.ht' },
+  { href: '/tablets', icon: Tablet, label: 'Tablet', permission: 'physical_assets.tablets' },
+  { href: '/cameras', icon: Camera, label: 'Kamera', permission: 'physical_assets.cameras' },
+  { href: '/starlinks', icon: Satellite, label: 'Starlink', permission: 'physical_assets.starlinks' },
+  { href: '/dashcams', icon: Car, label: 'Dashcam', permission: 'physical_assets.dashcams' },
+]
+
+const settingsDefinitions = [
+  { href: '/settings/categories', icon: Settings, label: 'Kategori Aset', permission: 'settings.categories' },
+  { href: '/settings/roles', icon: Shield, label: 'Role & Hak Akses', permission: 'settings.roles' },
+  { href: '/settings/users', icon: Users, label: 'Manajemen Pengguna', permission: 'settings.users' },
 ]
 
 export function Sidebar() {
   const pathname = usePathname()
+  const { hasPermission } = useAuth()
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [isMobileOpen, setIsMobileOpen] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
-  const formRef = useRef<HTMLFormElement>(null)
   const [dynamicCategories, setDynamicCategories] = useState<any[]>([])
 
   // State for collapsibles
   const [isDigitalOpen, setIsDigitalOpen] = useState(false)
   const [isPhysicalOpen, setIsPhysicalOpen] = useState(false)
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
   // Auto open based on current path
   useEffect(() => {
     if (pathname.includes('/digital-assets/')) setIsDigitalOpen(true)
-    if (physicalAssetItems.some(i => pathname.includes(i.href)) || pathname.includes('/assets/')) setIsPhysicalOpen(true)
+    if (physicalAssetDefinitions.some(i => pathname.includes(i.href)) || pathname.includes('/assets/')) setIsPhysicalOpen(true)
+    if (pathname.includes('/settings/')) setIsSettingsOpen(true)
   }, [pathname])
 
   // Mobile sidebar toggle listener
@@ -90,12 +88,31 @@ export function Sidebar() {
     return () => window.removeEventListener('category-updated', fetchCategories)
   }, [])
 
-  const dynamicMenuItems = dynamicCategories.map(cat => {
-    const Icon = (LucideIcons as any)[cat.icon || 'Box'] || Box
-    return { href: `/assets/${cat.id}`, icon: Icon, label: cat.name }
-  })
+  // Dynamic asset categories from database
+  const dynamicMenuItems = useMemo(() => {
+    if (!hasPermission('physical_assets.dynamic')) return []
+    return dynamicCategories.map(cat => {
+      const Icon = (LucideIcons as any)[cat.icon || 'Box'] || Box
+      return { href: `/assets/${cat.id}`, icon: Icon, label: cat.name, permission: 'physical_assets.dynamic' }
+    })
+  }, [dynamicCategories, hasPermission])
 
-  const allPhysicalAssets = [...physicalAssetItems, ...dynamicMenuItems]
+  // Filtered menus based on permissions
+  const visiblePhysicalAssets = useMemo(() => {
+    const base = physicalAssetDefinitions.filter(item => hasPermission(item.permission))
+    return [...base, ...dynamicMenuItems]
+  }, [hasPermission, dynamicMenuItems])
+
+  const visibleDigitalAssets = useMemo(() => {
+    return digitalAssetsConfig.filter(asset => {
+      const key = `digital_assets.${asset.id.replace(/-/g, '_')}`
+      return hasPermission(key)
+    })
+  }, [hasPermission])
+
+  const visibleSettingsItems = useMemo(() => {
+    return settingsDefinitions.filter(item => hasPermission(item.permission))
+  }, [hasPermission])
 
   const NavItem = ({ href, icon: Icon, label, isActive }: { href: string, icon: any, label: string, isActive: boolean }) => {
     const content = (
@@ -115,7 +132,6 @@ export function Sidebar() {
     if (isCollapsed) {
       return (
         <>
-          {/* Tooltip only for desktop collapsed mode */}
           <div className="hidden md:block">
             <Tooltip delayDuration={0}>
               <TooltipTrigger asChild>{content}</TooltipTrigger>
@@ -165,8 +181,8 @@ export function Sidebar() {
             ? "md:fixed md:left-0 md:top-0 md:bottom-0 md:w-20 md:-translate-x-[64px] md:opacity-0 md:hover:translate-x-0 md:hover:opacity-80 md:cursor-pointer"
             : "md:relative md:w-64 md:translate-x-0 md:opacity-100"
         )}
-        onClick={(e) => {
-          if (isCollapsed && window.innerWidth >= 768) setIsCollapsed(false)
+        onClick={() => {
+          if (isCollapsed && typeof window !== 'undefined' && window.innerWidth >= 768) setIsCollapsed(false)
         }}
       >
         <div className="px-4 font-bold text-xl border-b border-white/10 h-16 flex items-center justify-between overflow-hidden">
@@ -183,7 +199,8 @@ export function Sidebar() {
             variant="ghost"
             size="icon"
             className={cn("h-8 w-8 text-white hover:bg-white/10 hover:text-white", isCollapsed ? "mx-auto" : "")}
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation()
               if (window.innerWidth < 768) {
                 setIsMobileOpen(false)
               } else {
@@ -196,71 +213,118 @@ export function Sidebar() {
         </div>
 
         <nav className="pl-3 py-3 pr-0 space-y-1 overflow-y-auto max-h-[calc(100vh-3.5rem)] scrollbar-hide pb-20">
-          <NavItem href="/dashboard" icon={LayoutDashboard} label="Dashboard" isActive={pathname === '/dashboard'} />
-          <NavItem href="/ticketing" icon={TicketCheck} label="Ticketing" isActive={pathname.startsWith('/ticketing')} />
-          {/* Pemantauan, bukan inventaris -- sengaja di luar grup "Aset Fisik",
-              yang sudah punya "/network" untuk perangkat jaringan. */}
-          <NavItem href="/network-analyzer" icon={Activity} label="Network Analyzer" isActive={pathname.startsWith('/network-analyzer')} />
+          {/* Menu Utama */}
+          {hasPermission('dashboard') && (
+            <NavItem href="/dashboard" icon={LayoutDashboard} label="Dashboard" isActive={pathname === '/dashboard'} />
+          )}
 
-          {/* Digital Assets Collapsible */}
-          <Collapsible open={isDigitalOpen && !isCollapsed} onOpenChange={setIsDigitalOpen} className="mt-1">
-            <CollapsibleTrigger className="w-full">
-              <div className={cn(
-                "flex items-center justify-between px-3 py-2 text-[13px] text-white/70 font-medium hover:bg-white/10 hover:text-white transition-all duration-200",
-                isCollapsed ? "justify-center rounded-xl mx-2" : "rounded-l-full"
-              )}>
-                <div className="flex items-center gap-3">
-                  <Cloud className="w-5 h-5 flex-shrink-0" />
-                  {!isCollapsed && <span>Aset Digital</span>}
+          {hasPermission('ticketing') && (
+            <NavItem href="/ticketing" icon={TicketCheck} label="Ticketing" isActive={pathname.startsWith('/ticketing')} />
+          )}
+
+          {hasPermission('network_analyzer') && (
+            <NavItem href="/network-analyzer" icon={Activity} label="Network Analyzer" isActive={pathname.startsWith('/network-analyzer')} />
+          )}
+
+          {/* Digital Assets Collapsible - Hanya tampil jika ada sub-item yang diizinkan */}
+          {visibleDigitalAssets.length > 0 && (
+            <Collapsible open={isDigitalOpen && !isCollapsed} onOpenChange={setIsDigitalOpen} className="mt-1">
+              <CollapsibleTrigger className="w-full">
+                <div className={cn(
+                  "flex items-center justify-between px-3 py-2 text-[13px] text-white/70 font-medium hover:bg-white/10 hover:text-white transition-all duration-200",
+                  isCollapsed ? "justify-center rounded-xl mx-2" : "rounded-l-full"
+                )}>
+                  <div className="flex items-center gap-3">
+                    <Cloud className="w-5 h-5 flex-shrink-0" />
+                    {!isCollapsed && <span>Aset Digital</span>}
+                  </div>
+                  {!isCollapsed && (isDigitalOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />)}
                 </div>
-                {!isCollapsed && (isDigitalOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />)}
-              </div>
-            </CollapsibleTrigger>
-            <CollapsibleContent className="space-y-1 mt-1 mb-2">
-              {digitalAssetsConfig.map(asset => (
-                <SubNavItem
-                  key={asset.id}
-                  href={`/digital-assets/${asset.id}`}
-                  label={asset.title}
-                  isActive={pathname === `/digital-assets/${asset.id}`}
-                />
-              ))}
-            </CollapsibleContent>
-          </Collapsible>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="space-y-1 mt-1 mb-2">
+                {visibleDigitalAssets.map(asset => (
+                  <SubNavItem
+                    key={asset.id}
+                    href={`/digital-assets/${asset.id}`}
+                    label={asset.title}
+                    isActive={pathname === `/digital-assets/${asset.id}`}
+                  />
+                ))}
+              </CollapsibleContent>
+            </Collapsible>
+          )}
 
-          {/* Physical Assets Collapsible */}
-          <Collapsible open={isPhysicalOpen && !isCollapsed} onOpenChange={setIsPhysicalOpen}>
-            <CollapsibleTrigger className="w-full">
-              <div className={cn(
-                "flex items-center justify-between px-3 py-2 text-[13px] text-white/70 font-medium hover:bg-white/10 hover:text-white transition-all duration-200",
-                isCollapsed ? "justify-center rounded-xl mx-2" : "rounded-l-full"
-              )}>
-                <div className="flex items-center gap-3">
-                  <MonitorDot className="w-5 h-5 flex-shrink-0" />
-                  {!isCollapsed && <span>Aset Fisik</span>}
+          {/* Physical Assets Collapsible - Hanya tampil jika ada sub-item yang diizinkan */}
+          {visiblePhysicalAssets.length > 0 && (
+            <Collapsible open={isPhysicalOpen && !isCollapsed} onOpenChange={setIsPhysicalOpen}>
+              <CollapsibleTrigger className="w-full">
+                <div className={cn(
+                  "flex items-center justify-between px-3 py-2 text-[13px] text-white/70 font-medium hover:bg-white/10 hover:text-white transition-all duration-200",
+                  isCollapsed ? "justify-center rounded-xl mx-2" : "rounded-l-full"
+                )}>
+                  <div className="flex items-center gap-3">
+                    <MonitorDot className="w-5 h-5 flex-shrink-0" />
+                    {!isCollapsed && <span>Aset Fisik</span>}
+                  </div>
+                  {!isCollapsed && (isPhysicalOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />)}
                 </div>
-                {!isCollapsed && (isPhysicalOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />)}
-              </div>
-            </CollapsibleTrigger>
-            <CollapsibleContent className="space-y-1 mt-1 mb-2">
-              {allPhysicalAssets.map(asset => (
-                <SubNavItem
-                  key={asset.href}
-                  href={asset.href}
-                  label={asset.label}
-                  isActive={pathname === asset.href}
-                />
-              ))}
-            </CollapsibleContent>
-          </Collapsible>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="space-y-1 mt-1 mb-2">
+                {visiblePhysicalAssets.map(asset => (
+                  <SubNavItem
+                    key={asset.href}
+                    href={asset.href}
+                    label={asset.label}
+                    isActive={pathname === asset.href}
+                  />
+                ))}
+              </CollapsibleContent>
+            </Collapsible>
+          )}
 
-          <div className="my-2 border-t border-white/10 pr-3" />
+          {/* Riwayat Aset */}
+          {hasPermission('history') && (
+            <>
+              <div className="my-2 border-t border-white/10 pr-3" />
+              <NavItem href="/history" icon={History} label="Riwayat Aset" isActive={pathname === '/history'} />
+            </>
+          )}
 
-          <NavItem href="/history" icon={History} label="Riwayat Aset" isActive={pathname === '/history'} />
-          <NavItem href="/settings/categories" icon={Settings} label="Pengaturan" isActive={pathname.startsWith('/settings')} />
+          {/* Pengaturan Sistem */}
+          {visibleSettingsItems.length > 1 ? (
+            <Collapsible open={isSettingsOpen && !isCollapsed} onOpenChange={setIsSettingsOpen} className="mt-1">
+              <CollapsibleTrigger className="w-full">
+                <div className={cn(
+                  "flex items-center justify-between px-3 py-2 text-[13px] text-white/70 font-medium hover:bg-white/10 hover:text-white transition-all duration-200",
+                  isCollapsed ? "justify-center rounded-xl mx-2" : "rounded-l-full"
+                )}>
+                  <div className="flex items-center gap-3">
+                    <Settings className="w-5 h-5 flex-shrink-0" />
+                    {!isCollapsed && <span>Pengaturan</span>}
+                  </div>
+                  {!isCollapsed && (isSettingsOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />)}
+                </div>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="space-y-1 mt-1 mb-2">
+                {visibleSettingsItems.map(item => (
+                  <SubNavItem
+                    key={item.href}
+                    href={item.href}
+                    label={item.label}
+                    isActive={pathname.startsWith(item.href)}
+                  />
+                ))}
+              </CollapsibleContent>
+            </Collapsible>
+          ) : visibleSettingsItems.length === 1 ? (
+            <NavItem
+              href={visibleSettingsItems[0].href}
+              icon={Settings}
+              label={visibleSettingsItems[0].label}
+              isActive={pathname.startsWith(visibleSettingsItems[0].href)}
+            />
+          ) : null}
         </nav>
-
-
       </aside>
       {isLoggingOut && <LogoutAnimation />}
     </>

@@ -1,20 +1,23 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import { Bell, UserCircle, Menu, LogOut } from 'lucide-react'
+import { Bell, UserCircle, Menu, LogOut, Shield } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { logout } from '@/app/login/actions'
 import { LogoutAnimation } from '@/components/dashboard/LogoutAnimation'
 import { useState, useRef } from 'react'
+import { useAuth } from '@/context/AuthContext'
 
 export function TopBar() {
   const pathname = usePathname()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const formRef = useRef<HTMLFormElement>(null)
+  const { user } = useAuth()
   
   const getPageTitle = () => {
     if (pathname === '/dashboard') return 'Dashboard'
+    if (pathname.startsWith('/ticketing')) return 'Ticketing'
     if (pathname.startsWith('/network-analyzer')) return 'Network Analyzer'
     if (pathname === '/network') return 'Jaringan'
     if (pathname === '/printers') return 'Printer'
@@ -27,6 +30,11 @@ export function TopBar() {
     if (pathname === '/starlinks') return 'Starlink'
     if (pathname === '/dashcams') return 'Dashcam'
     if (pathname === '/history') return 'Riwayat Aset'
+    if (pathname.startsWith('/digital-assets')) return 'Aset Digital'
+    if (pathname.startsWith('/settings/roles')) return 'Pengaturan Role & Hak Akses'
+    if (pathname.startsWith('/settings/users')) return 'Manajemen Pengguna'
+    if (pathname.startsWith('/settings/categories')) return 'Pengaturan Kategori'
+    if (pathname.startsWith('/settings')) return 'Pengaturan'
     return 'Inventaris Aset IT'
   }
 
@@ -55,8 +63,15 @@ export function TopBar() {
               <div className="flex items-center gap-2 border-l pl-4 py-1 cursor-pointer hover:opacity-80 transition-opacity">
                 <UserCircle className="w-8 h-8 text-muted-foreground" />
                 <div className="flex flex-col text-sm text-left">
-                  <span className="font-medium text-foreground font-poppins">Admin</span>
-                  <span className="text-xs text-muted-foreground">IT Support</span>
+                  <span className="font-medium text-foreground font-poppins truncate max-w-[140px]">
+                    {user?.name || 'Admin'}
+                  </span>
+                  <div className="flex items-center gap-1">
+                    <Shield className="w-3 h-3 text-primary" />
+                    <span className="text-xs text-muted-foreground font-medium">
+                      {user?.roleLabel || 'IT Support'}
+                    </span>
+                  </div>
                 </div>
               </div>
             </DropdownMenuTrigger>
@@ -82,4 +97,3 @@ export function TopBar() {
     </>
   )
 }
-
