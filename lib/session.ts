@@ -2,6 +2,18 @@ import 'server-only'
 import { SignJWT, jwtVerify } from 'jose'
 import { cookies } from 'next/headers'
 
+export interface SessionData {
+  userId: string | number
+  name: string
+  email: string
+  roleId: number | null
+  roleName: string
+  roleLabel: string
+  permissions: string[]
+  expiresAt: Date
+  [key: string]: any
+}
+
 const secretKey = process.env.SESSION_SECRET || 'super-secret-inventaris-key'
 const encodedKey = new TextEncoder().encode(secretKey)
 
@@ -13,20 +25,38 @@ export async function encrypt(payload: any) {
     .sign(encodedKey)
 }
 
-export async function decrypt(session: string | undefined = '') {
+export async function decrypt(session: string | undefined = ''): Promise<SessionData | null> {
+  if (!session) return null
   try {
     const { payload } = await jwtVerify(session, encodedKey, {
       algorithms: ['HS256'],
     })
-    return payload
+    return payload as unknown as SessionData
   } catch (error) {
     return null
   }
 }
 
-export async function createSession(userId: string) {
+export async function createSession(userData: {
+  userId: string | number
+  name: string
+  email: string
+  roleId?: number | null
+  roleName?: string
+  roleLabel?: string
+  permissions?: string[]
+}) {
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-  const session = await encrypt({ userId, expiresAt })
+  const session = await encrypt({
+    userId: userData.userId,
+    name: userData.name,
+    email: userData.email,
+    roleId: userData.roleId ?? null,
+    roleName: userData.roleName || 'STAFF',
+    roleLabel: userData.roleLabel || 'Staff',
+    permissions: userData.permissions || [],
+    expiresAt,
+  })
 
   const cookieStore = await cookies()
   cookieStore.set('session', session, {
@@ -36,6 +66,12 @@ export async function createSession(userId: string) {
     sameSite: 'lax',
     path: '/',
   })
+}
+
+export async function getSession(): Promise<SessionData | null> {
+  const cookieStore = await cookies()
+  const session = cookieStore.get('session')?.value
+  return decrypt(session)
 }
 
 export async function updateSession() {
